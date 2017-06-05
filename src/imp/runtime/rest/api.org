@@ -10,3 +10,101 @@
   This document illustrates building of the REST API.
 * Rest
 ** Login API
+** Add User
+#+BEGIN_SRC 
+@mod_users.route('/add_user', methods=['POST'])
+def create_user():
+	try:
+		temp = json.loads(request.data)
+		email = json.dumps(temp['email'])
+		name = json.dumps(temp['name'])
+		role = json.dumps(temp['role'])
+	except KeyError as e:
+		return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+	if '@' not in email:
+		return jsonify(success=False, message="Please enter a valid email"), 400
+	role_id = Roles.query.filter(Roles.role_name==role).first()
+	if len(role_id)==0:
+		return jsonify(success=False, message="Role does not exist"), 400
+	role_id = role_id.id
+	u = User(name, email,role_id)
+	db.session.add(u)
+	try:
+		db.session.commit()
+	except IntegrityError as e:
+		return jsonify(success=False, message="This email already exists"), 400
+
+	return jsonify(success=True)
+
+#+END_SRC
+
+** Add Role
+#+BEGIN_SRC 
+@mod_users.route('/add_role', methods=['POST'])
+def create_role():
+	if request.method== 'POST':
+		try:
+			if 'role_name' in request.data:
+				temp = json.loads(request.data)
+				print temp
+				name = json.dumps(temp['role_name'])
+				print name
+				u = Roles(name)
+				print u
+				db.session.add(u)
+				print "added"
+				db.session.commit()
+				print "committed"
+				return jsonify(success=True)
+		except KeyError as e:
+			return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+#+END_SRC
+** Show users
+#+BEGIN_SRC 
+@mod_users.route('/users', methods=['GET'])
+def show_users():
+	users = User.query.all()
+	allusers = []
+	for i in users:
+		temp = i.to_dict()
+		allusers.append(temp)
+	return jsonify(success=True,users=allusers)
+
+#+END_SRC
+
+** Show roles
+#+BEGIN_SRC @mod_users.route('/roles', methods=['GET'])
+def show_roles():
+	roles = Roles.query.all()
+	allroles = []
+	for i in roles:
+		temp = i.to_dict()
+		allroles.append(temp)
+	return jsonify(success=True,roles=allroles)
+
+
+#+END_SRC
+
+** Delete User
+#+BEGIN_SRC 
+@mod_users.route('/delete_user', methods=['POST'])
+def delete_user():
+	try:
+		email = request.form['email']
+	except KeyError as e:
+		return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+	user_todel = User.query.filter(User.email==email).first()
+	if user_todel is none:
+		return jsonify(success=False, message="This email already exists"), 400
+
+	db.session.delete(user_todel)
+	try:
+		db.session.commit()
+	except IntegrityError as e:
+		return jsonify(success=False, message="This email already exists"), 400
+
+	return jsonify(success=True)
+
+#+END_SRC
