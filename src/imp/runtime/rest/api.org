@@ -8,8 +8,151 @@
 
 * Introduction 
   This document illustrates building of the REST API.
-* Rest
+* REST
+** Serve index.html
+#+NAME: serve_index_html
+#+BEGIN_SRC python 
+@api.route("/", methods=['GET'])
+def index():
+    return render_template("index.html")
+#+END_SRC
+
 ** Login API
+   API to login to the application.
+*** API Design
+  - URL :: /login
+  - Method :: GET
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/login
+    #+END_EXAMPLE
+*** =Login= API
+    When user clicks on =login= button from f/e it will invoke =/login= api and
+    thereby it will forward request to =google=. User must sign in using it's 
+    google credentials which is then stored in our database.
+#+NAME: oauth_session_creation
+#+BEGIN_SRC 
+def get_google_auth(state=None, token=None):
+    if token:
+        return OAuth2Session(Auth.CLIENT_ID, token=token)
+    if state:
+        return OAuth2Session(
+            Auth.CLIENT_ID,
+            state=state,
+            redirect_uri=Auth.REDIRECT_URI)
+    oauth = OAuth2Session(
+        Auth.CLIENT_ID,
+        redirect_uri=Auth.REDIRECT_URI,
+        scope=Auth.SCOPE)
+    return oauth
+#+END_SRC
+
+#+NAME: login_route
+#+BEGIN_SRC python
+@api.route('/login', methods=["GET"])
+def login():
+    if current_user.is_authenticated:
+        return render_template('index.html')
+    google = get_google_auth()
+    auth_url, state = google.authorization_url(
+        Auth.AUTH_URI, access_type='offline')
+    session['oauth_state'] = state
+    return render_template('login.html', auth_url=auth_url)
+ #+END_SRC
+
+*** Google Callback response =API=
+    - Once the Google verfies the user credentials it will send callback
+      response to =/authorized= api which should be registered at google's
+      dashboard as one of Authorized redirect URIs
+
+    - Once google authenticates the user, =userdirectory= application will
+      authorize the user to use the application.
+
+#+NAME: callback_google_api
+#+BEGIN_SRC python
+@api.route('/gCallback')
+def callback():
+    if current_user is not None and current_user.is_authenticated:
+        return render_template("index.html")
+    if 'error' in request.args:
+        if request.args.get('error') == 'access_denied':
+            return 'You have been denied access.'
+        return 'Error encountered.'
+    if 'code' not in request.args and 'state' not in request.args:
+        return render_template("login.html")
+    else:
+        google = get_google_auth(state=session.get('oauth_state'))
+        try:
+            token = google.fetch_token(
+                Auth.TOKEN_URI,
+                client_secret=Auth.CLIENT_SECRET,
+                authorization_response=request.url)
+        except HTTPError:
+            return 'HTTPError occurred.'
+        google = get_google_auth(token=token)
+        resp = google.get(Auth.USER_INFO)
+        if resp.status_code == 200:
+            user_data = resp.json()
+            email = user_data['email']
+            user = User.query.filter_by(email=email).first()
+            if user is None:
+                user = User()
+                user.email = email
+            user.name = user_data['name']
+            user.tokens = json.dumps(token)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return render_template("index.html")
+        return 'Could not fetch your information.'
+
+#+END_SRC
+
+*** Google OAuth Credentials
+    Google OAuth service required URLs (Credentials) should be specified
+
+#+NAME: google_oauth_configuration
+#+BEGIN_SRC python
+class goauth:
+    CLIENT_ID = "Your client ID"
+    CLIENT_SECRET = "Your secret"
+    REDIRECT_URI = 'https://localhost:5000/gCallback'
+    AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
+    TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
+    USER_INFO = 'https://www.googleapis.com/userinfo/v2/me'
+    SCOPE = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'
+
+#+END_SRC
+
+** Logout API
+   When user clicks on =logout= button from f/e it will invoke =/logout= api
+   and thereby it will destroy all session variables.
+
+*** API Design
+
+  - URL :: /logout
+  - Method :: GET
+  - URL Params ::  None
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/logout
+    #+END_EXAMPLE
+
+*** Implementation
+#+NAME: logout_route
+#+BEGIN_SRC python
+@api.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    session.clear()
+    return render_template("index.html")
+#+END_SRC
+
 ** Add User
 #+BEGIN_SRC 
 @mod_users.route('/add_user', methods=['POST'])
@@ -73,7 +216,6 @@ def show_users():
 	return jsonify(success=True,users=allusers)
 
 #+END_SRC
-
 ** Show roles
 #+BEGIN_SRC @mod_users.route('/roles', methods=['GET'])
 def show_roles():
