@@ -1,0 +1,11 @@
+#+TITLE: Runtime of Application
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+* Introduction
+  This document has the implementation of Lab Data Service Dashboard
