@@ -1,4 +1,4 @@
-#+TITLE: The Flask Web Server
+#+TITLE: The REST API for Lab Data Service Dashboard
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-05 Mon]
 #+SETUPFILE: ../../org-templates/level-2.org
@@ -6,5 +6,7 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
-* Introduction
-  The application that runs the FLASK web server
+* Introduction 
+  This document illustrates building of the REST API.
+* Rest
+** Login API
