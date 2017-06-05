@@ -1,0 +1,11 @@
+#+TITLE: Deploying the application on a server
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+  This document will illustrate installation of all the dependencies required
+  for setting up the application.
