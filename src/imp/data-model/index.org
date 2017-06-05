@@ -43,3 +43,68 @@ zero, one or more elements of =B=.
 |--------------------------------+-----------+---+---|
 | exactly one element of =B=     | r: A > B! |   |   |
 |--------------------------------+-----------+---+---|
+
+** Example of Entity Relationship notation
+    
+#+begin_example
+ [email, user] : User? > Email!
+#+end_example
+
+Encodes the following items of information:
+
+ - =email= is a relation /from/ the set =User= /to/ the set
+   =Email=.
+
+ - =User= is called the /domain/ of the relation =email=.
+
+ - =Email= is called the /codomain/ of the relation =email=.
+
+ - The relation =email= relates each element of =User= to
+   /exactly one/ element of =Email=.  This is written as 
+
+ #+begin_example
+ email: User > Email!
+ #+end_example
+
+ - =user= is a relation /from/ the set =Email= /to/ the set
+   =User=.
+
+ - =Email= is called the /domain/ of the relation =user=.
+
+ - =User= is called the /codomain/ of the relation =user=.
+
+ - The relation =user= relates each element of =Email= to
+   /at most one/ element of =User=.  This is written as 
+
+ #+begin_example
+ user: Email > User?
+ #+end_example
+
+
+* Abstract Entity Types
+#+BEGIN_SRC spec :tangle spec.txt
+
+TYPE User
+TYPE Role (admin +  guest)
+
+* Relations and cardinality constraints over entity types 
+For each relation, we define its inverse next to it.
+#+BEGIN_SRC spec :tangle spec.txt
+
+;;; Relations with cardinality constraints
+
+[email, user]          : User?      >    Email!
+[name, user]           : User       >    Name!
+[roles, users]         : User       >    Role+
+
+** Keys
+
+An entity =K= is called a /key for/ an entity =A= if there
+is a relation =r: A? > K!=.
+
+|--------+-------|
+| Entity | Key   |
+|--------+-------|
+| User   | Email |
+|--------+-------|
+
