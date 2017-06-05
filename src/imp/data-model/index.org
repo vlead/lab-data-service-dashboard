@@ -1,0 +1,45 @@
+#+TITLE: Data Model for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
+
+* Introduction
+  The application or the system is abstracted as the data model.  The model
+  captures: the entities that comprise the system; relations and constraints
+  between these entities; and operations that entail a change in the state of
+  the system.
+
+* Notation
+  The system is defined as the data model.  There is a certain notation that is
+  used defining the data model. 
+
+** Sets, cardinality and relations
+
+If =A= is a set, then
+    1. =A!= denotes exactly one element of =A=.
+    2. =A?= denotes at most one element of =A=.
+    3. =A+= denotes  one or more elements of =A=
+    4. =A*=  denotes at zero or more elements of =A=.  Often
+       abbreviated as =A=.
+    5. =A > B= denotes a relation /from/ =A= /to/ =B=.
+
+** Relations and their cardinality type
+
+A relation =r:A > B= could relate each element of =A= to
+zero, one or more elements of =B=.
+
+|--------------------------------+-----------+---+---|
+| Cardinality of B               | Notation  |   |   |
+|--------------------------------+-----------+---+---|
+| at least zero elements of =B=. | r: A > B  |   |   |
+|--------------------------------+-----------+---+---|
+| at most one element of =B=     | r: A > B? |   |   |
+|--------------------------------+-----------+---+---|
+| at least one element of =B=    | r: A > B+ |   |   |
+|--------------------------------+-----------+---+---|
+| exactly one element of =B=     | r: A > B! |   |   |
+|--------------------------------+-----------+---+---|
