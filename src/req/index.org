@@ -37,4 +37,13 @@
   :CUSTOM_ID: req3
   :END: 
    - Guest Role should be able to =Read/View= the labs data.
+
+** Req4
+  :PROPERTIES:
+  :CUSTOM_ID: req4
+  :END: 
+   - Authentication and Authorization should be provided for all the LDS
+     Dashboard users. 
+   
+
    
