@@ -1,1 +1,31 @@
-this is a sample requirement document
+#+TITLE: Building the lab-data-service-dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2016-06-05 Mon]
+#+SETUPFILE: ./org-templates/level-0.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Application
+  The =lab-data-service-dashboard= provides the information about all the
+  virtual labs. Based on the given role, user will be able to perform CRUD
+  operations on labs data.
+
+1. [[./req/index.org][Requirements]]
+
+2. [[./imp/design/index.org][Design]]
+
+3. [[./imp/data-model/index.org][Data Model]]
+
+4. [[./imp/runtime/index.org][Runtime]]
+
+5. [[./imp/deployment/index.org][Deployment]]
+
+
+
+   
+* Tangle                                       :boilerplate:
+#+BEGIN_SRC python :eval no :tangle __init__.py
+print "lab-data-service-dashboard"
+#+END_SRC
+
