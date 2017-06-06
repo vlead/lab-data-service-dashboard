@@ -80,13 +80,13 @@ def login():
 @api.route('/gCallback')
 def callback():
     if current_user is not None and current_user.is_authenticated:
-        return render_template("index.html")
+        return redirect("/")
     if 'error' in request.args:
         if request.args.get('error') == 'access_denied':
             return 'You have been denied access.'
         return 'Error encountered.'
     if 'code' not in request.args and 'state' not in request.args:
-        return render_template("login.html")
+        return redirect("login")
     else:
         google = get_google_auth(state=session.get('oauth_state'))
         try:
@@ -98,20 +98,25 @@ def callback():
             return 'HTTPError occurred.'
         google = get_google_auth(token=token)
         resp = google.get(Auth.USER_INFO)
+        data = resp.json()
         if resp.status_code == 200:
-            user_data = resp.json()
-            email = user_data['email']
+            email = data['email']
             user = User.query.filter_by(email=email).first()
             if user is None:
                 user = User()
                 user.email = email
-            user.name = user_data['name']
-            user.tokens = json.dumps(token)
-            db.session.add(user)
-            db.session.commit()
+                user.role = "guest"
+                user.name = data['name']
+                db.session.add(user)
+                role_list = Roles.query.filter_by(role_name=user.role).first()
+                if role_list is not None:
+                    db.session.commit()
+                else:
+                    jsonify(success=False, message="Role not available"), 400
             login_user(user)
-            return render_template("index.html")
+            return redirect("/")    
         return 'Could not fetch your information.'
+
 
 #+END_SRC
 
@@ -123,7 +128,7 @@ def callback():
 
 class goauth:
     CLIENT_ID = "Your client ID"
-    CLIENT_SECRET = "Your secret"
+    CLIENT_SECRET = "Your client secret"
     REDIRECT_URI = 'https://localhost:5000/gCallback'
     AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
     TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
@@ -153,13 +158,20 @@ class goauth:
 #+NAME: logout_route
 #+BEGIN_SRC python
 
-@api.route('/logout')
+@api.route('/logout', methods=["GET"])
 @login_required
 def logout():
-    logout_user()
-    session.clear()
-    return render_template("index.html")
-#+END_SRC
+    if session.get('_id') is not None:
+        try:
+            logout_user()
+            session.clear()
+            return redirect("/")
+        except:
+            msg = {"status": "failure", 
+                       "msg": "Some Error Occured, Try Again"}
+            return jsonify(msg)
+    else:
+        return redirect("/")
 
 ** Add User
    API to add a User
@@ -184,30 +196,41 @@ Implementation of the =Add User API= is given below.
 #+NAME: add_user
 #+BEGIN_SRC python 
 
-@mod_users.route('/add_user', methods=['POST'])
+@api.route('/add_user', methods=['POST'])
+@login_required
 def create_user():
-	try:
-		temp = json.loads(request.data)
-		email = json.dumps(temp['email'])
-		name = json.dumps(temp['name'])
-		role = json.dumps(temp['role'])
-	except KeyError as e:
-		return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-
-	if '@' not in email:
-		return jsonify(success=False, message="Please enter a valid email"), 400
+    try:
+        temp = json.loads(request.data)
+        email = json.dumps(temp['email'])
+        name = json.dumps(temp['name'])
+        role = json.dumps(temp['role'])
+    except:
+        try:
+            email = request.args('email')
+            name = request.args('name')
+            role = request.args('role')
+        except KeyError as e:
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+            
+    match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", full)
+    if match is not None:
+        clean = filter(None, match.groups())
+    else:
+        return jsonify(success=False, message="Please enter a valid email"), 400         
+    
 	role_id = Roles.query.filter(Roles.role_name==role).first()
-	if len(role_id)==0:
+	if role_id is not None:
 		return jsonify(success=False, message="Role does not exist"), 400
-	role_id = role_id.id
-	u = User(name, email,role_id)
-	db.session.add(u)
-	try:
-		db.session.commit()
-	except IntegrityError as e:
-		return jsonify(success=False, message="This email already exists"), 400
+    u = User()
+    u.name = name
+    u.email = email
+    db.session.add(u)
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        return jsonify(success=False, message="This email already exists"), 500
 
-	return jsonify(success=True)
+    return jsonify(success=True)
 #+END_SRC
 
 ** Add Role
@@ -231,7 +254,7 @@ Implementation of the =Add Role= API is given below.
 #+NAME: add_role
 #+BEGIN_SRC python 
 
-@mod_users.route('/add_role', methods=['POST'])
+@api.route('/add_role', methods=['POST'])
 @login_required
 def create_role():
     try:
@@ -245,7 +268,7 @@ def create_role():
     try:
         db.session.commit()
     except IntegrityError as e:
-        return jsonify(success=False, message="This role already exists"), 400
+        return jsonify(success=False, message="This role already exists"), 500
 	
     return jsonify(success=True)
 #+END_SRC
@@ -269,7 +292,7 @@ The implementation is given below.
 #+NAME: show_users
 #+BEGIN_SRC python 
 
-@mod_users.route('/users', methods=['GET'])
+@api.route('/users', methods=['GET'])
 @login_required
 def show_users():
 	users = User.query.all()
@@ -298,7 +321,7 @@ Implementation of =show role= API is given below
 #+NAME: show_roles
 #+BEGIN_SRC python
 
-@mod_users.route('/roles', methods=['GET'])
+@api.route('/roles', methods=['GET'])
 @login_required
 def show_roles():
 	roles = Roles.query.all()
@@ -330,11 +353,11 @@ def show_roles():
 #+NAME: delete_user
 #+BEGIN_SRC python 
 
-@mod_users.route('/delete_user', methods=['POST'])
+@api.route('/delete_user', methods=['POST'])
 @login_required
 def delete_user():
     try:
-        email = request.args['email']
+        email = request.args['user_email']
     except KeyError as e:
         return jsonify(success=False, message="%s not sent in the request" % e.args), 400
     user_todel = User.query.filter(User.email==email).first()
@@ -345,7 +368,7 @@ def delete_user():
     try:
         db.session.commit()
     except IntegrityError as e:
-        return jsonify(success=False, message="could'nt delete the user"), 400
+        return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
 #+END_SRC
 ** Delete Role
@@ -370,8 +393,8 @@ def delete_user():
 #+NAME: delete_role
 #+BEGIN_SRC python
 
-@mod_users.route('/delete_role', methods=['POST'])
-#@login_required	
+@api.route('/delete_role', methods=['POST'])
+@login_required	
 def delete_role():
     try:
         role_name = request.args['role_name']
@@ -380,12 +403,11 @@ def delete_role():
     role_todel = Roles.query.filter(Roles.role_name==role_name).first()
     if role_todel is None:
         return jsonify(success=False, message="This role does not exists"), 400
-    else:
-        db.session.delete(role_todel)
+    db.session.delete(role_todel)
     try:
         db.session.commit()
     except IntegrityError as e:
-        return jsonify(success=False, message="could'nt delete"), 400
+        return jsonify(success=False, message="could not delete"), 500
     return jsonify(success=True)
 
 #+END_SRC
@@ -416,7 +438,7 @@ def delete_role():
 #+NAME: update_user
 #+BEGIN_SRC python
 
-@mod_users.route('/update_user', methods=['POST'])
+@api.route('/update_user', methods=['POST'])
 @login_required
 def update_user():
     try:
@@ -444,7 +466,7 @@ def update_user():
 
     return jsonify(success=True)
 #+END_SRC
-<<<<<<< HEAD
+
 								:boilerplate:
 
 * Infra                                                         :boilerplate:
@@ -469,7 +491,7 @@ import json
 import re
 import time
 
-mod_users = Blueprint('users', __name__)
+api = Blueprint('users', __name__)
 
 #+end_src
 
@@ -484,9 +506,10 @@ from flask_testing import TestCase
 from sqlalchemy.exc import IntegrityError
 import datetime
 config = {
-         'SQLALCHEMY_DATABASE_URI': ''
-         }
-
+         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+         'DATABASE_CONNECT_OPTIONS': {},
+         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
+	}
 #+end_src
 
 *** Running tests
