@@ -17,7 +17,7 @@
     #+END_EXAMPLE
   - If <lds> database is not present, create it
     #+BEGIN_EXAMPLE
-    create database lds-dashboard;
+    create database ldsdashboard;
     #+END_EXAMPLE
   
     Exit out of the mysql console
@@ -63,7 +63,7 @@ python setup.py install
   The variable =SQLALCHEMY_DATABASE_URI= has to be set to proper value in
   =build/code/runtime/config/flask_app_config.py= so that the application can use the database.
   #+BEGIN_EXAMPLE
-  SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:pswd@localhost/lds-dashboard'
+  SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:pswd@localhost/ldsdashboard'
   #+END_EXAMPLE
 
 
