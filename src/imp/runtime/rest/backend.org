@@ -9,44 +9,71 @@
 * Introduction 
   This document illustrates the backend of users and roles for the LDS Dashboard.
 * Models
-** User
-#+BEGIN_SRC 
-class User(db.Model):
-	__tablename__ = 'users'
-	id = db.Column(db.Integer,autoincrement=True)
-	name = db.Column(db.String(255))
-	email = db.Column(db.String(255),primary_key=True,unique=True)
-	role = db.Column(db.Integer)
-
-	def __init__(self, name, email,role):
-		self.name = name
-		self.email = email
-		self.role = role
-    
-	def to_dict(self):
-		return {
-			'id' : self.id,
-			'name': self.name,
-			'email': self.email,
-			'role' : self.role
-		}
-
-#+END_SRC
-
 ** Roles
-#+BEGIN_SRC 
-class Roles(db.Model):
-    __tablename__ = 'roles'
-    id = db.Column(db.Integer,autoincrement=True)
-    role_name = db.Column(db.String(255),primary_key=True)
+   This is the model of =Roles=.
+#+NAME: role-model
+#+BEGIN_SRC python 
+
+
+class Roles(db.Model, UserMixin):
+    __tablename__ = "roles"
+    #id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    role_name = db.Column(db.String(10), unique = True, nullable = False,  primary_key=True)
 
     def __init__(self,role):
         self.role_name = role
+
+    def __repr__(self):
+        return '<Role\'s Name is: %r>' %(self.role_name)
+        
+
+    def to_dict(self):
+        return {
+            #'id' : self.id,	
+            'role': self.role_name,
+        }
+#+END_SRC
+** User
+   This is the model of =User=
+#+NAME: user-model
+#+BEGIN_SRC python
+class User(db.Model, UserMixin):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100))
+    role = db.Column(db.String(10),db.ForeignKey(Roles.role_name))
+
+    def __repr__(self):
+        return 'User\'s Id is: %d, User\'s Name is: %r & User\'s Email is: %r>' %(self.id, self.name, self.email)
     
     def to_dict(self):
         return {
             'id' : self.id,
-            'role': self.role_name,
+            'name': self.name,
+            'email': self.email,
+            'role': self.role
         }
 
+
+#+END_SRC
+
+* Infra
+** sources
+*** Imports
+#+NAME: imports_for_sources
+#+BEGIN_SRC python
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from app import db
+import os
+import datetime
+#+END_SRC 
+
+* Tangle
+** sources
+#+BEGIN_SRC python :tangle db.py :eval no :noweb yes
+<<imports_for_sources>>
+<<role-model>>
+<<user-model>>
 #+END_SRC

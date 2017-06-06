@@ -12,6 +12,7 @@
 ** Serve index.html
 #+NAME: serve_index_html
 #+BEGIN_SRC python 
+
 @api.route("/", methods=['GET'])
 def index():
     return render_template("index.html")
@@ -34,6 +35,7 @@ def index():
     google credentials which is then stored in our database.
 #+NAME: oauth_session_creation
 #+BEGIN_SRC python 
+
 def get_google_auth(state=None, token=None):
     if token:
         return OAuth2Session(Auth.CLIENT_ID, token=token)
@@ -51,6 +53,7 @@ def get_google_auth(state=None, token=None):
 
 #+NAME: login_route
 #+BEGIN_SRC python
+
 @api.route('/login', methods=["GET"])
 def login():
     if current_user.is_authenticated:
@@ -72,6 +75,7 @@ def login():
 
 #+NAME: callback_google_api
 #+BEGIN_SRC python
+
 @api.route('/gCallback')
 def callback():
     if current_user is not None and current_user.is_authenticated:
@@ -115,6 +119,7 @@ def callback():
 
 #+NAME: google_oauth_configuration
 #+BEGIN_SRC python
+
 class goauth:
     CLIENT_ID = "Your client ID"
     CLIENT_SECRET = "Your secret"
@@ -143,8 +148,10 @@ class goauth:
     #+END_EXAMPLE
 
 *** Implementation
+
 #+NAME: logout_route
 #+BEGIN_SRC python
+
 @api.route('/logout')
 @login_required
 def logout():
@@ -175,6 +182,7 @@ Only Admin has the right to add a user and assign role to him. To add a user =Na
 Implementation of the =Add User API= is given below.
 #+NAME: add_user
 #+BEGIN_SRC python 
+
 @mod_users.route('/add_user', methods=['POST'])
 def create_user():
 	try:
@@ -221,24 +229,24 @@ Admin has the right to add a role thus restricting the access to the LDS servive
 Implementation of the =Add Role= API is given below.
 #+NAME: add_role
 #+BEGIN_SRC python 
+
 @mod_users.route('/add_role', methods=['POST'])
+@login_required
 def create_role():
-	if request.method== 'POST':
-		try:
-			if 'role_name' in request.data:
-				temp = json.loads(request.data)
-				print temp
-				name = json.dumps(temp['role_name'])
-				print name
-				u = Roles(name)
-				print u
-				db.session.add(u)
-				print "added"
-				db.session.commit()
-				print "committed"
-				return jsonify(success=True)
-		except KeyError as e:
-			return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+    try:
+        name = request.args['name']
+    except KeyError as e:
+        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+    u = Roles(name)
+    print u
+    db.session.add(u)
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        return jsonify(success=False, message="This role already exists"), 400
+	
+    return jsonify(success=True)
 #+END_SRC
 ** Show users
 API for show users
@@ -259,7 +267,9 @@ The implementation is given below.
 
 #+NAME: show_users
 #+BEGIN_SRC python 
+
 @mod_users.route('/users', methods=['GET'])
+@login_required
 def show_users():
 	users = User.query.all()
 	allusers = []
@@ -286,7 +296,9 @@ This API returns the list of all the roles in the LDS.
 Implementation of =show role= API is given below
 #+NAME: show_roles
 #+BEGIN_SRC python
+
 @mod_users.route('/roles', methods=['GET'])
+@login_required
 def show_roles():
 	roles = Roles.query.all()
 	allroles = []
@@ -299,7 +311,7 @@ def show_roles():
 ** Delete User
    API for Delete User
 *** API Design
- - URL :: /delete_user
+  - URL :: /delete_user
   - Method :: POST
   - URL Params ::  
     {
@@ -316,35 +328,143 @@ def show_roles():
 
 #+NAME: delete_user
 #+BEGIN_SRC python 
+
 @mod_users.route('/delete_user', methods=['POST'])
+@login_required
 def delete_user():
-	try:
-		email = request.form['email']
-	except KeyError as e:
-		return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-	user_todel = User.query.filter(User.email==email).first()
-	if user_todel is none:
-		return jsonify(success=False, message="This email already exists"), 400
+    try:
+        email = request.args['email']
+    except KeyError as e:
+        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+    user_todel = User.query.filter(User.email==email).first()
+    if user_todel is None:
+        return jsonify(success=False, message="This email does'nt exists"), 400
 
-	db.session.delete(user_todel)
-	try:
-		db.session.commit()
-	except IntegrityError as e:
-		return jsonify(success=False, message="This email already exists"), 400
+    db.session.delete(user_todel) 
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        return jsonify(success=False, message="could'nt delete the user"), 400
+    return jsonify(success=True)
+#+END_SRC
+** Delete Role
+   API to Delete a Role
+*** API Design
+ - URL :: /delete_role
+  - Method :: POST
+  - URL Params ::  
+    {
+       "role_name" : "admin"
+    }
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/delete_role?role_name=admin
+    #+END_EXAMPLE
+*** Implementation
+    Admin has the right to delete a role. To delete a role, =role_name= 
+    should be sent as an argument.
+    Implementation of =delete role= is given below.
+#+NAME: delete_role
+#+BEGIN_SRC python
 
-	return jsonify(success=True)
+@mod_users.route('/delete_role', methods=['POST'])
+#@login_required	
+def delete_role():
+    try:
+        role_name = request.args['role_name']
+    except KeyError as e:
+        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+    role_todel = Roles.query.filter(Roles.role_name==role_name).first()
+    if role_todel is None:
+        return jsonify(success=False, message="This role does not exists"), 400
+    else:
+        db.session.delete(role_todel)
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        return jsonify(success=False, message="could'nt delete"), 400
+    return jsonify(success=True)
 
 #+END_SRC
-* Infra                                                         :boilerplate:
+
+** Update User
+   API to Update a User
+*** API Design
+ - URL :: /update_user
+  - Method :: POST
+  - URL Params ::  
+    {
+       "email" : "test@gmail.com"
+       "new_email" : "test1@gmail.com"
+       "new_role" : "admin"
+       "new_name" : "test1"
+    }
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/update_user?email=test@gmail.com&new_email=test1&gmail.com&new_name=test2&new_role=admin
+    #+END_EXAMPLE
+*** Implementation
+    Admin has the right to edit the details of a student who is registered 
+    for the Lab Data Service. He can edit any of the details =name=,=email=
+    or =role=.
+    The implementation is given below.
+#+NAME: update_user
+#+BEGIN_SRC python
+
+@mod_users.route('/update_user', methods=['POST'])
+@login_required
+def update_user():
+    try:
+        email = request.args['email']
+        new_name = request.args['new_name']
+        new_email = request.args['new_email']
+        new_role = request.args['new_role']
+    except KeyError as e:
+        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+    user_toupdate = User.query.filter(User.email==email).first()
+    if user_toupdate is None:
+        return jsonify(success=False, message="This email doesn't exists"), 400
+
+    check_role = Roles.query.filter(Roles.role_name==new_role).first()
+    if check_role is None:
+        return jsonify(success=False, message="Role doesn't exist"), 400
+    user_toupdate.name = new_name
+    user_toupdate.email = new_email
+    user_toupdate.role = new_role
+
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        return jsonify(success=False, message="Could not update the user"), 400
+
+    return jsonify(success=True)
+#+END_SRC
+* Infra 							:boilerplate:
 
 ** sources
 *** Imports 
 #+name: imports_for_sources
 #+BEGIN_SRC python
 # -*- coding: utf-8 -*-
-from flask import Flask
+from flask import Blueprint, Flask, url_for, redirect, \
+    render_template, session, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, login_required, login_user, \
+    logout_user, current_user, UserMixin
+from requests_oauthlib import OAuth2Session
+from requests.exceptions import HTTPError
+from app import app, db, login_manager
+from app.users.models import User, Roles
+import os
+import json
+import re
+import time
 
-api = Blueprint('APIs', __name__)
+mod_users = Blueprint('users', __name__)
 
 #+end_src
 
@@ -382,6 +502,7 @@ if __name__ == '__main__':
   
 ** sources
 #+BEGIN_SRC python :tangle api.py :eval no :noweb yes
+
 <<imports_for_sources>>
 <<serve_index_html>>
 <<oauth_session_creation>>
@@ -393,7 +514,8 @@ if __name__ == '__main__':
 <<show_users>>
 <<show_roles>>
 <<delete_user>>
-
+<<delete_role>>
+<<update_user>>
 #+END_SRC
 
 
