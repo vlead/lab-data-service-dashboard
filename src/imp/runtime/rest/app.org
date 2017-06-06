@@ -8,3 +8,10 @@
 
 * Introduction
   The application that runs the FLASK web server
+
+* Run Server
+#+BEGIN_SRC python
+#+NAME: run_server
+if __name__ == "__main__":
+       app.run(debug=True, host = "localhost", ssl_context = ('./ssl.crt', './ssl.key'), threaded=True)
+#+END_SRC
