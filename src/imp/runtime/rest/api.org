@@ -8,6 +8,7 @@
 
 * Introduction 
   This document illustrates building of the REST API.
+
 * REST
 ** Serve index.html
 #+NAME: serve_index_html
@@ -443,7 +444,11 @@ def update_user():
 
     return jsonify(success=True)
 #+END_SRC
-* Infra 							:boilerplate:
+<<<<<<< HEAD
+								:boilerplate:
+
+* Infra                                                         :boilerplate:
+
 
 ** sources
 *** Imports 
@@ -477,11 +482,6 @@ mod_users = Blueprint('users', __name__)
 import unittest
 from flask_testing import TestCase
 from sqlalchemy.exc import IntegrityError
-from runtime.utils.class_persistence_template import db
-from runtime.rest.app import create_app
-from runtime.config.system_config import KEY
-from runtime.rest.api import *
-from runtime.system.system import System
 import datetime
 config = {
          'SQLALCHEMY_DATABASE_URI': ''
