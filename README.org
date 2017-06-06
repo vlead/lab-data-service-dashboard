@@ -1,0 +1,6 @@
+* Lab Data Service
+** Run application on developement environment
+   Use [[./src/imp/deployment/run-lds-dashboard-in-development-environment.org][Documentation]] to setup and run the application on
+   local/development environment.
+** API Documentation
+   Visit [[./src/imp/runtime/rest/api.org][link]] for API documentation
