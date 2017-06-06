@@ -80,7 +80,6 @@ Encodes the following items of information:
  user: Email > User?
  #+end_example
 
-
 * Abstract Entity Types
 #+BEGIN_SRC spec :tangle spec.txt
 
