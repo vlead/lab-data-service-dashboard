@@ -154,6 +154,25 @@ def logout():
 #+END_SRC
 
 ** Add User
+   API to add a User
+*** API Design
+ - URL :: /add_user
+  - Method :: POST
+  - Success Response ::
+    + Code: 200
+  - URL Params ::
+    {
+      "name":"test",
+      "email":"test@gmail.com"
+      "role" : "admin"
+    }
+  - Example ::
+    #+BEGIN_EXAMPLE
+     http://localhost:5000/add_user?name=test&email=test@g.com&role=admin
+    #+END_EXAMPLE
+*** Implementation
+Only Admin has the right to add a user and assign role to him. To add a user =Name= , =Email= and =Role= fields are required.
+Implementation of the =Add User API= is given below.
 #+NAME: add_user
 #+BEGIN_SRC python 
 @mod_users.route('/add_user', methods=['POST'])
@@ -180,10 +199,26 @@ def create_user():
 		return jsonify(success=False, message="This email already exists"), 400
 
 	return jsonify(success=True)
-
 #+END_SRC
 
 ** Add Role
+API to add a role
+*** API Design
+ - URL :: /add_role
+  - Method :: POST
+  - Success Response ::
+    + Code: 200
+  - URL Params ::
+    {
+      "role_name":"admin"
+    }
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/add_role?role_name=admin
+    #+END_EXAMPLE
+*** Implementation
+Admin has the right to add a role thus restricting the access to the LDS servive.To add a role =role_name= field should be given.
+Implementation of the =Add Role= API is given below.
 #+NAME: add_role
 #+BEGIN_SRC python 
 @mod_users.route('/add_role', methods=['POST'])
@@ -204,9 +239,24 @@ def create_role():
 				return jsonify(success=True)
 		except KeyError as e:
 			return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-
 #+END_SRC
 ** Show users
+API for show users
+*** API Design
+ - URL :: /users
+  - Method :: GET
+  - URL Params ::  None
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/users
+    #+END_EXAMPLE
+
+*** Implementation
+This API shows the list of all users who are registered for the LDS.
+The implementation is given below.
+
 #+NAME: show_users
 #+BEGIN_SRC python 
 @mod_users.route('/users', methods=['GET'])
@@ -220,6 +270,20 @@ def show_users():
 
 #+END_SRC
 ** Show roles
+*** API Design
+ - URL :: /roles
+  - Method :: GET
+  - URL Params ::  None
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/roles
+    #+END_EXAMPLE
+
+*** Implementation
+This API returns the list of all the roles in the LDS.
+Implementation of =show role= API is given below
 #+NAME: show_roles
 #+BEGIN_SRC python
 @mod_users.route('/roles', methods=['GET'])
@@ -230,11 +294,26 @@ def show_roles():
 		temp = i.to_dict()
 		allroles.append(temp)
 	return jsonify(success=True,roles=allroles)
-
-
 #+END_SRC
 
 ** Delete User
+   API for Delete User
+*** API Design
+ - URL :: /delete_user
+  - Method :: POST
+  - URL Params ::  
+    {
+       "email" : "test@gmail.com"
+    }
+  - Success Response ::
+    + Code: 200
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/delete_user?email=test@gmail.com
+    #+END_EXAMPLE
+*** Implementation
+    Admin also has the right to delete a user. To delete a user =email= should be given as the field to delete a particular user.
+
 #+NAME: delete_user
 #+BEGIN_SRC python 
 @mod_users.route('/delete_user', methods=['POST'])
