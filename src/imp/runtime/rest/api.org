@@ -52,9 +52,27 @@ def get_google_auth(state=None, token=None):
     return oauth
 #+END_SRC
 
+#+NAME: check_email
+#+BEGIN_SRC python
+@mod_users.route('/check_valid', methods=['POST'])
+def check_valid():
+	try:
+		email = request.args['email']
+	except:
+		try:
+			email = request.form['email']
+		except KeyError as e:
+			return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+    
+	user_tocheck = User.query.filter(User.email==email).first()
+	if user_tocheck is None:
+		return jsonify(success=False, message="This User is not availed to LDS")
+	
+	return jsonify(success=True, message="This User is availed to LDS")
+#+END_SRC
+
 #+NAME: login_route
 #+BEGIN_SRC python
-
 @api.route('/login', methods=["GET"])
 def login():
     if current_user.is_authenticated:
@@ -1150,6 +1168,7 @@ if __name__ == '__main__':
 <<imports_for_sources>>
 <<serve_index_html>>
 <<oauth_session_creation>>
+<<check_email>>
 <<callback_google_api>>
 <<google_oauth_configuration>>
 <<logout_route>>
@@ -1161,7 +1180,7 @@ if __name__ == '__main__':
 <<delete_role>>
 <<update_user>>
 #+END_SRC
-
+   
 
 ** tests
 #+BEGIN_SRC python :tangle test_api.py :eval no :noweb yes
