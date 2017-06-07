@@ -82,28 +82,275 @@ Encodes the following items of information:
 
 * Abstract Entity Types
 #+BEGIN_SRC spec :tangle spec.txt
-
 TYPE User
-TYPE Role (admin +  guest)
+TYPE Role (admin + guest)
+TYPE Session
 
+#+END_SRC
 * Relations and cardinality constraints over entity types 
-For each relation, we define its inverse next to it.
-#+BEGIN_SRC spec :tangle spec.txt
+  For each relation, we define its inverse next to it.
 
+#+BEGIN_SRC spec :tangle spec.txt
 ;;; Relations with cardinality constraints
 
 [email, user]          : User?      >    Email!
 [name, user]           : User       >    Name!
 [roles, users]         : User       >    Role+
+[user, session]        : Session    >    User!
+[role, session]        : Session    >    Role!
 
+#+END_SRC
+
+
+
+Note: if s1.user = s2.user -> 
+         s1.role != s2.role, where s1 and s2 belong to session-set
 ** Keys
 
 An entity =K= is called a /key for/ an entity =A= if there
 is a relation =r: A? > K!=.
 
-|--------+-------|
-| Entity | Key   |
-|--------+-------|
-| User   | Email |
-|--------+-------|
+|---------+---------------|
+| Entity  | Key           |
+|---------+---------------|
+| User    | Email         |
+|---------+---------------|
+| Session | User and Role |
+|---------+---------------|
 
+* System state
+
+  The system¡¯s state is captured by a set of state variables.
+
+** Primary Entity sets
+
+#+BEGIN_SRC spec :tangle spec.txt
+;;; Primary state variables
+
+Sets
+ user-set      : set[User]      ; set of users in the system
+ role-set      : set[Role]      ; set of roles in the system
+ session-set   : set[Session]   ; set of sessions in the system
+
+#+END_SRC
+
+#+BEGIN_HTML
+<img src="">
+#+END_HTML
+
+** Referential Integrity Constraints over entity-sets
+   
+*** =user-set=
+
+
+There is atleast one user  whose role is =admin=.
+
+    #+BEGIN_SRC spec :tangle spec.txt
+
+    ;;; The admin-user
+
+    admin-user-set     : user-set.role==admin; set of admin users
+
+    and admin-user-set != NULL
+    
+    
+    
+    #+END_SRC
+
+These specifications also capture referential integrity.
+#+BEGIN_SRC spec :tangle spec.txt
+
+;;; Relation variables with Referential Integrity
+[email, user]    :  user-set!    > email-set!
+[name, user]     :  user-set+    > name-set!    
+[roles, user]    :  user-set     > role-set+   
+[session, user]  :  user-set!    > session-set?
+
+#+END_SRC
+
+** Derived Entity sets
+#+BEGIN_SRC spec :tangle spec.txt
+  name-set           : user-set.name       ; set of names in the system
+  email-set          : user-set.email      ; set of emails in the system
+  logged-in-user-set : session-set.user    ; set of logged in users
+  admin-user-set     : user-set.role==admin; set of admin users
+
+#+END_SRC
+* Operations 
+
+CRUD operations.  
+
+Each operation is performed on an entity instance or an
+entity-set.   The operation may take additional parameters.
+It also takes as a  parameter of the credentials of the
+actor performing the operation.
+
+ - C  create a user      
+ - R  read from a user   
+ - U  update a user      
+ - D  delete a user      
+
+** Actor
+   
+Operations are performed by Actors.  Our application has 
+the  actors:  =session=. 
+
+** Add User
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    u: User, s: Session
+#+END_SRC   
+*** Actor credentials
+#+BEGIN_SRC spec :tangle spec.txt
+    s.role==admin 
+#+END_SRC   
+*** Referential Integrity
+#+BEGIN_SRC spec :tangle spec.txt
+    s: session-set
+    u: ~user-set
+    s.role == admin 
+    user == guest_user => u:user-set
+
+#+END_SRC   
+*** Effect
+#+BEGIN_SRC spec :tangle spec.txt
+    u = new user
+    user-set = (user-set) U {u}
+#+END_SRC   
+** Update User
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    n: Name, e:Email, r:Role u: User, s:  Session
+#+END_SRC   
+*** Actor credentials
+#+BEGIN_SRC spec :tangle spec.txt    
+    s.role==admin  
+#+END_SRC   
+*** Referential Integrity
+#+BEGIN_SRC spec :tangle spec.txt    
+    u: user-set
+    s: session-set
+    u: ~logged-in-user-set
+    e: ~email-set
+    r: ~role-set 
+
+#+END_SRC         
+*** Effect 
+#+BEGIN_SRC spec :tangle spec.txt
+    The user details are updated.
+#+END_SRC   
+
+*** Remarks
+#+BEGIN_SRC spec :tangle spec.txt   
+   An admin can update any user.
+#+END_SRC   
+   
+** Delete User
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    u: User, s:  Session
+#+END_SRC   
+*** Actor credentials
+#+BEGIN_SRC spec :tangle spec.txt    
+    s.role==admin  
+#+END_SRC   
+*** Referential Integrity
+#+BEGIN_SRC spec :tangle spec.txt    
+    u: user-set
+    s: session-set
+    u:~logged-in-user-set
+#+END_SRC       
+
+*** Remarks
+#+BEGIN_SRC spec :tangle spec.txt   
+   Only admin will be able to delete any user in the system.
+ #+END_SRC
+*** Effect
+#+BEGIN_SRC spec :tangle spec.txt
+    user-set= user-set - {u}   
+#+END_SRC   
+** Add Role
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    r: Role, s: Session
+#+END_SRC   
+*** Actor credentials
+#+BEGIN_SRC spec :tangle spec.txt
+    s.role == admin 
+#+END_SRC   
+*** Referential Integrity
+#+BEGIN_SRC spec :tangle spec.txt
+    s:session-set
+    r: ~ role-set
+    s.role == admin 
+    role == guest => r:role-set
+
+#+END_SRC   
+*** Effect
+#+BEGIN_SRC spec :tangle spec.txt
+    r is added to role-set
+#+END_SRC   
+** Delete Role
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    r: Role, s:  Session
+#+END_SRC   
+*** Actor credentials
+#+BEGIN_SRC spec :tangle spec.txt    
+    s.role==admin  
+#+END_SRC   
+*** Referential Integrity
+#+BEGIN_SRC spec :tangle spec.txt    
+    r: role-set
+    s: session-set
+
+#+END_SRC       
+
+*** Remarks
+#+BEGIN_SRC spec :tangle spec.txt   
+   Only admin will be able to delete any role in the system.
+ #+END_SRC
+*** Effect
+#+BEGIN_SRC spec :tangle spec.txt
+    role-set= role-set - {r}   
+#+END_SRC   
+
+** login
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    u: User, r:Role
+#+END_SRC   
+*** Actor Credentials
+#+BEGIN_SRC spec :tangle spec.txt
+    s.role==admin or s.role==guest
+#+END_SRC       
+*** Referential-Integrity
+#+BEGIN_SRC spec :tangle spec.txt
+    u:user-set
+    r:role-set
+
+#+END_SRC      
+*** Effect
+#+BEGIN_SRC spec :tangle spec.txt
+    A session for that user is added to the session-set
+    s: newsession
+    session-set = session-set U {s}
+#+END_SRC   
+** logout 
+*** Parameters
+#+BEGIN_SRC spec :tangle spec.txt
+    s:Session
+#+END_SRC   
+*** Actor Credentials
+#+BEGIN_SRC spec :tangle spec.txt
+    s.role==admin or s.role==guest
+#+END_SRC       
+*** Referential-Integrity
+#+BEGIN_SRC spec :tangle spec.txt
+    s:session-set
+#+END_SRC       
+*** Effect
+#+BEGIN_SRC spec :tangle spec.txt
+    s is removed from the session-set
+    session-set = session-set - {s}
+#+END_SRC      

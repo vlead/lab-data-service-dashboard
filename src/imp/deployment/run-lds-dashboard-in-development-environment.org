@@ -61,7 +61,8 @@ python setup.py install
 
 * Set SQLALCHEMY_DATABASE_URI
   The variable =SQLALCHEMY_DATABASE_URI= has to be set to proper value in
-  =build/code/runtime/config/flask_app_config.py= so that the application can use the database.
+  =build/code/imp/runtime/config/flask_app_config.py= so that the application
+  can use the database.
   #+BEGIN_EXAMPLE
   SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:pswd@localhost/ldsdashboard'
   #+END_EXAMPLE
@@ -72,7 +73,7 @@ python setup.py install
   #+BEGIN_EXAMPLE
   cd build/code/
   export PYTHONPATH=$(pwd)
-  cd deployment
+  cd imp/deployment
   python db_setup.py
   #+END_EXAMPLE
 
