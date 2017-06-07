@@ -214,8 +214,7 @@ Implementation of the =Add User API= is given below.
 
 #+NAME: add_user
 #+BEGIN_SRC python 
-
-@api.route('/add_user', methods=['POST'])
+@mod_users.route('/add_user', methods=['POST'])
 @login_required
 def create_user():
 
@@ -257,6 +256,7 @@ def create_user():
         return jsonify(success=False, message="This email already exists"), 500
 
     return jsonify(success=True)
+
 #+END_SRC
 
 *** Test Cases
@@ -1098,6 +1098,89 @@ class TestUpdateUsers(TestCase):
 
 		self.assertEqual(response.status_code, 400)
 #+END_SRC
+* HTML
+** Login
+This is the HTML code for Login page
+#+NAME: login_page
+#+BEGIN_SRC :tangle templates/login.html
+<html>
+<head>
+<title> LOGIN </title>
+<meta name="google-signin-client_id" content="322635468838-51ldl2n1dngsfsrtmv22lk4qi2so75e6.apps.googleusercontent.com">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+</head>
+<body>
+
+<form id="form">
+Enter your Email:
+<input type="text" name="email" id="email"/>
+<input type="button" value ="Login "class="btn btn-primary" onclick="check_user('{{auth_url}}')"/>
+</form>
+<br/>
+<button type="button" class="btn btn-primary" onclick="location.href='{{auth_url}}';">Login</button>
+</button>
+</body>
+</html>
+
+#+END_SRC
+
+** Homepage
+This is the HTML code for Homepage.
+#+NAME: home_page
+#+BEGIN_SRC :tangle templates/index.html
+<html>
+<head>
+<title> WELCOME </title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+</head>
+<body>
+<h1> Hello </h1>
+<button type="button" class="btn btn-primary" onclick="location.href='{{ url_for('users.logout') }}';">Logout</button>
+</body>
+</html>
+#+END_SRC
+* JS
+** Ajax
+This function checks whether the user trying to login
+is there is the database or not.If the user is there
+in the database, page is redirected to google,else
+error is shown that user is not availed to LDS.
+#+NAME: ajax
+#+BEGIN_SRC :tangle static/main.js
+
+var check_user = function (link)
+{
+	var user_email = document.getElementById('form');
+	console.log(user_email.elements[0].value)
+	$.ajax({
+url : 'https://localhost:5000/check_valid',
+method: "POST",
+data: {
+email:user_email.elements[0].value
+},
+async:false,
+success: function(response){
+console.log(response.success)
+var resp = response;
+if(resp.success)
+{
+window.location = link;
+console.log('yeayy success!');
+}
+else {
+window.location = "https://localhost:5000/login"	
+console.log('User is not availed to LDS');
+}
+},
+
+});
+return user_email;
+}
+#+END_SRC
 * Infra                                                         :boilerplate:
 
 
@@ -1119,6 +1202,7 @@ import os
 import json
 import re
 import time
+from sqlalchemy.exc import IntegrityError
 
 api = Blueprint('users', __name__)
 
