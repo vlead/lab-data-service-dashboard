@@ -80,6 +80,7 @@ def login():
 @api.route('/gCallback')
 def callback():
     if current_user is not None and current_user.is_authenticated:
+        print "I am here :)"
         return redirect("/")
     if 'error' in request.args:
         if request.args.get('error') == 'access_denied':
@@ -112,12 +113,10 @@ def callback():
                 if role_list is not None:
                     db.session.commit()
                 else:
-                    jsonify(success=False, message="Role not available"), 400
+                    return jsonify(success=False, message="Role not available"), 400
             login_user(user)
             return redirect("/")    
         return 'Could not fetch your information.'
-
-
 #+END_SRC
 
 *** Google OAuth Credentials
@@ -201,31 +200,38 @@ Implementation of the =Add User API= is given below.
 @api.route('/add_user', methods=['POST'])
 @login_required
 def create_user():
+
     try:
         temp = json.loads(request.data)
-        email = json.dumps(temp['email'])
-        name = json.dumps(temp['name'])
-        role = json.dumps(temp['role'])
+        email = temp['email']
+        name = temp['name']
+        role = temp['role']
     except:
         try:
-            email = request.args('email')
-            name = request.args('name')
-            role = request.args('role')
+            email = request.args.get('email')
+            name = request.args.get('name')
+            role = request.args.get('role')
         except KeyError as e:
             return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-            
-    match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", full)
-    if match is not None:
-        clean = filter(None, match.groups())
-    else:
-        return jsonify(success=False, message="Please enter a valid email"), 400         
-    
-	role_id = Roles.query.filter(Roles.role_name==role).first()
-	if role_id is not None:
-		return jsonify(success=False, message="Role does not exist"), 400
+
+    if not (name or email or role):
+        return jsonify(success=False, message="Arguments not provided"), 400
+
+    try:
+        match = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
+        if match is None:
+            return jsonify(success=False, message="Please enter a valid email"), 400         
+    except:
+        return jsonify(success=False, message="Arguments went missing"), 400
+
+    check_role = Roles.query.filter(Roles.role_name==role).first()
+    if check_role is None:
+        return jsonify(success=False, message="Role doesn't exist"), 400
+
     u = User()
     u.name = name
     u.email = email
+    u.role = role
     db.session.add(u)
     try:
         db.session.commit()
@@ -235,6 +241,157 @@ def create_user():
     return jsonify(success=True)
 #+END_SRC
 
+*** Test Cases
+**** Add a User
+
+#+NAME: test_add_user
+#+BEGIN_SRC python
+class TestAddUser(TestCase):
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(mod_users, url_prefix=None)
+        app.config.from_object("config")
+        app.config['TESTING'] = True
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
+
+    def setUp(self):
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_1(self):
+		print "test_add_user_1"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		payload = {
+                    'name': 'Test1',
+		            'email': 'test1@gmail.com',
+		            'role': 'admin'
+		          }
+		headers = {'Content-Type': 'application/json'}
+
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 200)
+
+    def test_2(self):
+        print "test_add_user_2"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+        payload = {
+                    'name': 'Test2',
+                    'email': 'te@st2@gmailcom',
+                    'role': 'admin'
+                  }
+        headers = {'Content-Type': 'application/json'}
+
+        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_3(self):
+        print "test_add_user_3"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+        payload = {
+                    'email': 'test3@gmail.com',
+                    'role': 'admin'
+                  }
+        headers = {'Content-Type': 'application/json'}
+        #data=json.dumps(payload)
+        #temp = json.loads(data)
+        #email = temp['email']
+        #print email
+
+        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_4(self):
+        print "test_add_user_4"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+        payload = {
+                    'name': 'Test4',
+                    'email': 'test4@gmail.com',
+                    'role': 'developer'
+                  }
+        headers = {'Content-Type': 'application/json'}
+
+        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_5(self):
+        print "test_add_user_5"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+        payload = {
+                    'name': 'Test5',
+                    'role': 'admin'
+                  }
+        headers = {'Content-Type': 'application/json'}
+
+        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_6(self):
+        print "test_add_user_6"
+        payload = {'name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+        payload = {
+                    'name': 'Test6',
+                    'email': 'test6@gmail.com',
+                  }
+        headers = {'Content-Type': 'application/json'}
+
+        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_7(self):
+        print "test_add_user_7"
+        payload = {'name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+        payload = {
+                    'name': 'Test7',
+                    'email': 'test7@gmail.com',
+                    'role': ''
+                  }
+        headers = {'Content-Type': 'application/json'}
+
+        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+#+END_SRC
 ** Add Role
 API to add a role
 *** API Design
@@ -260,19 +417,76 @@ Implementation of the =Add Role= API is given below.
 @login_required
 def create_role():
     try:
-        name = request.args['name']
-    except KeyError as e:
-        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+        temp = json.loads(request.data)
+        name = temp['role_name']
+    except:
+        try:
+            name = request.args['role_name']
+        except KeyError as e:
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+    if not name:
+        return jsonify(success=False, message="No role provided"), 400
 
     u = Roles(name)
-    print u
     db.session.add(u)
     try:
         db.session.commit()
     except IntegrityError as e:
         return jsonify(success=False, message="This role already exists"), 500
 	
-    return jsonify(success=True)
+    return jsonify(success=True))
+#+END_SRC
+*** Test Cases
+**** Add a Role
+#+NAME: test_add_role
+#+BEGIN_SRC python
+class TestAddRole(TestCase):
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(mod_users, url_prefix=None)
+        app.config.from_object("config")
+        app.config['TESTING'] = True
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
+
+    def setUp(self):
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_1(self):
+        print "test_add_role_1"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+        self.assertEqual(response.status_code, 200)
+
+    def test_2(self):
+        print "test_add_role_2"
+        payload = {'role_name': ''}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+        self.assertEqual(response.status_code, 400)    
+
+    def test_3(self):
+        print "test_add_role_3"
+        payload = {'role_name': None}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+        self.assertEqual(response.status_code, 400)
 #+END_SRC
 ** Show users
 API for show users
@@ -305,6 +519,73 @@ def show_users():
 	return jsonify(success=True,users=allusers)
 
 #+END_SRC
+*** Test Cases
+**** Show users
+#+NAME: test_show_users
+#+BEGIN_SRC python
+class TestShowUsers(TestCase):
+	TESTING = True
+	def create_app(self):
+		app = Flask(__name__)
+		app.register_blueprint(mod_users, url_prefix=None)
+		app.config.from_object("config")
+		app.config['TESTING'] = True
+		login_manager = LoginManager(app)
+		login_manager.login_view = "users.login"
+		self.app = app.test_client()
+		db.init_app(app)
+		return app
+
+	def setUp(self):
+		db.create_all()
+
+	def tearDown(self):
+		db.session.remove()
+		db.drop_all()
+		
+	def test_1(self):
+		print "test_show_user_1"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		
+		payload = {'name': 'Test1',
+			       'email': 'test1@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+		response = self.client.get("/users", headers=headers)
+		
+		self.assertEqual(response.status_code, 200)
+
+	def test_2(self):
+		print "test_show_user_2"
+		payload = {'name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+        
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+    
+		payload = {
+                    'name': 'Test2',
+                    'email': 'test2@gmail.com',
+                    'role': ''
+                  }
+		headers = {'Content-Type': 'application/json'}
+
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+		response = self.client.get("/users", headers=headers)
+		self.assertEqual(response.status_code, 200)
+
+	def test_3(self):
+		print "test_show_user_3"
+		response = self.client.get("/users")
+		self.assertEqual(response.status_code, 200)
+#+END_SRC
 ** Show roles
 *** API Design
  - URL :: /roles
@@ -334,6 +615,59 @@ def show_roles():
 	return jsonify(success=True,roles=allroles)
 #+END_SRC
 
+*** Test Cases
+**** Show Roles
+#+NAME: test_show_roles
+#+BEGIN_SRC python
+class TestShowRole(TestCase):
+	TESTING = True
+	def create_app(self):
+		app = Flask(__name__)
+		app.register_blueprint(mod_users, url_prefix=None)
+		app.config.from_object("config")
+		app.config['TESTING'] = True
+		login_manager = LoginManager(app)
+		login_manager.login_view = "users.login"
+		self.app = app.test_client()
+		db.init_app(app)
+		return app
+
+	def setUp(self):
+		db.create_all()
+
+	def tearDown(self):
+		db.session.remove()
+		db.drop_all()
+
+	def test_1(self):
+		print "test_show_roles_1"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		
+		response = self.client.get("/roles", headers=headers)
+		
+		self.assertEqual(response.status_code, 200)
+
+	def test_2(self):
+		print "test_show_roles_2"
+		payload = {'role_name': ''}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		
+		response = self.client.get("/roles", headers=headers)
+		
+		self.assertEqual(response.status_code, 200)	
+
+	def test_3(self):
+		print "test_show_roles_3"
+		
+		response = self.client.get("/roles")
+		
+		self.assertEqual(response.status_code, 200)
+#+END_SRC
 ** Delete User
    API for Delete User
 *** API Design
@@ -364,7 +698,7 @@ def delete_user():
         return jsonify(success=False, message="%s not sent in the request" % e.args), 400
     user_todel = User.query.filter(User.email==email).first()
     if user_todel is None:
-        return jsonify(success=False, message="This email does'nt exists"), 400
+        return jsonify(success=False, message="This email does not exists"), 400
 
     db.session.delete(user_todel) 
     try:
@@ -372,6 +706,89 @@ def delete_user():
     except IntegrityError as e:
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
+
+@mod_users.route('/delete_role', methods=['POST'])
+#+END_SRC
+*** Test Cases
+**** Delete a user
+#+NAME: test_delete_user
+#+BEGIN_SRC python
+class TestDeleteUser(TestCase):
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(mod_users, url_prefix=None)
+        app.config.from_object("config")
+        app.config['TESTING'] = True
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
+
+    def setUp(self):
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_1(self):
+		print "test_delete_role_1"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+        
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+		payload = {'name': 'Test1',
+			       'email': 'test1@gmail.com',
+		           'role' : 'admin'
+		           }
+		
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+		response = self.client.post("/delete_user?user_email=test1@gmail.com", headers=headers)
+		
+		self.assertEqual(response.status_code, 200)
+
+    def test_2(self):
+		print "test_delete_role_2"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+        
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+		payload = {'name': 'Test2',
+			       'email': 'test2@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+		response = self.client.post("/delete_user?user_email=", headers=headers)
+		
+		self.assertEqual(response.status_code, 400)	
+
+    def test_3(self):
+		print "test_delete_role_3"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		payload = {'name': 'Test3',
+			       'email': 'test3@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+
+		response = self.client.post("/delete_user?user_email=test@gmail.com", headers=headers)
+		
+		self.assertEqual(response.status_code, 400)	
+
 #+END_SRC
 ** Delete Role
    API to Delete a Role
@@ -402,6 +819,10 @@ def delete_role():
         role_name = request.args['role_name']
     except KeyError as e:
         return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+    if not role_name:
+        return jsonify(success=False, message="No role provided"), 400
+
     role_todel = Roles.query.filter(Roles.role_name==role_name).first()
     if role_todel is None:
         return jsonify(success=False, message="This role does not exists"), 400
@@ -412,8 +833,67 @@ def delete_role():
         return jsonify(success=False, message="could not delete"), 500
     return jsonify(success=True)
 
+
 #+END_SRC
 
+*** Test Cases
+**** Delete a role
+#+NAME: test_delete_role
+#+BEGIN_SRC python
+class TestDeleteRole(TestCase):
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(mod_users, url_prefix=None)
+        app.config.from_object("config")
+        app.config['TESTING'] = True
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
+
+    def setUp(self):
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_1(self):
+        print "test_delete_role_1"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+        response = self.client.post("/delete_role?role_name=admin", headers=headers)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_2(self):
+		print "test_delete_role_2"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		
+		response = self.client.post("/delete_role?role_name=", headers=headers)
+
+		self.assertEqual(response.status_code, 400)
+
+    def test_3(self):
+        print "test_delete_role_3"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
+        
+        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        
+        response = self.client.post("/delete_role?role_name=guest", headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+#+END_SRC
 ** Update User
    API to Update a User
 *** API Design
@@ -443,13 +923,25 @@ def delete_role():
 @api.route('/update_user', methods=['POST'])
 @login_required
 def update_user():
+
     try:
-        email = request.args['email']
-        new_name = request.args['new_name']
-        new_email = request.args['new_email']
-        new_role = request.args['new_role']
-    except KeyError as e:
-        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+        temp = json.loads(request.data)
+        email = temp['email']
+        new_name = temp['new_name']
+        new_email = temp['new_email']
+        new_role = temp['new_role']
+    except:
+        try:
+            email = request.args.get['email']
+            new_name = request.args.get['new_name']
+            new_email = request.args.get['new_email']
+            new_role = request.args.get['new_role']
+        except KeyError as e:
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+    if not (new_name or new_role or new_email):
+        return jsonify(success=False, message="Invalid arguments were provided"), 400
+
     user_toupdate = User.query.filter(User.email==email).first()
     if user_toupdate is None:
         return jsonify(success=False, message="This email doesn't exists"), 400
@@ -464,13 +956,130 @@ def update_user():
     try:
         db.session.commit()
     except IntegrityError as e:
-        return jsonify(success=False, message="Could not update the user"), 400
+        return jsonify(success=False, message="Could not update the user"), 500
 
-    return jsonify(success=True)
+    return jsonify(success=True))
 #+END_SRC
 
 								:boilerplate:
 
+*** Test Cases
+**** Update a user
+#+NAME: test_update_user
+#+BEGIN_SRC python
+class TestUpdateUsers(TestCase):
+	TESTING = True
+	def create_app(self):
+		app = Flask(__name__)
+		app.register_blueprint(mod_users, url_prefix=None)
+		app.config.from_object("config")
+		app.config['TESTING'] = True
+		login_manager = LoginManager(app)
+		login_manager.login_view = "users.login"
+		self.app = app.test_client()
+		db.init_app(app)
+		return app
+
+	def setUp(self):
+		db.create_all()
+
+	def tearDown(self):
+		db.session.remove()
+		db.drop_all()
+
+	def test_1(self):
+		print "test_update_user_1"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'role_name': 'user'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'name': 'Test1',
+			       'email': 'test1@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		
+		payload1 = {'new_name': 'Test_1',
+			       'email': 'test1@gmail.com',
+				   'new_email': 'test1@gmail.com',
+		           'new_role' : 'user'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
+
+		self.assertEqual(response.status_code, 200)
+
+	def test_2(self):
+		print "test_update_user_2"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'role_name': 'user'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'name': 'Test2',
+			       'email': 'test2@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		
+		payload1 = {'new_name': '',
+			       'email': 'test1@gmail.com',
+				   'new_email': 'test1@gmail.com',
+		           'new_role' : 'user'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
+
+		self.assertEqual(response.status_code, 400)
+
+	def test_3(self):
+		print "test_update_user_3"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'role_name': 'user'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'name': 'Test3',
+			       'email': 'test3@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		
+		payload1 = {'new_name': 'Test_3',
+			       'email': 'test@gmail.com',
+				   'new_email': 'test1@gmail.com',
+		           'new_role' : 'user'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
+
+		self.assertEqual(response.status_code, 400)
+#+END_SRC
 * Infra                                                         :boilerplate:
 
 
@@ -504,15 +1113,25 @@ api = Blueprint('users', __name__)
 #+BEGIN_SRC python
 # -*- coding: utf-8 -*-
 import unittest
+import os
+import sys
+from flask import Flask, Blueprint, json    
 from flask_testing import TestCase
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from app.users.controllers import mod_users
 import datetime
+from flask_login import LoginManager
+from app.users.models import User, Roles
+from config import basedir
+from app import app, db
+import client
+
 config = {
-         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
-         'DATABASE_CONNECT_OPTIONS': {},
-         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-	}
-#+end_src
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'DATABASE_CONNECT_OPTIONS': {},
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
+    }#+end_src
 
 *** Running tests
 #+NAME: run_test_cases
@@ -547,6 +1166,12 @@ if __name__ == '__main__':
 ** tests
 #+BEGIN_SRC python :tangle test_api.py :eval no :noweb yes
 <<imports_for_tests>>
-
+<<test_add_user
+<<test_add_role
+<<test_show_users
+<<test_show_roles
+<<test_delete_user
+<<test_delete_role
+<<test_update_user
 <<run_test_cases>>
 #+end_src
