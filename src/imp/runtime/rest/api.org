@@ -172,15 +172,15 @@ def logout():
             return jsonify(msg)
     else:
         return redirect("/")
-
+#+END_SRC
 ** Add User
    API to add a User
 *** API Design
- - URL :: /add_user
+  - URL :: /add_user
   - Method :: POST
   - Success Response ::
     + Code: 200
-  - URL Params ::
+  - URL params ::
     {
       "name":"test",
       "email":"test@gmail.com"
@@ -190,9 +190,11 @@ def logout():
     #+BEGIN_EXAMPLE
      http://localhost:5000/add_user?name=test&email=test@g.com&role=admin
     #+END_EXAMPLE
+
 *** Implementation
 Only Admin has the right to add a user and assign role to him. To add a user =Name= , =Email= and =Role= fields are required.
 Implementation of the =Add User API= is given below.
+
 #+NAME: add_user
 #+BEGIN_SRC python 
 
@@ -336,7 +338,7 @@ def show_roles():
    API for Delete User
 *** API Design
   - URL :: /delete_user
-  - Method :: POST
+  - Method :: DELETE
   - URL Params ::  
     {
        "email" : "test@gmail.com"
@@ -416,7 +418,7 @@ def delete_role():
    API to Update a User
 *** API Design
  - URL :: /update_user
-  - Method :: POST
+  - Method :: PUT
   - URL Params ::  
     {
        "email" : "test@gmail.com"
