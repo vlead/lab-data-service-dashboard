@@ -30,6 +30,9 @@ def index():
     #+BEGIN_EXAMPLE
     http://localhost:5000/login
     #+END_EXAMPLE
+  - Error Response ::
+    + Code: 400 - Google OAuth error
+    + Code: 401 - HTTP error
 *** =Login= API
     When user clicks on =login= button from f/e it will invoke =/login= api and
     thereby it will forward request to =google=. User must sign in using it's 
@@ -98,7 +101,6 @@ def login():
 @api.route('/gCallback')
 def callback():
     if current_user is not None and current_user.is_authenticated:
-        print "I am here :)"
         return redirect("/")
     if 'error' in request.args:
         if request.args.get('error') == 'access_denied':
@@ -113,28 +115,30 @@ def callback():
                 Auth.TOKEN_URI,
                 client_secret=Auth.CLIENT_SECRET,
                 authorization_response=request.url)
-        except HTTPError:
-            return 'HTTPError occurred.'
+        except:
+            return jsonify(success=False, message="HTTP connectivity error"), 401
+
         google = get_google_auth(token=token)
         resp = google.get(Auth.USER_INFO)
         data = resp.json()
         if resp.status_code == 200:
             email = data['email']
             user = User.query.filter_by(email=email).first()
+
             if user is None:
-                user = User()
-                user.email = email
-                user.role = "guest"
-                user.name = data['name']
-                db.session.add(user)
-                role_list = Roles.query.filter_by(role_name=user.role).first()
-                if role_list is not None:
-                    db.session.commit()
-                else:
-                    return jsonify(success=False, message="Role not available"), 400
+                return render_template("auth_req.html")
+
             login_user(user)
-            return redirect("/")    
-        return 'Could not fetch your information.'
+ 
+            if (user.role == "admin"):
+                session['type'] = 'admin'
+            elif (user.role == "guest"):
+                session['type'] = 'guest'
+            else:
+                return render_template("auth_req.html")
+            return redirect('/')    
+        
+        return  jsonify(success=False, message="Couldn't fetch information"), 400
 #+END_SRC
 
 *** Google OAuth Credentials
@@ -165,6 +169,8 @@ class goauth:
   - URL Params ::  None
   - Success Response ::
     + Code: 200
+  - Error Response ::
+    + Code: 400 - No user in session
   - Example ::
     #+BEGIN_EXAMPLE
     http://localhost:5000/logout
@@ -184,11 +190,11 @@ def logout():
             session.clear()
             return redirect("/")
         except:
-            msg = {"status": "failure", 
-                       "msg": "Some Error Occured, Try Again"}
-            return jsonify(msg)
+            return jsonify(success=False, message="No session present"), 400
+
     else:
         return redirect("/")
+
 #+END_SRC
 ** Add User
    API to add a User
@@ -197,6 +203,8 @@ def logout():
   - Method :: POST
   - Success Response ::
     + Code: 200
+  - Error Response ::
+    + Code: 400
   - URL params ::
     {
       "name":"test",
@@ -257,6 +265,7 @@ def create_user():
         return jsonify(success=False, message="This email already exists"), 500
 
     return jsonify(success=True)
+
 
 #+END_SRC
 
@@ -418,6 +427,8 @@ API to add a role
   - Method :: POST
   - Success Response ::
     + Code: 200
+  - Error Response ::
+    + Code: 400
   - URL Params ::
     {
       "role_name":"admin"
@@ -531,7 +542,6 @@ The implementation is given below.
 
 @mod_users.route('/users', methods=['GET'])
 @login_required
-@requires_admin_auth
 def show_users():
 	users = User.query.all()
 	allusers = []
@@ -626,7 +636,6 @@ Implementation of =show role= API is given below
 #+BEGIN_SRC python
 @mod_users.route('/roles', methods=['GET'])
 @login_required	
-@requires_admin_auth
 def show_roles():
     roles = Roles.query.all()
     allroles = []
@@ -701,6 +710,8 @@ class TestShowRole(TestCase):
     }
   - Success Response ::
     + Code: 200
+  - Error Response ::
+    + Code: 400
   - Example ::
     #+BEGIN_EXAMPLE
     http://localhost:5000/delete_user?email=test@gmail.com
@@ -718,9 +729,17 @@ def delete_user():
         email = request.args['user_email']
     except KeyError as e:
         return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-    user_todel = User.query.filter(User.email==email).first()
+    
+    
+    user = User.query.filter(User.email==email)
+    user_todel = user.first() 
+    
     if user_todel is None:
         return jsonify(success=False, message="This email does not exists"), 400
+    elif (user_todel == current_user):
+    	return jsonify(success=False, message="This is not an valid operation"), 400
+    elif (user_todel.role == 'admin' and len(user) == 1):
+    	return jsonify(success=False, message="At least one admin must be present"), 400
 
     db.session.delete(user_todel) 
     try:
@@ -728,6 +747,7 @@ def delete_user():
     except IntegrityError as e:
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
+
 
 #+END_SRC
 *** Test Cases
@@ -822,6 +842,8 @@ class TestDeleteUser(TestCase):
     }
   - Success Response ::
     + Code: 200
+  - Error Response ::
+    + Code: 400
   - Example ::
     #+BEGIN_EXAMPLE
     http://localhost:5000/delete_role?role_name=admin
@@ -834,8 +856,8 @@ class TestDeleteUser(TestCase):
 #+BEGIN_SRC python
 
 @mod_users.route('/delete_role', methods=['POST'])
-@login_required	
-@requires_admin_auth
+@login_required
+@requires_admin_auth	
 def delete_role():
     try:
         role_name = request.args['role_name']
@@ -846,8 +868,12 @@ def delete_role():
         return jsonify(success=False, message="No role provided"), 400
 
     role_todel = Roles.query.filter(Roles.role_name==role_name).first()
+    
     if role_todel is None:
         return jsonify(success=False, message="This role does not exists"), 400
+    elif (role_todel == 'admin'):
+    	return jsonify(success=False, message="You cannot delete this role"), 400
+    
     db.session.delete(role_todel)
     try:
         db.session.commit()
@@ -929,6 +955,8 @@ class TestDeleteRole(TestCase):
     }
   - Success Response ::
     + Code: 200
+  - Error Response ::
+    + Code: 400
   - Example ::
     #+BEGIN_EXAMPLE
     http://localhost:5000/update_user?email=test@gmail.com&new_email=test1&gmail.com&new_name=test2&new_role=admin
@@ -971,6 +999,10 @@ def update_user():
     check_role = Roles.query.filter(Roles.role_name==new_role).first()
     if check_role is None:
         return jsonify(success=False, message="Role doesn't exist"), 400
+    elif (check_role.role == 'admin' and check_role != current_user ):
+        return jsonify(success=False, message="You cannot edit another admin"), 400    
+
+
     user_toupdate.name = new_name
     user_toupdate.email = new_email
     user_toupdate.role = new_role
@@ -1107,82 +1139,478 @@ class TestUpdateUsers(TestCase):
 This is the HTML code for Login page
 #+NAME: login_page
 #+BEGIN_SRC html :tangle templates/login.html
+<!DOCTYPE html>
 <html>
 <head>
-<title> LOGIN </title>
-<meta name="google-signin-client_id" content="322635468838-51ldl2n1dngsfsrtmv22lk4qi2so75e6.apps.googleusercontent.com">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700|Nosifer">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="../static/css/style.css" rel="stylesheet">
+    <script src="static/js/login.js"></script>
 </head>
 <body>
-
-<form id="form">
-Enter your Email:
-<input type="text" name="email" id="email"/>
-<input type="button" value ="Login "class="btn btn-primary" onclick="check_user('{{auth_url}}')"/>
-</form>
-<br/>
-<button type="button" class="btn btn-primary" onclick="location.href='{{auth_url}}';">Login</button>
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1>WELCOME</h1>
+            <h3>TO</h3>
+            <h2>LAB DATA SERVICE</h2>
+            <br>
+            <a href="{{auth_url}}" class="btn btn-dark btn-lg">LOGIN</a>
+        </div>
+    </header>
 </button>
+
+</body>
+</html>
+#+END_SRC
+
+** Guest Home
+#+NAME: guest_home
+#+BEGIN_SRC html :tangle templates/guest_home.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HOME</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="static/js/guest.js"></script>
+    <link href="../static/css/style.css" rel="stylesheet">
+
+
+</head>
+<body>
+    <div class="wrapper">
+    <header class="main-header">    
+      <nav class="navbar navbar navbar-static-top  navbar-inverse">
+      <!-- Sidebar toggle button-->
+        <a href="{{ data['email'] }}" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav navbar-right">
+            <!-- Messages: style can be found in dropdown.less-->     
+            <!-- User Account: style can be found in dropdown.less -->
+            <li class="dropdown user dropdown-menu-right user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="col-sm-4">{{data['name']}}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  <p> 
+                    {{data['email']}}
+                  </p>
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="/" class="btn btn-default btn-flat">Home</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        
+        </div>
+      
+      </nav>
+    </header>  
+<!--
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="side-header">MAIN NAVIGATION</li>
+        
+          <ul class="">
+               <li> <a  href="/inactive-list">GET LABS</a>                            </li>       
+               <li> <a  href='/active-list'>GET LAB</a>                               </li>         
+               <li> <a  href='/view-student'> GET LAB By Institute</a>                </li>          
+               <li> <a  href='/view-registration'>GET LAB By Lab Name</a>             </li>        
+               <li> <a  href='/monthly-registration'> GET LAB By Discipline</a>       </li>          
+               <li> <a  href='/reset-password'> GET LAB By Asset</a>                  </li>         
+               <li> <a  href='/add-student-admin'> GET LAB By passing keyword</a>     </li>          
+               <li> <a  href='/update-mess'>GET INSTITUTES</a>                        </li>        
+               <li> <a  href='/change-registration'>GET INSTITUTE By Institute ID</a> </li>             
+               <li> <a  href='/cancel-mess'> GET DISCIPLINES</a>                      </li>             
+               <li> <a  href='/complaints'> GET DISCIPLINE BY Discipline ID</a>       </li>              
+               <li> <a  href='/cancel-mess'> GET EXPERIMENTS</a>                      </li>              
+               <li> <a  href='/cancel-mess'> GET EXPERIMENTS By Experiment ID</a>     </li>                      
+               <li> <a  href='/cancel-mess'> GET SECTIONS</a>                         </li>              
+               <li> <a  href='/cancel-mess'> GET HOSTING INFO</a>                     </li>                  
+               <li> <a  href='/cancel-mess'> GET Integration Status</a>               </li>                
+          </ul>
+        </li>
+      
+      </ul>
+    </section>
+  </aside>
+//-->
+<div class="col-lg-3 col-md-3 col-sm-4">
+  <div class="list-group table-of-contents">
+    <a class="list-group-item" href="/inactive-list">GET LABS</a>
+    <a class="list-group-item" href='/active-list'>GET LAB</a>
+    <a class="list-group-item" href='/view-student'> GET LAB By Institute</a>
+    <a class="list-group-item" href='/view-registration'>GET LAB By Lab Name</a>
+    <a class="list-group-item" href='/monthly-registration'> GET LAB By Discipline</a>
+    <a class="list-group-item" href='/reset-password'> GET LAB By Asset</a>
+    <a class="list-group-item" href='/add-student-admin'> GET LAB By passing keyword</a>
+    <a class="list-group-item" href='/update-mess'>GET INSTITUTES</a>
+    <a class="list-group-item" href='/change-registration'>GET INSTITUTE By Institute ID</a>
+    <a class="list-group-item" href='/cancel-mess'> GET DISCIPLINES</a>
+    <a class="list-group-item" href='/complaints'> GET DISCIPLINE BY Discipline ID</a>
+
+    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS</a>
+    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS By Experiment ID</a>
+    <a class="list-group-item" href='/cancel-mess'> GET SECTIONS</a>
+    <a class="list-group-item" href='/cancel-mess'> GET HOSTING INFO</a>
+    <a class="list-group-item" href='/cancel-mess'> GET Integration Status</a>
+  </div>
+</div>
+  <div class = "intro-heading" style="text-align:center">
+  <h3> Hello, {{data['name']}}! </h3>
+  <h4> Email id - {{data['email']}} </h4>
+  <h4> Role - {{data['role']}} </h4>
+  </div>
+</div>
 </body>
 </html>
 
 #+END_SRC
 
-** Homepage
-This is the HTML code for Homepage.
-#+NAME: home_page
-#+BEGIN_SRC html :tangle templates/index.html
+** Admin Home
+#+NAME: admin_home
+#+BEGIN_SRC html :tangle templates/admin_home.html
+<!DOCTYPE html>
 <html>
 <head>
-<title> WELCOME </title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+    <title>HOME</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="static/js/guest.js"></script>
+    <link href="../static/css/style.css" rel="stylesheet">
+
+
 </head>
 <body>
-<h1> Hello </h1>
-<button type="button" class="btn btn-primary" onclick="location.href='{{ url_for('users.logout') }}';">Logout</button>
+    <div class="wrapper">
+    <header class="main-header">    
+      <nav class="navbar navbar navbar-static-top  navbar-inverse">
+      <!-- Sidebar toggle button-->
+        <a href="{{ data['email'] }}" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav navbar-right">
+            <!-- Messages: style can be found in dropdown.less-->     
+            <!-- User Account: style can be found in dropdown.less -->
+            <li class="dropdown user dropdown-menu-right user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="col-sm-4">{{data['name']}}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  <p> 
+                    {{data['email']}}
+                  </p>
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="/" class="btn btn-default btn-flat">Home</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        
+        </div>
+      
+      </nav>
+    </header>
+
+<div class="col-lg-3 col-md-3 col-sm-4">
+  <div class="list-group table-of-contents">
+    <a class="list-group-item" href="/inactive-list">GET LABS</a>
+    <a class="list-group-item" href='/active-list'>GET LAB</a>
+    <a class="list-group-item" href='/view-student'> GET LAB By Institute</a>
+    <a class="list-group-item" href='/view-registration'>GET LAB By Lab Name</a>
+    <a class="list-group-item" href='/monthly-registration'> GET LAB By Discipline</a>
+    <a class="list-group-item" href='/reset-password'> GET LAB By Asset</a>
+    <a class="list-group-item" href='/add-student-admin'> GET LAB By passing keyword</a>
+    <a class="list-group-item" href='/view-mess-bill'>ADD LAB</a>
+    <a class="list-group-item" href='/view-student-bill'>UPDATE LAB</a>
+    <a class="list-group-item" href='/update-mess'>GET INSTITUTES</a>
+    <a class="list-group-item" href='/change-registration'>GET INSTITUTE By Institute ID</a>
+    <a class="list-group-item" href='/view_daily_users'>ADD INSTITUTE</a>
+    <a class="list-group-item" href='/cancel-mess'> GET DISCIPLINES</a>
+    <a class="list-group-item" href='/complaints'> GET DISCIPLINE BY Discipline ID</a>
+
+    <a class="list-group-item" href='/cancel-mess'> ADD DISCIPLINE</a>
+    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS</a>
+    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS By Experiment ID</a>
+    <a class="list-group-item" href='/cancel-mess'> ADD EXPERIMENT</a>
+    <a class="list-group-item" href='/cancel-mess'> GET SECTIONS</a>
+    <a class="list-group-item" href='/cancel-mess'> ADD SECTION</a>
+    <a class="list-group-item" href='/cancel-mess'> GET HOSTING INFO</a>
+    <a class="list-group-item" href='/cancel-mess'> DELETE LAB</a>
+    <a class="list-group-item" href='/cancel-mess'> ADD Hosting Info</a>
+    <a class="list-group-item" href='/cancel-mess'> GET Integration Status</a>
+    <a class="list-group-item" href='/cancel-mess'> ADD Integration Status
+	</a>
+  </div>
+</div>
+  <div class = "intro-heading" style="text-align:center">
+  <h3> Hello, {{data['name']}}! </h3>
+  <h4> Email id - {{data['email']}} </h4>
+  <h4> Role - {{data['role']}} </h4>
+  </div>
+</div>
+</body>
+</html>
+
+#+END_SRC
+** Not Autherized Page
+#+NAME: auth_req
+#+BEGIN_SRC html :tangle templates/auth_req.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Autherized</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700|Nosifer">
+
+    <link href="../static/css/style.css" rel="stylesheet">
+</head>
+<body>
+            <section id="auth_req" class="section-space-padding pattern-bg-auth">
+              <div class="container auth-container">
+                    
+                 <div class="section-title-auth">
+                   <h1><span>OOPs!</span></h1>
+                  </div>
+                        <div class="auth-us">
+                          <p>It seems that the email with you tried to log in our system was not registered in our database and if it was there then your data seems to be misplaced, so you are not autherized to proceed further. Inorder to register yourself or sort the problem with your account, send us an email to admin@gmail.com specifying your details, we will be contacting you shortly. </p>
+                        </div>
+                    </div>
+                     
+                    </div>
+                </div>
+            </section>
+</body>
+</html>
+#+END_SRC
+** Error 404 page
+#+NAME: 404
+#+BEGIN_SRC html :tangle templates/404.html
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Error 404</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='404/styles/404.css')}}">
+</head>
+<body>
+<div class="wrapper row2">
+  <div id="container" class="clear">
+    <section id="fof" class="clear">
+      <div class="positioned">
+        <div class="hgroup">
+          <h1>Congratulations!</h1>
+          <h2>You Found The End Of Our Little Infinite Universe.</h2>
+        </div>
+        <p>Jokes Aside<br/>
+          The Page You Requested Could Not Be Found On Our Server</p>
+                </div>
+    </section>  
+  </div>
+</div>
+
 </body>
 </html>
 #+END_SRC
 * JS
-** Ajax
+** login
 This function checks whether the user trying to login
 is there is the database or not.If the user is there
 in the database, page is redirected to google,else
 error is shown that user is not availed to LDS.
-#+NAME: ajax
-#+BEGIN_SRC javascript :tangle static/js/main.js
+#+NAME: login
+#+BEGIN_SRC javascript :tangle static/js/login.js
 
-var check_user = function (link)
-{
-	var user_email = document.getElementById('form');
-	console.log(user_email.elements[0].value)
-	$.ajax({
-url : 'https://localhost:5000/check_valid',
-method: "POST",
-data: {
-email:user_email.elements[0].value
-},
-async:false,
-success: function(response){
-console.log(response.success)
-var resp = response;
-if(resp.success)
-{
-window.location = link;
-console.log('yeayy success!');
-}
-else {
-window.location = "https://localhost:5000/login"	
-console.log('User is not availed to LDS');
-}
-},
+#+END_SRC
+** guest
+This function checks whether the user trying to login
+is there is the database or not.If the user is there
+in the database, page is redirected to google,else
+error is shown that user is not availed to LDS.
+#+NAME: guest
+#+BEGIN_SRC javascript :tangle static/js/guest.js
 
-});
-return user_email;
+#+END_SRC
+
+* CSS
+#+NAME: style
+#+BEGIN_SRC css :tangle static/css/style.css
+/*
+   Table Of Content
+   
+   1. Not Autherized Page
+   2. Login
+   3. Guest Home
+   4. Admin Home
+
+*/
+
+.auth-us {
+    background-color: #ffffff;
+    padding-top: 100px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 1px 2px 0px rgba(78, 78, 78, 0.45);
+    position: absolute;
+    top: 30%;
+    bottom: 40%;
+    left: 25%;
+    right: 25%;
+
+    margin: auto;
+}
+
+.auth-us p {
+    padding-left: 40px;
+    padding-right: 40px;
+    color: #808080
+    font-size: 18px;
+    text-align: center;
+}
+
+.auth-us:hover {
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 8px 15px 0px rgba(90, 91, 95, 0.33);
+}
+
+.auth-container {
+    position:fixed;
+    padding:0;
+    margin:0;
+    width: 100%;
+    height: 100%;
+    background: url(../images/bg/auth_req_bg.png);
+    background-repeat: repeat;
+}
+
+.section-title-auth {
+    padding-top:3%;
+    font-size: 42px;
+    text-align: center;
+}
+
+.header {
+    display: table;
+    position:fixed;
+    padding:0;
+    margin:0;
+    width: 100%;
+    height: 100%;
+    background: url(../images/bg/login_bg.jpg) no-repeat center center scroll;
+    background-size: cover;
+}
+
+.text-vertical-center {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.text-vertical-center h1 {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 10px;
+    font-size: 4.5em;
+    font-weight: 800;
+}
+
+.text-vertical-center h2 {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 10px;
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+.text-vertical-center h3 {
+    margin: 0;
+    padding: 0; 
+    padding-bottom: 10px;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.btn-dark {
+    border-radius: 0;
+    color: #fff;
+    background-color: #999999
+}
+
+.btn-dark:hover, 
+.btn-dark:focus,
+.btn-dark:active {
+    color: #fff;
+    background-color: #808080
+}
+
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+.btn-default:active:hover,
+.btn-default.active:hover,
+.open > .dropdown-toggle.btn-default:hover,
+.btn-default:active:focus,
+.btn-default.active:focus,
+.open > .dropdown-toggle.btn-default:focus,
+.btn-default:active.focus,
+.btn-default.active.focus,
+.open > .dropdown-toggle.btn-default.focus {
+  color: #333;
+  background-color: #d4d4d4;
+  border-color: #8c8c8c;
+}
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+  background-image: none;
+}
+
+.dropdown {
+  position: relative;
+}
+.dropdown-toggle:focus {
+  outline: 0;
+}
+
+.intro-heading {
+    padding-top: 15%
+
 }
 #+END_SRC
 * Infra                                                         :boilerplate:
@@ -1200,7 +1628,7 @@ from flask_login import LoginManager, login_required, login_user, \
     logout_user, current_user, UserMixin
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
-from app import app, db, login_manager
+from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 from app.users.models import User, Roles
 import os
 import json
@@ -1211,7 +1639,7 @@ from sqlalchemy.exc import IntegrityError
 api = Blueprint('users', __name__)
 
 #+end_src
-
+    
 
 ** tests
 *** Imports 
@@ -1221,7 +1649,7 @@ api = Blueprint('users', __name__)
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json    
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
@@ -1230,9 +1658,9 @@ import datetime
 from flask_login import LoginManager
 from app.users.models import User, Roles
 from config import basedir
-from app import app, db
+from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 import client
-
+from functools import wraps
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
