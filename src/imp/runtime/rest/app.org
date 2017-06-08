@@ -9,18 +9,11 @@
 * Introduction
   The application that runs the FLASK web server
 * INIT FILE
-#+NAME: init
-#+BEGIN_SRC python :tangle app/__init__.py :eval no
-# Import flask and template operators
-from flask import Flask, render_template, request, session, jsonify
-from flask_oauth import OAuth
-#import urllib.parse
-from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
-import os
-import time
-from functools import wraps
-
+This is the __init__.py file in which the app is being configured 
+and also login manager is configured.
+Blueprint =mod_users= is registered in this file.
+#+NAME: configure
+#+BEGIN_SRC python 
 SECRET_KEY = os.urandom(23)
 
 # application.CSRF_SESSION_KEY = os.urandom(13)
@@ -35,12 +28,58 @@ login_manager.login_view = "users.login"
 login_manager.session_protection = "strong"
 oauth = OAuth()
 
-# Sample HTTP error handling
+# Import a module / component using its blueprint handler variable (mod_auth)
+from app.users.controllers import mod_users
+# Register blueprint(s)
+app.register_blueprint(mod_users)
+
+
+#+END_SRC
+
+* Error Handling
+This is error handler function. It returns 404.html file when 
+an error is raised.
+#+NAME: error_handling
+#+BEGIN_SRC python 
 @app.errorhandler(404)
 def handle_404(e):
     path = request.path
     return render_template('404.html'), 404
 
+#+END_SRC
+* Roles
+** Admin Authorisation
+This function checks if the user logged in is =Admin= or not.
+If no user is logged in, it return a JSON object with a message
+=Unauthorized= and success as =False=.
+If the user logged in is guest , it returns a JSON object with
+a message and success as =False=.
+If the user logged in is admin, function becomes true.
+#+NAME: admin_auth
+#+BEGIN_SRC python
+
+def requires_admin_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'type' not in session:
+            return jsonify(message="Unauthorized", success=False), 401
+        if session['type'] != 'admin':
+            return jsonify(message="Sorry,you are not admin. You Dont have access to this", success=False), 401
+        return f(*args, **kwargs)
+    return decorated
+
+#+END_SRC
+
+** Guest Authorisation
+
+This function checks if the user logged in is =Guest= or not.
+If no user is logged in, it return a JSON object with a message
+=Unauthorized= and success as =False=.
+If the user logged in has another role , it returns a JSON object with
+a message and success as =False=.
+If the user logged in is guest, function becomes true.
+#+NAME: guest_auth
+#+BEGIN_SRC python
 def requires_guest_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -51,29 +90,20 @@ def requires_guest_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-def requires_admin_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if 'type' not in session:
-            return jsonify(message="Unauthorized", success=False), 401
-        if session['type'] != 'admin':
-            return jsonify(message="Unauthorized", success=False), 401
-        return f(*args, **kwargs)
-    return decorated
+#+END_SRC
 
-# Import a module / component using its blueprint handler variable (mod_auth)
-from app.users.controllers import mod_users
-# Register blueprint(s)
-app.register_blueprint(mod_users)
+* Create Database
+Database is created. The following code shows the database
+being created.
+#+NAME: create_database
+#+BEGIN_SRC python
 
 # Build the database:
 # This will create the database file using SQLAlchemy
 db.create_all()
-
 time.sleep(1)
 
 #+END_SRC
-
 * SSL
 ** SSL_CRT
 #+NAME: ssl_crt
