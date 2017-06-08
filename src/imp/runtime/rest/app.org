@@ -7,13 +7,13 @@
 #+OPTIONS: ^:nil
 
 * Introduction
-  The application that runs the FLASK web server
+  The application that runs the FLASK Web App.
 * INIT FILE
 This is the __init__.py file in which the app is being configured 
 and also login manager is configured.
 Blueprint =mod_users= is registered in this file.
 #+NAME: configure
-#+BEGIN_SRC python 
+#+BEGIN_SRC python :tangle __init__.py :eval no :noweb yes
 SECRET_KEY = os.urandom(23)
 
 # application.CSRF_SESSION_KEY = os.urandom(13)
@@ -29,9 +29,9 @@ login_manager.session_protection = "strong"
 oauth = OAuth()
 
 # Import a module / component using its blueprint handler variable (mod_auth)
-from app.users.controllers import mod_users
+from app.users.controllers import api
 # Register blueprint(s)
-app.register_blueprint(mod_users)
+app.register_blueprint(api)
 
 
 #+END_SRC
@@ -43,9 +43,7 @@ an error is raised.
 #+BEGIN_SRC python 
 @app.errorhandler(404)
 def handle_404(e):
-    path = request.path
     return render_template('404.html'), 404
-
 #+END_SRC
 * Roles
 ** Admin Authorisation
@@ -101,7 +99,7 @@ being created.
 # Build the database:
 # This will create the database file using SQLAlchemy
 db.create_all()
-time.sleep(1)
+time.sleep(2)
 
 #+END_SRC
 * SSL
@@ -165,7 +163,7 @@ TGCX+IRmSSjuRT8tWI5oIuCW01MdvXB04jW2mLOyRQPDFFJ69tcrdsMpdyYjnIfe
 #+END_SRC
 ** SSL_DEVCERT
 #+NAME: ssl_devcert
-#+BEGIN_SRC :tangle cert.py
+#+BEGIN_SRC
 
 from werkzeug.serving import make_ssl_devcert
 make_ssl_devcert('./ssl', host='localhost')
@@ -174,17 +172,16 @@ make_ssl_devcert('./ssl', host='localhost')
 * Run Server
 #+NAME: run_server
 #+BEGIN_SRC python :tangle run.py
-from app import app, db
+from app import app
 
 if __name__ == '__main__':
-	db.create_all()
 	app.run(host = "localhost", debug = True, ssl_context = ('./ssl.crt', './ssl.key'))
 
 #+END_SRC
 * Imports
-
+  
 #+NAME: imports
-#+BEGIN_SRC python :tangle __init__.py :eval no
+#+BEGIN_SRC python
 # Import flask and template operators
 from flask import Flask, render_template, request, session, jsonify
 from flask_oauth import OAuth
@@ -197,4 +194,13 @@ from functools import wraps
 
 
 #+END_SRC
-* Tangle
+* Tangle 
+
+#+BEGIN_SRC python :tangle __init__.py :eval no :noweb yes
+<<imports>>
+<<configure>>
+<<error_handling>>
+<<admin_auth>>
+<<guest_auth>>
+<<create_database>>
+#+END_SRC
