@@ -216,6 +216,7 @@ Implementation of the =Add User API= is given below.
 #+BEGIN_SRC python 
 @mod_users.route('/add_user', methods=['POST'])
 @login_required
+@requires_admin_auth
 def create_user():
 
     try:
@@ -260,7 +261,7 @@ def create_user():
 #+END_SRC
 
 *** Test Cases
-**** Add a User
+**** Test Add User
 
 #+NAME: test_add_user
 #+BEGIN_SRC python
@@ -284,7 +285,7 @@ class TestAddUser(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_1(self):
+    def test_add_user_1(self):
 		print "test_add_user_1"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -301,7 +302,7 @@ class TestAddUser(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 
-    def test_2(self):
+    def test_add_user_2(self):
         print "test_add_user_2"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -319,7 +320,7 @@ class TestAddUser(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_3(self):
+    def test_add_user_3(self):
         print "test_add_user_3"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -340,7 +341,7 @@ class TestAddUser(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_4(self):
+    def test_add_user_4(self):
         print "test_add_user_4"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -358,7 +359,7 @@ class TestAddUser(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_5(self):
+    def test_add_user_5(self):
         print "test_add_user_5"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -375,7 +376,7 @@ class TestAddUser(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_6(self):
+    def test_add_user_6(self):
         print "test_add_user_6"
         payload = {'name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -392,7 +393,7 @@ class TestAddUser(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_7(self):
+    def test_add_user_7(self):
         print "test_add_user_7"
         payload = {'name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -430,9 +431,9 @@ Admin has the right to add a role thus restricting the access to the LDS servive
 Implementation of the =Add Role= API is given below.
 #+NAME: add_role
 #+BEGIN_SRC python 
-
-@api.route('/add_role', methods=['POST'])
+@mod_users.route('/add_role', methods=['POST'])
 @login_required
+@requires_admin_auth
 def create_role():
     try:
         temp = json.loads(request.data)
@@ -453,10 +454,12 @@ def create_role():
     except IntegrityError as e:
         return jsonify(success=False, message="This role already exists"), 500
 	
-    return jsonify(success=True))
+    return jsonify(success=True)
+
+
 #+END_SRC
 *** Test Cases
-**** Add a Role
+**** Test Add Role
 #+NAME: test_add_role
 #+BEGIN_SRC python
 class TestAddRole(TestCase):
@@ -479,7 +482,7 @@ class TestAddRole(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_1(self):
+    def test_add_role_1(self):
         print "test_add_role_1"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -488,7 +491,7 @@ class TestAddRole(TestCase):
         
         self.assertEqual(response.status_code, 200)
 
-    def test_2(self):
+    def test_add_role_2(self):
         print "test_add_role_2"
         payload = {'role_name': ''}
         headers = {'Content-Type': 'application/json'}
@@ -497,7 +500,7 @@ class TestAddRole(TestCase):
         
         self.assertEqual(response.status_code, 400)    
 
-    def test_3(self):
+    def test_add_role_3(self):
         print "test_add_role_3"
         payload = {'role_name': None}
         headers = {'Content-Type': 'application/json'}
@@ -526,8 +529,9 @@ The implementation is given below.
 #+NAME: show_users
 #+BEGIN_SRC python 
 
-@api.route('/users', methods=['GET'])
+@mod_users.route('/users', methods=['GET'])
 @login_required
+@requires_admin_auth
 def show_users():
 	users = User.query.all()
 	allusers = []
@@ -535,10 +539,9 @@ def show_users():
 		temp = i.to_dict()
 		allusers.append(temp)
 	return jsonify(success=True,users=allusers)
-
 #+END_SRC
 *** Test Cases
-**** Show users
+**** Test Show users
 #+NAME: test_show_users
 #+BEGIN_SRC python
 class TestShowUsers(TestCase):
@@ -561,7 +564,7 @@ class TestShowUsers(TestCase):
 		db.session.remove()
 		db.drop_all()
 		
-	def test_1(self):
+	def test_show_user_1(self):
 		print "test_show_user_1"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -580,7 +583,7 @@ class TestShowUsers(TestCase):
 		
 		self.assertEqual(response.status_code, 200)
 
-	def test_2(self):
+	def test_show_user_2(self):
 		print "test_show_user_2"
 		payload = {'name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -599,7 +602,7 @@ class TestShowUsers(TestCase):
 		response = self.client.get("/users", headers=headers)
 		self.assertEqual(response.status_code, 200)
 
-	def test_3(self):
+	def test_show_user_3(self):
 		print "test_show_user_3"
 		response = self.client.get("/users")
 		self.assertEqual(response.status_code, 200)
@@ -621,20 +624,21 @@ This API returns the list of all the roles in the LDS.
 Implementation of =show role= API is given below
 #+NAME: show_roles
 #+BEGIN_SRC python
-
-@api.route('/roles', methods=['GET'])
-@login_required
+@mod_users.route('/roles', methods=['GET'])
+@login_required	
+@requires_admin_auth
 def show_roles():
-	roles = Roles.query.all()
-	allroles = []
-	for i in roles:
-		temp = i.to_dict()
-		allroles.append(temp)
-	return jsonify(success=True,roles=allroles)
+    roles = Roles.query.all()
+    allroles = []
+    for i in roles:
+        temp = i.to_dict()
+        allroles.append(temp)
+    return jsonify(success=True,roles=allroles)
+
 #+END_SRC
 
 *** Test Cases
-**** Show Roles
+**** Test Show Roles
 #+NAME: test_show_roles
 #+BEGIN_SRC python
 class TestShowRole(TestCase):
@@ -657,7 +661,7 @@ class TestShowRole(TestCase):
 		db.session.remove()
 		db.drop_all()
 
-	def test_1(self):
+	def test_show_roles_1(self):
 		print "test_show_roles_1"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -668,7 +672,7 @@ class TestShowRole(TestCase):
 		
 		self.assertEqual(response.status_code, 200)
 
-	def test_2(self):
+	def test_show_roles_2(self):
 		print "test_show_roles_2"
 		payload = {'role_name': ''}
 		headers = {'Content-Type': 'application/json'}
@@ -679,7 +683,7 @@ class TestShowRole(TestCase):
 		
 		self.assertEqual(response.status_code, 200)	
 
-	def test_3(self):
+	def test_show_roles_3(self):
 		print "test_show_roles_3"
 		
 		response = self.client.get("/roles")
@@ -706,9 +710,9 @@ class TestShowRole(TestCase):
 
 #+NAME: delete_user
 #+BEGIN_SRC python 
-
-@api.route('/delete_user', methods=['POST'])
+@mod_users.route('/delete_user', methods=['POST'])
 @login_required
+@requires_admin_auth
 def delete_user():
     try:
         email = request.args['user_email']
@@ -725,10 +729,9 @@ def delete_user():
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
 
-@mod_users.route('/delete_role', methods=['POST'])
 #+END_SRC
 *** Test Cases
-**** Delete a user
+**** Test Delete user
 #+NAME: test_delete_user
 #+BEGIN_SRC python
 class TestDeleteUser(TestCase):
@@ -751,7 +754,7 @@ class TestDeleteUser(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_1(self):
+    def test_delete_role_1(self):
 		print "test_delete_role_1"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -771,7 +774,7 @@ class TestDeleteUser(TestCase):
 		
 		self.assertEqual(response.status_code, 200)
 
-    def test_2(self):
+    def test_delete_role_2(self):
 		print "test_delete_role_2"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -790,7 +793,7 @@ class TestDeleteUser(TestCase):
 		
 		self.assertEqual(response.status_code, 400)	
 
-    def test_3(self):
+    def test_delete_role_3(self):
 		print "test_delete_role_3"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -830,8 +833,9 @@ class TestDeleteUser(TestCase):
 #+NAME: delete_role
 #+BEGIN_SRC python
 
-@api.route('/delete_role', methods=['POST'])
+@mod_users.route('/delete_role', methods=['POST'])
 @login_required	
+@requires_admin_auth
 def delete_role():
     try:
         role_name = request.args['role_name']
@@ -851,11 +855,10 @@ def delete_role():
         return jsonify(success=False, message="could not delete"), 500
     return jsonify(success=True)
 
-
 #+END_SRC
 
 *** Test Cases
-**** Delete a role
+**** Test Delete role
 #+NAME: test_delete_role
 #+BEGIN_SRC python
 class TestDeleteRole(TestCase):
@@ -878,7 +881,7 @@ class TestDeleteRole(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_1(self):
+    def test_delete_user_1(self):
         print "test_delete_role_1"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -889,7 +892,7 @@ class TestDeleteRole(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_2(self):
+    def test_delete_user_2(self):
 		print "test_delete_role_2"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -900,7 +903,7 @@ class TestDeleteRole(TestCase):
 
 		self.assertEqual(response.status_code, 400)
 
-    def test_3(self):
+    def test_delete_user_3(self):
         print "test_delete_role_3"
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
@@ -938,8 +941,9 @@ class TestDeleteRole(TestCase):
 #+NAME: update_user
 #+BEGIN_SRC python
 
-@api.route('/update_user', methods=['POST'])
+@mod_users.route('/update_user', methods=['PUT'])
 @login_required
+@requires_admin_auth
 def update_user():
 
     try:
@@ -976,13 +980,13 @@ def update_user():
     except IntegrityError as e:
         return jsonify(success=False, message="Could not update the user"), 500
 
-    return jsonify(success=True))
+    return jsonify(success=True)
 #+END_SRC
 
 								:boilerplate:
 
 *** Test Cases
-**** Update a user
+**** Test Update user
 #+NAME: test_update_user
 #+BEGIN_SRC python
 class TestUpdateUsers(TestCase):
@@ -1005,7 +1009,7 @@ class TestUpdateUsers(TestCase):
 		db.session.remove()
 		db.drop_all()
 
-	def test_1(self):
+	def test_update_user_1(self):
 		print "test_update_user_1"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -1036,7 +1040,7 @@ class TestUpdateUsers(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 
-	def test_2(self):
+	def test_update_user_2(self):
 		print "test_update_user_2"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -1067,7 +1071,7 @@ class TestUpdateUsers(TestCase):
 
 		self.assertEqual(response.status_code, 400)
 
-	def test_3(self):
+	def test_update_user_3(self):
 		print "test_update_user_3"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
@@ -1102,7 +1106,7 @@ class TestUpdateUsers(TestCase):
 ** Login
 This is the HTML code for Login page
 #+NAME: login_page
-#+BEGIN_SRC :tangle templates/login.html
+#+BEGIN_SRC html :tangle templates/login.html
 <html>
 <head>
 <title> LOGIN </title>
@@ -1129,7 +1133,7 @@ Enter your Email:
 ** Homepage
 This is the HTML code for Homepage.
 #+NAME: home_page
-#+BEGIN_SRC :tangle templates/index.html
+#+BEGIN_SRC html :tangle templates/index.html
 <html>
 <head>
 <title> WELCOME </title>
@@ -1150,7 +1154,7 @@ is there is the database or not.If the user is there
 in the database, page is redirected to google,else
 error is shown that user is not availed to LDS.
 #+NAME: ajax
-#+BEGIN_SRC :tangle static/main.js
+#+BEGIN_SRC javascript :tangle static/js/main.js
 
 var check_user = function (link)
 {
