@@ -16,6 +16,16 @@
   :CUSTOM_ID: design_diagram
   :END:    
 
+  Following diagram represents the lab-data-service-dashboard design.
+  This diagram has the following 3 sections:
+  1) *Lab Data Service* : A Micro Service which provides the labs
+     information via =REST= API's
+  2) *User Authentication/Authorization Service* : A Micro Service which
+     manages all the users and their roles in the system. Also provides the
+     google authentication for user to login and logout.
+  3) *Web Interface/Front End* : A Web Interface to view all the labs data
+     based on a given role.
+
 #+BEGIN_HTML
 <img src="https://docs.google.com/drawings/d/1iZ0Sh5fgZppa67K10omAycqDDtzPnC9nIW8K4mw4L5o/pub?w=960&h=720">
 <p align="center"> lab data service dashboard design diagram </p>
