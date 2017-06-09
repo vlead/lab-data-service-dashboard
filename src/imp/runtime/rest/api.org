@@ -290,7 +290,8 @@ class TestAddUser(TestCase):
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
 		
-		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+		response = self.client.post("/add_role", data=json.dumps(payload), 
+                                        headers=headers)
 		payload = {
                     'name': 'Test1',
 		            'email': 'test1@gmail.com',
@@ -298,7 +299,8 @@ class TestAddUser(TestCase):
 		          }
 		headers = {'Content-Type': 'application/json'}
 
-		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		response = self.client.post("/add_user", data=json.dumps(payload), 
+                                        headers=headers)
 
 		self.assertEqual(response.status_code, 200)
 
@@ -307,7 +309,8 @@ class TestAddUser(TestCase):
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
         
-        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
     
         payload = {
                     'name': 'Test2',
@@ -316,7 +319,8 @@ class TestAddUser(TestCase):
                   }
         headers = {'Content-Type': 'application/json'}
 
-        response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_user", data=json.dumps(payload),
+                                        headers=headers)
 
         self.assertEqual(response.status_code, 400)
 
@@ -325,7 +329,8 @@ class TestAddUser(TestCase):
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
         
-        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
     
         payload = {
                     'email': 'test3@gmail.com',
@@ -1237,7 +1242,8 @@ config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }#+end_src
+    }
+#+end_src
 
 *** Running tests
 #+NAME: run_test_cases
@@ -1273,12 +1279,12 @@ if __name__ == '__main__':
 ** tests
 #+BEGIN_SRC python :tangle test_api.py :eval no :noweb yes
 <<imports_for_tests>>
-<<test_add_user
-<<test_add_role
-<<test_show_users
-<<test_show_roles
-<<test_delete_user
-<<test_delete_role
-<<test_update_user
+<<test_add_user>>
+<<test_add_role>>
+<<test_show_users>>
+<<test_show_roles>>
+<<test_delete_user>>
+<<test_delete_role>>
+<<test_update_user>>
 <<run_test_cases>>
 #+end_src
