@@ -11,6 +11,7 @@
 * Models
 ** Roles
    This is the model of =Roles=.
+   The Roles table stores the list of all roles. It has only 1 column to store  =role_name= of type string.
 #+NAME: role-model
 #+BEGIN_SRC python 
 
@@ -31,7 +32,10 @@ class Roles(db.Model, UserMixin):
         }
 #+END_SRC
 ** User
-   This is the model of =User=
+   This is the model of =User=.
+   The User table stores the list of all users. It has 4 Columns, 
+=id= of type Integer, =email= of type string, =name= of type string and 
+=role= of type Entity respectively.
 #+NAME: user-model
 #+BEGIN_SRC python
 class User(db.Model, UserMixin):
