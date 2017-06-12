@@ -1620,7 +1620,7 @@ error is shown that user is not availed to LDS.
 #+END_SRC
 * Infra                                                         :boilerplate:
 
-
+  
 ** sources
 *** Imports 
 #+name: imports_for_sources
@@ -1658,19 +1658,29 @@ from flask import Flask, Blueprint, json, render_template, request, session, jso
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
-from app.users.controllers import mod_users
 import datetime
-from flask_login import LoginManager
-from app.users.models import User, Roles
-from config import basedir
-from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 import client
 from functools import wraps
+from flask_login import LoginManager
+#from imp import runtime
+#from imp.runtime.rest import api
+from imp.runtime.rest.api import api as api
+from imp.runtime.rest import db
+from imp.runtime.rest.db import User, Roles
+from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+
+
+#from config import basedir
+#from app.users.controllers import mod_users
+#from app.users.models import User, Roles
+#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
+   	}
 #+end_src
 
 *** Running tests
