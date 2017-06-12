@@ -1,0 +1,205 @@
+#+TITLE: The Flask Web Server
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../../org-templates/level-3.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+  The application that runs the FLASK Web App.
+* INIT FILE
+This is the __init__.py file in which the app is being configured 
+and also login manager is configured.
+Blueprint =mod_users= is registered in this file.
+#+NAME: configure
+#+BEGIN_SRC python 
+SECRET_KEY = os.urandom(23)
+
+# application.CSRF_SESSION_KEY = os.urandom(13)
+# Define the WSGI application object
+
+app = Flask(__name__)
+app.config.from_object("config")
+app.config['TRAP_HTTP_EXCEPTIONS']=True
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = "users.login"
+login_manager.session_protection = "strong"
+oauth = OAuth()
+
+# Import a module / component using its blueprint handler variable (mod_auth)
+from app.users.controllers import api
+# Register blueprint(s)
+app.register_blueprint(api)
+
+
+#+END_SRC
+
+* Error Handling
+This is error handler function. It returns 404.html file when 
+an error is raised.
+#+NAME: error_handling
+#+BEGIN_SRC python
+@app.errorhandler(404)
+def handle_404(e):
+    return render_template('404.html'), 404
+#+END_SRC
+* Roles
+** Admin Authorisation
+This function checks if the user logged in is =Admin= or not.
+If no user is logged in, it return a JSON object with a message
+=Unauthorized= and success as =False=.
+If the user logged in is guest , it returns a JSON object with
+a message and success as =False=.
+If the user logged in is admin, function becomes true.
+#+NAME: admin_auth
+#+BEGIN_SRC python  
+
+def requires_admin_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'type' not in session:
+            return jsonify(message="Unauthorized", success=False), 401
+        if session['type'] != 'admin':
+            return jsonify(message="Sorry,you are not admin. You Dont have access to this", success=False), 401
+        return f(*args, **kwargs)
+    return decorated
+
+#+END_SRC
+
+** Guest Authorisation
+
+This function checks if the user logged in is =Guest= or not.
+If no user is logged in, it return a JSON object with a message
+=Unauthorized= and success as =False=.
+If the user logged in has another role , it returns a JSON object with
+a message and success as =False=.
+If the user logged in is guest, function becomes true.
+#+NAME: guest_auth
+#+BEGIN_SRC python
+def requires_guest_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'type' not in session:
+            return jsonify(message="Unauthorized", success=False), 401
+        if session['type'] != 'guest':
+            return jsonify(message="Unauthorized", success=False), 401
+        return f(*args, **kwargs)
+    return decorated
+
+#+END_SRC
+
+* Create Database
+Database is created. The following code shows the database
+being created.
+#+NAME: create_database
+#+BEGIN_SRC python 
+# Build the database:
+# This will create the database file using SQLAlchemy
+db.create_all()
+time.sleep(2)
+
+#+END_SRC
+* SSL
+** SSL_CRT
+#+NAME: ssl_crt
+#+BEGIN_SRC :tangle ssl.crt
+
+-----BEGIN CERTIFICATE-----
+MIIC7jCCAdYCCEYW4UVBYuwAMA0GCSqGSIb3DQEBCwUAMDQxHDAaBgNVBAMME1Vu
+dHJ1c3RlZCBBdXRob3JpdHkxFDASBgNVBAoMC1NlbGYtU2lnbmVkMB4XDTE3MDYw
+NjA2NTAzN1oXDTE4MDYwNjA2NTAzN1owPzEhMB8GA1UEAwwYKi5sb2NhbGhvc3Qv
+Q049bG9jYWxob3N0MRowGAYDVQQKDBFEdW1teSBDZXJ0aWZpY2F0ZTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAL6IHgZE5wrQzIGEWNbb99qXKMFfB/S6
+5sMH/LCvc2r9ihkhjldFoRxaV87XlVXhvazlQRBgJfso69vDkCtvrQbs0RnZKR+2
+fiq5cG7zoD0Lk0XQ+WE5OqwEW5USDnU4+JA5vWtAvG/9+bFMwEYVeq/wDtMF0x15
+q8JVR60rALx9E+MWGhvhbf7DirKlCD7Q48GCNe9DqDprt2ytQewMBFx23NcprqyU
+3iXSSEsSW5AJcs8IanswhE8xFPM5FziqPmzbHwrrGl4FQ7OFsfYM4nWvdcCyMJXF
+Hd6pqTTRMSBCCYYVcTzsEr4Te3vjURn0cCJMD0u9YPbhamSCjFA8zc0CAwEAATAN
+BgkqhkiG9w0BAQsFAAOCAQEAMv8v/IPl0fibJODiKMIBahlh7VymZ2tYM8p0Xjxy
+WvwcqYz1zhAgAR5/sxTXgbFr9GR4mbS9oBfDFq708OUkLhEKzRXJ/XsSIrPd5m5u
+eg0e6xFD19UAd+SySDruIDaeRbrdh/Glg2BD5JOn/wwbDH9rVFMdxHFP2gMOmrrC
+/ovj5bV0MkWmLtri6Urma9gDTSFkpU1xzFOwvYZZIO5jJPRtNFc3XnEADlpFLWOB
+O3kJN56IiLAOu8R1vxS0G6x0nwVFf21VO3E68PCmHikAL1SnBbg5jMgjyoJo+NZD
+hwPYbVJbbxeD6QvxsPosO91JVvPXQbeCLMrYM2+/bZUN5g==
+-----END CERTIFICATE-----
+
+#+END_SRC
+** SSL_KEY
+#+NAME: ssl_key
+#+BEGIN_SRC :tangle ssl.key
+
+-----BEGIN PRIVATE KEY-----
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC+iB4GROcK0MyB
+hFjW2/falyjBXwf0uubDB/ywr3Nq/YoZIY5XRaEcWlfO15VV4b2s5UEQYCX7KOvb
+w5Arb60G7NEZ2Skftn4quXBu86A9C5NF0PlhOTqsBFuVEg51OPiQOb1rQLxv/fmx
+TMBGFXqv8A7TBdMdeavCVUetKwC8fRPjFhob4W3+w4qypQg+0OPBgjXvQ6g6a7ds
+rUHsDARcdtzXKa6slN4l0khLEluQCXLPCGp7MIRPMRTzORc4qj5s2x8K6xpeBUOz
+hbH2DOJ1r3XAsjCVxR3eqak00TEgQgmGFXE87BK+E3t741EZ9HAiTA9LvWD24Wpk
+goxQPM3NAgMBAAECggEAdJJRVGKZvUtMpD12IVcKCQqM2+qpsnkbsN3VI8Dk6+Pd
+t0yJiynFzdQUfy/1ZUstQngtW7iH5GgADkBTl8/G3ELOGHN+LrH39WnpuWiDdHX9
+kCywN2TNWet8oPMgN2Y45fz9wH4mDJsmRuz/gqGno7dLSp74sML9bHPC29dApxEL
+8NbjjEHNnMgRmcMDB2ayjjkmkKloZ4A2XcTgjlvtvoNG5qISs9Og7jKM4tS+HRt0
+k+R/Uj27AHP4SwBobv1rxY+A1CT2tf6YVXmfA/trMPr/4E22wGe98Hcx2frXp5wd
+zG0VF5ddySa/IbYzRSzguJ7Pta9brnCcKEPjosr5IQKBgQD1lQ/yc7AE5SOuK/aZ
+7THPQTVwW6BgVppP80HUaOvL+b6JBm1JwG+s6oe31EN7HyrKerv64Nw+SYAHJTnX
+BaUsCfaju2UtBkKjKeze/KFO4+w0LBR82kFRsElm/SbGIuy7eeGvC2r40sdYGp8g
+Hyplg+aGucPMMnhGwgR5fPTACQKBgQDGnTmeN3CwNqgqTanpetxaQkhV/UNxQXs2
+zIGWHB8QYkD6niuzI8pmTqVj0jRxJZ5CSIgL/KTgYswWbIhun/3fIaqhC55mX9dS
+2AZQwhob4FRR2KoyPAt3ZLhc7Dpqqt9MFy2MrI57FPCyhJVZ90H0xizWPBVlaH2u
+RnwiHkbIpQKBgEOIWDhOA+t0r5kn0cqGZZoeznk1WSbk6c5ukH2+1IjlBrZbpBYR
+6yPb4rJ0lpH3AidoFOVqjGY8hA5y+DLfBIrVupNP5wS4of6IevDe++Tb3IqETKYA
+xtGV7rl5h/4YgI0VeTBPrXz7SYI63+NPbrM30F7gGq2+e0DJ/b0C1bMxAoGAana4
+/gCF3U9PEW4UGF2NZKyHDeD2l+0b2SICjK6CUEv6vNywXBRhWDnsGfgBuG0LykgK
+9TH2R3luIM8IyxPkCAmJ503NGN9jErtNl1iUmkDDsiPMB6V8GAHbeaP/JFJ349fA
+yNlufreY1niPfmw15LmeKzCF35gFVrfdroRAOSkCgYAlAz0q+vEy+iPhvZDzF6Vv
+D5L3t8R0gir+qQhBlucZUtTnwcc+T6v2F9up3h1C9bMGfHkUvpj/cMnDpLfLqPqK
+TGCX+IRmSSjuRT8tWI5oIuCW01MdvXB04jW2mLOyRQPDFFJ69tcrdsMpdyYjnIfe
+/iRNOj16VRE5PJP/SlwWIg==
+-----END PRIVATE KEY-----
+
+#+END_SRC
+** SSL_DEVCERT
+#+NAME: ssl_devcert
+#+BEGIN_SRC python :tangle cert.py
+
+from werkzeug.serving import make_ssl_devcert
+make_ssl_devcert('./ssl', host='localhost')
+
+#+END_SRC
+* Run Server
+#+NAME: run_server
+#+BEGIN_SRC python :tangle run.py
+from app import app
+
+if __name__ == '__main__':
+	app.run(host = "localhost", debug = True, ssl_context = ('./ssl.crt', './ssl.key'))
+
+#+END_SRC
+* Imports
+  
+#+NAME: imports
+#+BEGIN_SRC python
+# Import flask and template operators
+from flask import Flask, render_template, request, session, jsonify
+from flask_oauth import OAuth
+#import urllib.parse
+from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
+import os
+import time
+from functools import wraps
+
+
+#+END_SRC
+* Tangle 
+
+#+BEGIN_SRC python :tangle app.py :eval no :noweb yes
+<<imports>>
+<<configure>>
+<<error_handling>>
+<<admin_auth>>
+<<guest_auth>>
+<<create_database>>
+#+END_SRC
