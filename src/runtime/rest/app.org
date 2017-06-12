@@ -104,7 +104,7 @@ time.sleep(2)
 * SSL
 ** SSL_CRT
 #+NAME: ssl_crt
-#+BEGIN_SRC :tangle ssl.crt
+#+BEGIN_SRC python :tangle ssl.crt
 
 -----BEGIN CERTIFICATE-----
 MIIC7jCCAdYCCEYW4UVBYuwAMA0GCSqGSIb3DQEBCwUAMDQxHDAaBgNVBAMME1Vu
@@ -128,7 +128,7 @@ hwPYbVJbbxeD6QvxsPosO91JVvPXQbeCLMrYM2+/bZUN5g==
 #+END_SRC
 ** SSL_KEY
 #+NAME: ssl_key
-#+BEGIN_SRC :tangle ssl.key
+#+BEGIN_SRC python :tangle ssl.key
 
 -----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC+iB4GROcK0MyB
@@ -195,7 +195,7 @@ from functools import wraps
 #+END_SRC
 * Tangle 
 
-#+BEGIN_SRC python :tangle app.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle app/__init__.py :eval no :noweb yes
 <<imports>>
 <<configure>>
 <<error_handling>>
