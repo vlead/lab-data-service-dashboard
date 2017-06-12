@@ -72,7 +72,7 @@ import datetime
 
 * Tangle
 ** sources
-#+BEGIN_SRC python :tangle db.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle app/users/db.py :eval no :noweb yes
 <<imports_for_sources>>
 <<role-model>>
 <<user-model>>

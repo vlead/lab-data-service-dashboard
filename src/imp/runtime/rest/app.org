@@ -13,7 +13,7 @@ This is the __init__.py file in which the app is being configured
 and also login manager is configured.
 Blueprint =mod_users= is registered in this file.
 #+NAME: configure
-#+BEGIN_SRC python :tangle __init__.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle app/__init__.py :eval no :noweb yes
 SECRET_KEY = os.urandom(23)
 
 # application.CSRF_SESSION_KEY = os.urandom(13)
@@ -40,7 +40,7 @@ app.register_blueprint(api)
 This is error handler function. It returns 404.html file when 
 an error is raised.
 #+NAME: error_handling
-#+BEGIN_SRC python 
+#+BEGIN_SRC python
 @app.errorhandler(404)
 def handle_404(e):
     return render_template('404.html'), 404
@@ -54,7 +54,7 @@ If the user logged in is guest , it returns a JSON object with
 a message and success as =False=.
 If the user logged in is admin, function becomes true.
 #+NAME: admin_auth
-#+BEGIN_SRC python
+#+BEGIN_SRC python :tangle 
 
 def requires_admin_auth(f):
     @wraps(f)
@@ -94,7 +94,7 @@ def requires_guest_auth(f):
 Database is created. The following code shows the database
 being created.
 #+NAME: create_database
-#+BEGIN_SRC python
+#+BEGIN_SRC python 
 
 # Build the database:
 # This will create the database file using SQLAlchemy
@@ -163,7 +163,7 @@ TGCX+IRmSSjuRT8tWI5oIuCW01MdvXB04jW2mLOyRQPDFFJ69tcrdsMpdyYjnIfe
 #+END_SRC
 ** SSL_DEVCERT
 #+NAME: ssl_devcert
-#+BEGIN_SRC
+#+BEGIN_SRC python :tangle cert.py
 
 from werkzeug.serving import make_ssl_devcert
 make_ssl_devcert('./ssl', host='localhost')
@@ -196,7 +196,7 @@ from functools import wraps
 #+END_SRC
 * Tangle 
 
-#+BEGIN_SRC python :tangle __init__.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle app/__init__.py :eval no :noweb yes
 <<imports>>
 <<configure>>
 <<error_handling>>
