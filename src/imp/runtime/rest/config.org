@@ -15,32 +15,26 @@ This holds the application's configuration parameters.
   Configuration for the flask application. 
 #+NAME: flask_app_config
 #+BEGIN_SRC python
-# DB URI
-# example DB URI:
-# mysql+oursql://scott:tiger@localhost/mydatabase
-# postgresql+psycopg2://scott:tiger@localhost/mydatabase
-SQLALCHEMY_DATABASE_URI = 'mysql+oursql://<userid>:<password>@<servername>/<db_name>'
-# example
-# SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:root@localhost/ldsdashboard'
+import os
+import flask_sqlalchemy
 
-# Debug from SQLAlchemy
-# Turn this to False on production
-SQLALCHEMY_ECHO = False
-SQLALCHEMY_TRACK_MODIFICATIONS = True
+# Define the application directory
+basedir = os.path.abspath(os.path.dirname(__file__))
 
-# List of allowed origins for CORS
-ALLOWED_ORIGINS = "['*']"
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, "app.db")
+DATABASE_CONNECT_OPTIONS = {}
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-# List of allowed IPs
-WHITELIST_IPS = ["127.0.0.1"]
+# Application threads. A common general assumption is
+# using 2 per available processor cores - to handle
+# incoming requests using one and performing background
+# operations using the other.
+THREADS_PER_PAGE = 2
 
-# Configure your log paths
-LOG_FILE_DIRECTORY = 'logs'
-LOG_FILE = 'ldsdashboard.log'
+# Enable protection agains *Cross-site Request Forgery (CSRF)*
+CSRF_ENABLED     = True
 
-# Log level for the application
-#10=DEBUG, 20=INFO, 30=WARNING, 40=ERROR, 50=CRITICAL",
-LOG_LEVEL = 10
+SECRET_KEY = os.urandom(13)
 
 #+END_SRC
 
