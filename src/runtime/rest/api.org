@@ -289,12 +289,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -536,12 +533,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -555,6 +549,7 @@ config = {
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
    	}
+
 #+end_src
 **** Test Add Role
 #+NAME: test_add_role
@@ -659,12 +654,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -678,6 +670,7 @@ config = {
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
    	}
+
 #+end_src
 **** Test Show users
 #+NAME: test_show_users
@@ -797,12 +790,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -816,6 +806,7 @@ config = {
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
    	}
+
 #+end_src
 **** Test Show Roles
 #+NAME: test_show_roles
@@ -941,12 +932,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -960,6 +948,7 @@ config = {
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
    	}
+
 #+end_src
 **** Test Delete user
 #+NAME: test_delete_user
@@ -1114,12 +1103,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -1133,6 +1119,7 @@ config = {
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
    	}
+
 #+end_src
 **** Test Delete role
 #+NAME: test_delete_role
@@ -1290,12 +1277,9 @@ import datetime
 import client
 from functools import wraps
 from flask_login import LoginManager
-#from imp import runtime
-#from imp.runtime.rest import api
-from imp.runtime.rest.api import api as api
-from imp.runtime.rest import db
-from imp.runtime.rest.db import User, Roles
-from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app.users.api import api as api
+from runtime.rest.app.users.db import User, Roles
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 
 
 #from config import basedir
@@ -1309,6 +1293,7 @@ config = {
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
    	}
+
 #+end_src
 **** Test Update user
 #+NAME: test_update_user
@@ -1780,7 +1765,7 @@ from flask_login import LoginManager, login_required, login_user, \
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 from app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-from app.users.models import User, Roles
+from app.users.db import User, Roles
 import os
 import json
 import re
@@ -1802,7 +1787,7 @@ api = Blueprint('users', __name__)
 * Tangle                                                        :boilerplate:
   
 ** sources
-#+BEGIN_SRC python :tangle app/users/controllers.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
 
 <<imports_for_sources>>
 <<serve_index_html>>

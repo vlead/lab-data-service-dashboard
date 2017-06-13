@@ -91,7 +91,7 @@ being created.
 #+BEGIN_SRC python 
 
 # Import a module / component using its blueprint handler variable (mod_auth)
-from app.users.controllers import api
+from app.users.api import api
 # Register blueprint(s)
 app.register_blueprint(api)
 
