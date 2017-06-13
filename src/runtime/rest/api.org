@@ -258,6 +258,7 @@ def create_user():
     try:
         db.session.commit()
     except IntegrityError as e:
+        db.session.rollback()
         return jsonify(success=False, message="This email already exists"), 500
 
     return jsonify(success=True)
@@ -501,6 +502,7 @@ def create_role():
     try:
         db.session.commit()
     except IntegrityError as e:
+        db.session.rollback()
         return jsonify(success=False, message="This role already exists"), 500
 	
     return jsonify(success=True)
@@ -551,6 +553,11 @@ class TestAddRole(TestCase):
         db.init_app(app)
         return app
 
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        db.create_all()
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
@@ -563,7 +570,6 @@ class TestAddRole(TestCase):
         response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
         
         self.assertEqual(response.status_code, 200)
-
     def test_add_role_2(self):
         print "test_add_role_2"
         payload = {'role_name': ''}
@@ -571,7 +577,7 @@ class TestAddRole(TestCase):
         
         response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
         
-        self.assertEqual(response.status_code, 400)    
+        self.assertEqual(response.status_code, 400)   
 
     def test_add_role_3(self):
         print "test_add_role_3"
@@ -883,6 +889,7 @@ def delete_user():
     try:
         db.session.commit()
     except IntegrityError as e:
+        db.session.rollback()
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
 
@@ -941,15 +948,15 @@ class TestDeleteUser(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_delete_role_1(self):
-		print "test_delete_role_1"
+    def test_delete_user_1(self):
+		print "test_delete_user_1"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
         
 		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
         
-		payload = {'name': 'Test1',
-			       'email': 'test1@gmail.com',
+		payload = {'name': 'Test1.1',
+			       'email': 'test1.1@gmail.com',
 		           'role' : 'admin'
 		           }
 		
@@ -959,10 +966,10 @@ class TestDeleteUser(TestCase):
 
 		response = self.client.post("/delete_user?user_email=test1@gmail.com", headers=headers)
 		
-		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.status_code, 400)
 
-    def test_delete_role_2(self):
-		print "test_delete_role_2"
+    def test_delete_user_2(self):
+		print "test_delete_user_2"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
         
@@ -978,10 +985,10 @@ class TestDeleteUser(TestCase):
 
 		response = self.client.post("/delete_user?user_email=", headers=headers)
 		
-		self.assertEqual(response.status_code, 400)	
+		self.assertEqual(response.status_code, 400)
 
-    def test_delete_role_3(self):
-		print "test_delete_role_3"
+    def test_delete_user_3(self):
+		print "test_delete_user_3"
 		payload = {'role_name': 'admin'}
 		headers = {'Content-Type': 'application/json'}
 		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
@@ -996,6 +1003,7 @@ class TestDeleteUser(TestCase):
 		response = self.client.post("/delete_user?user_email=test@gmail.com", headers=headers)
 		
 		self.assertEqual(response.status_code, 400)	
+	
 
 #+END_SRC
 **** Running tests
@@ -1050,7 +1058,8 @@ def delete_role():
     try:
         db.session.commit()
     except IntegrityError as e:
-        return jsonify(success=False, message="could not delete"), 500
+        db.session.rollback()
+        return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
 
 #+END_SRC
