@@ -16,7 +16,11 @@
 
 @api.route("/", methods=['GET'])
 def index():
-    return render_template("index.html")
+	data = current_user.to_dict()
+	user = User.query.filter_by(email=data['email']).first()
+	if session.get('type') == "guest":
+		return render_template('guest_home.html', data = data)
+	return render_template('admin_home.html', data = data)
 #+END_SRC
 
 ** Login API
@@ -79,7 +83,7 @@ def check_valid():
 @api.route('/login', methods=["GET"])
 def login():
     if current_user.is_authenticated:
-        return render_template('index.html')
+        return redirect("/")
     google = get_google_auth()
     auth_url, state = google.authorization_url(
         Auth.AUTH_URI, access_type='offline')
@@ -1586,7 +1590,7 @@ This is the HTML code for Login page
 
 ** Admin Home
 #+NAME: admin_home
-#+BEGIN_SRC html :tangle app/templates/admin_home.html
+#+BEGIN_SRC html :tangle app/templates/admin_home.html :eval no :noweb yes
 <!DOCTYPE html>
 <html>
 <head>
@@ -1807,7 +1811,7 @@ api = Blueprint('users', __name__)
 <<imports_for_sources>>
 <<serve_index_html>>
 <<oauth_session_creation>>
-<<check_email>>
+<<login_route>>	
 <<callback_google_api>>
 <<google_oauth_configuration>>
 <<logout_route>>
