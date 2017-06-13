@@ -301,7 +301,7 @@ class TestAddUser(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("config")
+        app.config.from_object("runtime.rest.config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -542,7 +542,7 @@ class TestAddRole(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("config")
+        app.config.from_object("runtime.rest.config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -655,7 +655,7 @@ class TestShowUsers(TestCase):
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("config")
+		app.config.from_object("runtime.rest.config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
@@ -789,7 +789,7 @@ class TestShowRole(TestCase):
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("config")
+		app.config.from_object("runtime.rest.config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
@@ -923,7 +923,7 @@ class TestDeleteUser(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("config")
+        app.config.from_object("runtime.rest.config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -1090,7 +1090,7 @@ class TestDeleteRole(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("config")
+        app.config.from_object("runtime.rest.config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -1207,7 +1207,7 @@ def update_user():
     check_role = Roles.query.filter(Roles.role_name==new_role).first()
     if check_role is None:
         return jsonify(success=False, message="Role doesn't exist"), 400
-    elif (check_role.role == 'admin' and check_role != current_user ):
+    elif (check_role.role_name == 'admin' and check_role != current_user):
         return jsonify(success=False, message="You cannot edit another admin"), 400    
 
 
@@ -1218,6 +1218,7 @@ def update_user():
     try:
         db.session.commit()
     except IntegrityError as e:
+        session.rollback()
         return jsonify(success=False, message="Could not update the user"), 500
 
     return jsonify(success=True)
@@ -1260,7 +1261,7 @@ class TestUpdateUsers(TestCase):
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("config")
+		app.config.from_object("runtime.rest.config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
