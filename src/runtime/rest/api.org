@@ -163,7 +163,7 @@ class goauth:
 #+END_SRC
 
 ** Logout API
-   When user clicks on =logout= button from f/e it will invoke =/logout= api
+   When user clicks on =logout= button from front end dashboard it will invoke =/logout= api
    and thereby it will destroy all session variables.
 
 *** API Design
@@ -217,7 +217,7 @@ def logout():
     }
   - Example ::
     #+BEGIN_EXAMPLE
-     http://localhost:5000/add_user?name=test&email=test@g.com&role=admin
+     http://localhost:5000/add_user
     #+END_EXAMPLE
 
 *** Implementation
@@ -486,7 +486,7 @@ API to add a role
     }
   - Example ::
     #+BEGIN_EXAMPLE
-    http://localhost:5000/add_role?role_name=admin
+    http://localhost:5000/add_role
     #+END_EXAMPLE
 *** Implementation
 Admin has the right to add a role thus restricting the access to the LDS servive.To add a role =role_name= field should be given.
@@ -614,7 +614,7 @@ if __name__ == '__main__':
 
 #+END_SRC
 ** Show users
-API for show users
+   API for show users
 *** API Design
  - URL :: /users
   - Method :: GET
@@ -882,9 +882,7 @@ if __name__ == '__main__':
   - URL :: /delete_user
   - Method :: DELETE
   - URL Params ::  
-    {
-       "email" : "test@gmail.com"
-    }
+       None
   - Success Response ::
     + Code: 200
   - Error Response ::
@@ -1056,9 +1054,7 @@ if __name__ == '__main__':
  - URL :: /delete_role
   - Method :: POST
   - URL Params ::  
-    {
-       "role_name" : "admin"
-    }
+       None
   - Success Response ::
     + Code: 200
   - Error Response ::
@@ -1220,7 +1216,7 @@ if __name__ == '__main__':
     + Code: 400
   - Example ::
     #+BEGIN_EXAMPLE
-    http://localhost:5000/update_user?email=test@gmail.com&new_email=test1&gmail.com&new_name=test2&new_role=admin
+    http://localhost:5000/update_user?email=test@gmail.com
     #+END_EXAMPLE
 *** Implementation
     Admin has the right to edit the details of a student who is registered 
