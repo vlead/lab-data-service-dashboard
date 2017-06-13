@@ -23,8 +23,8 @@ app.config['TRAP_HTTP_EXCEPTIONS']=True
 
 # Build the database:
 # This will create the database file using SQLAlchemy
+
 db = SQLAlchemy(app)
-db.create_all()
 
 # Initialize a Login Manager for our app.
 # Initialize a OAuth for our app that can be used for Google OAuth login.
@@ -106,7 +106,10 @@ def requires_guest_auth(f):
 #+NAME: login_manager
 #+BEGIN_SRC python 
 #LoginManager decorated user_loader function to intialise current_user
+#If your models are declared in a separate module, import them before calling create_all()
 from runtime.rest.app.users.db import User, Roles
+db.create_all()
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
