@@ -282,8 +282,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -524,8 +524,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -636,8 +636,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -769,8 +769,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -905,8 +905,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -1072,8 +1072,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -1242,8 +1242,8 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from config import basedir
-from app import app, db
+from runtime.rest.config import basedir
+from runtime.rest.app import app, db
 import client
 
 config = {
@@ -1724,7 +1724,7 @@ from flask_login import LoginManager, login_required, login_user, \
     logout_user, current_user, UserMixin
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
-from app import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 from runtime.rest.app.users.db import User, Roles
 import os
 import json

@@ -20,7 +20,7 @@ SECRET_KEY = os.urandom(23)
 # Define the WSGI application object
 
 app = Flask(__name__)
-app.config.from_object("config")
+app.config.from_object("runtime.rest.config")
 app.config['TRAP_HTTP_EXCEPTIONS']=True
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -95,7 +95,7 @@ being created.
 #+BEGIN_SRC python 
 
 # Import a module / component using its blueprint handler variable (mod_auth)
-from app.users.api import api
+from runtime.rest.app.users.api import api
 # Register blueprint(s)
 app.register_blueprint(api)
 
