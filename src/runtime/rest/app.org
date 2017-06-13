@@ -53,6 +53,8 @@ If the user logged in is admin, function becomes true.
 def requires_admin_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if app.config['TESTING'] and app.config['LOGIN_DISABLED']:
+            return f(*args, **kwargs) 
         if 'type' not in session:
             return jsonify(message="Unauthorized", success=False), 401
         if session['type'] != 'admin':
@@ -75,6 +77,8 @@ If the user logged in is guest, function becomes true.
 def requires_guest_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if app.config['TESTING'] and app.config['LOGIN_DISABLED']:
+            return f(*args, **kwargs)
         if 'type' not in session:
             return jsonify(message="Unauthorized", success=False), 401
         if session['type'] != 'guest':

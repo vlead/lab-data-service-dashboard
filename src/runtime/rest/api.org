@@ -15,12 +15,14 @@
 #+BEGIN_SRC python 
 
 @api.route("/", methods=['GET'])
+@login_required
 def index():
 	data = current_user.to_dict()
 	user = User.query.filter_by(email=data['email']).first()
 	if session.get('type') == "guest":
 		return render_template('guest_home.html', data = data)
 	return render_template('admin_home.html', data = data)
+
 #+END_SRC
 
 ** Login API
@@ -59,24 +61,6 @@ def get_google_auth(state=None, token=None):
     return oauth
 #+END_SRC
 
-#+NAME: check_email
-#+BEGIN_SRC python
-@api.route('/check_valid', methods=['POST'])
-def check_valid():
-	try:
-		email = request.args['email']
-	except:
-		try:
-			email = request.form['email']
-		except KeyError as e:
-			return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-    
-	user_tocheck = User.query.filter(User.email==email).first()
-	if user_tocheck is None:
-		return jsonify(success=False, message="This User is not availed to LDS")
-	
-	return jsonify(success=True, message="This User is availed to LDS")
-#+END_SRC
 
 #+NAME: login_route
 #+BEGIN_SRC python
@@ -151,7 +135,7 @@ def callback():
 #+NAME: google_oauth_configuration
 #+BEGIN_SRC python
 
-class goauth:
+class Auth:
     CLIENT_ID = "Your client ID"
     CLIENT_SECRET = "Your client secret"
     REDIRECT_URI = 'https://localhost:5000/gCallback'
@@ -160,6 +144,14 @@ class goauth:
     USER_INFO = 'https://www.googleapis.com/userinfo/v2/me'
     SCOPE = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
 
+#+END_SRC
+ 
+*** Login Manager
+#+NAME: login_manager
+#+BEGIN_SRC python
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 #+END_SRC
 
 ** Logout API
@@ -281,30 +273,24 @@ def create_user():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify    
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
+	}
 #+end_src
 **** Test Add User
 
@@ -317,6 +303,7 @@ class TestAddUser(TestCase):
         app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -324,7 +311,10 @@ class TestAddUser(TestCase):
         return app
 
     def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         db.create_all()
+
 
     def tearDown(self):
         db.session.remove()
@@ -525,31 +515,24 @@ def create_role():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
-
+    }
 #+end_src
 **** Test Add Role
 #+NAME: test_add_role
@@ -561,14 +544,12 @@ class TestAddRole(TestCase):
         app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
         db.init_app(app)
         return app
-
-    def setUp(self):
-        db.create_all()
 
     def tearDown(self):
         db.session.remove()
@@ -646,30 +627,24 @@ def show_users():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
+    }
 
 #+end_src
 **** Test Show users
@@ -682,6 +657,7 @@ class TestShowUsers(TestCase):
 		app.register_blueprint(api, url_prefix=None)
 		app.config.from_object("config")
 		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
 		login_manager.login_view = "users.login"
 		self.app = app.test_client()
@@ -689,6 +665,8 @@ class TestShowUsers(TestCase):
 		return app
 
 	def setUp(self):
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
 		db.create_all()
 
 	def tearDown(self):
@@ -756,7 +734,7 @@ if __name__ == '__main__':
     #+BEGIN_EXAMPLE
     http://localhost:5000/roles
     #+END_EXAMPLE
-
+	      
 *** Implementation
 This API returns the list of all the roles in the LDS.
 Implementation of =show role= API is given below
@@ -782,30 +760,25 @@ def show_roles():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
+    }
+
 
 #+end_src
 **** Test Show Roles
@@ -818,6 +791,7 @@ class TestShowRole(TestCase):
 		app.register_blueprint(api, url_prefix=None)
 		app.config.from_object("config")
 		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
 		login_manager.login_view = "users.login"
 		self.app = app.test_client()
@@ -825,11 +799,9 @@ class TestShowRole(TestCase):
 		return app
 
 	def setUp(self):
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
 		db.create_all()
-
-	def tearDown(self):
-		db.session.remove()
-		db.drop_all()
 
 	def test_show_roles_1(self):
 		print "test_show_roles_1"
@@ -924,31 +896,24 @@ def delete_user():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
-
+    }
 #+end_src
 **** Test Delete user
 #+NAME: test_delete_user
@@ -960,6 +925,7 @@ class TestDeleteUser(TestCase):
         app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -967,6 +933,8 @@ class TestDeleteUser(TestCase):
         return app
 
     def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         db.create_all()
 
     def tearDown(self):
@@ -1095,31 +1063,24 @@ def delete_role():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify       
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
-
+    }
 #+end_src
 **** Test Delete role
 #+NAME: test_delete_role
@@ -1131,6 +1092,7 @@ class TestDeleteRole(TestCase):
         app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -1138,6 +1100,8 @@ class TestDeleteRole(TestCase):
         return app
 
     def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
         db.create_all()
 
     def tearDown(self):
@@ -1269,31 +1233,24 @@ def update_user():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify      
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
 import datetime
-import client
-from functools import wraps
 from flask_login import LoginManager
-from runtime.rest.app.users.api import api as api
 from runtime.rest.app.users.db import User, Roles
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-
-
-#from config import basedir
-#from app.users.controllers import api
-#from app.users.models import User, Roles
-#from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
-basedir = os.path.abspath(os.path.dirname(__file__))
+import re
+from config import basedir
+from app import app, db
+import client
 
 config = {
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-   	}
-
+    }
 #+end_src
 **** Test Update user
 #+NAME: test_update_user
@@ -1305,6 +1262,7 @@ class TestUpdateUsers(TestCase):
 		app.register_blueprint(api, url_prefix=None)
 		app.config.from_object("config")
 		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
 		login_manager.login_view = "users.login"
 		self.app = app.test_client()
@@ -1312,6 +1270,8 @@ class TestUpdateUsers(TestCase):
 		return app
 
 	def setUp(self):
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
 		db.create_all()
 
 	def tearDown(self):
@@ -1765,7 +1725,7 @@ from flask_login import LoginManager, login_required, login_user, \
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 from app import app, db, login_manager, requires_guest_auth, requires_admin_auth
-from app.users.db import User, Roles
+from runtime.rest.app.users.db import User, Roles
 import os
 import json
 import re
@@ -1788,13 +1748,13 @@ api = Blueprint('users', __name__)
   
 ** sources
 #+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
-
 <<imports_for_sources>>
-<<serve_index_html>>
+<<google_oauth_configuration>>
+<<login_manager>>
 <<oauth_session_creation>>
+<<serve_index_html>>
 <<login_route>>	
 <<callback_google_api>>
-<<google_oauth_configuration>>
 <<logout_route>>
 <<add_user>>
 <<add_role>>
