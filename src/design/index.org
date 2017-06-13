@@ -27,9 +27,9 @@
      based on a given role.
 
 #+BEGIN_HTML
-<img src="https://docs.google.com/drawings/d/1iZ0Sh5fgZppa67K10omAycqDDtzPnC9nIW8K4mw4L5o/pub?w=960&h=720">
+<img src="https://docs.google.com/drawings/d/1hgRPbFjn-Gqtd-Ypqi8F8888uJpm_S6r_vnwld45ioA/pub?w=960&h=720">
 <p align="center"> lab data service dashboard design diagram </p>
 #+END_HTML
 
- [[https://docs.google.com/drawings/d/1iZ0Sh5fgZppa67K10omAycqDDtzPnC9nIW8K4mw4L5o/edit?usp=sharing][click here]] to edit the diagram
+ [[https://docs.google.com/drawings/d/1hgRPbFjn-Gqtd-Ypqi8F8888uJpm_S6r_vnwld45ioA/edit?usp=sharing][click here]] to edit the diagram
 
