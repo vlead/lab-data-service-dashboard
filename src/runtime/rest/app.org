@@ -28,12 +28,6 @@ login_manager.login_view = "users.login"
 login_manager.session_protection = "strong"
 oauth = OAuth()
 
-# Import a module / component using its blueprint handler variable (mod_auth)
-from app.users.controllers import api
-# Register blueprint(s)
-app.register_blueprint(api)
-
-
 #+END_SRC
 
 * Error Handling
@@ -90,11 +84,18 @@ def requires_guest_auth(f):
 
 #+END_SRC
 
-* Create Database
+* Register Blueprint and Create Database
 Database is created. The following code shows the database
 being created.
-#+NAME: create_database
+#+NAME: blue_database
 #+BEGIN_SRC python 
+
+# Import a module / component using its blueprint handler variable (mod_auth)
+from app.users.controllers import api
+# Register blueprint(s)
+app.register_blueprint(api)
+
+
 # Build the database:
 # This will create the database file using SQLAlchemy
 db.create_all()
@@ -201,5 +202,5 @@ from functools import wraps
 <<error_handling>>
 <<admin_auth>>
 <<guest_auth>>
-<<create_database>>
+<<blue_database>>
 #+END_SRC

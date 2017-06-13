@@ -57,7 +57,7 @@ def get_google_auth(state=None, token=None):
 
 #+NAME: check_email
 #+BEGIN_SRC python
-@mod_users.route('/check_valid', methods=['POST'])
+@api.route('/check_valid', methods=['POST'])
 def check_valid():
 	try:
 		email = request.args['email']
@@ -154,7 +154,7 @@ class goauth:
     AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
     TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
     USER_INFO = 'https://www.googleapis.com/userinfo/v2/me'
-    SCOPE = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'
+    SCOPE = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
 
 #+END_SRC
 
@@ -222,7 +222,7 @@ Implementation of the =Add User API= is given below.
 
 #+NAME: add_user
 #+BEGIN_SRC python 
-@mod_users.route('/add_user', methods=['POST'])
+@api.route('/add_user', methods=['POST'])
 @login_required
 @requires_admin_auth
 def create_user():
@@ -294,7 +294,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -313,7 +313,7 @@ class TestAddUser(TestCase):
     TESTING = True
     def create_app(self):
         app = Flask(__name__)
-        app.register_blueprint(mod_users, url_prefix=None)
+        app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
         login_manager = LoginManager(app)
@@ -489,7 +489,7 @@ Admin has the right to add a role thus restricting the access to the LDS servive
 Implementation of the =Add Role= API is given below.
 #+NAME: add_role
 #+BEGIN_SRC python 
-@mod_users.route('/add_role', methods=['POST'])
+@api.route('/add_role', methods=['POST'])
 @login_required
 @requires_admin_auth
 def create_role():
@@ -541,7 +541,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -559,7 +559,7 @@ class TestAddRole(TestCase):
     TESTING = True
     def create_app(self):
         app = Flask(__name__)
-        app.register_blueprint(mod_users, url_prefix=None)
+        app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
         login_manager = LoginManager(app)
@@ -629,7 +629,7 @@ The implementation is given below.
 #+NAME: show_users
 #+BEGIN_SRC python 
 
-@mod_users.route('/users', methods=['GET'])
+@api.route('/users', methods=['GET'])
 @login_required
 def show_users():
 	users = User.query.all()
@@ -664,7 +664,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -682,7 +682,7 @@ class TestShowUsers(TestCase):
 	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
-		app.register_blueprint(mod_users, url_prefix=None)
+		app.register_blueprint(api, url_prefix=None)
 		app.config.from_object("config")
 		app.config['TESTING'] = True
 		login_manager = LoginManager(app)
@@ -765,7 +765,7 @@ This API returns the list of all the roles in the LDS.
 Implementation of =show role= API is given below
 #+NAME: show_roles
 #+BEGIN_SRC python
-@mod_users.route('/roles', methods=['GET'])
+@api.route('/roles', methods=['GET'])
 @login_required	
 def show_roles():
     roles = Roles.query.all()
@@ -802,7 +802,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -820,7 +820,7 @@ class TestShowRole(TestCase):
 	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
-		app.register_blueprint(mod_users, url_prefix=None)
+		app.register_blueprint(api, url_prefix=None)
 		app.config.from_object("config")
 		app.config['TESTING'] = True
 		login_manager = LoginManager(app)
@@ -894,7 +894,7 @@ if __name__ == '__main__':
 
 #+NAME: delete_user
 #+BEGIN_SRC python 
-@mod_users.route('/delete_user', methods=['POST'])
+@api.route('/delete_user', methods=['POST'])
 @login_required
 @requires_admin_auth
 def delete_user():
@@ -948,7 +948,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -966,7 +966,7 @@ class TestDeleteUser(TestCase):
     TESTING = True
     def create_app(self):
         app = Flask(__name__)
-        app.register_blueprint(mod_users, url_prefix=None)
+        app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
         login_manager = LoginManager(app)
@@ -1070,7 +1070,7 @@ if __name__ == '__main__':
 #+NAME: delete_role
 #+BEGIN_SRC python
 
-@mod_users.route('/delete_role', methods=['POST'])
+@api.route('/delete_role', methods=['POST'])
 @login_required
 @requires_admin_auth	
 def delete_role():
@@ -1123,7 +1123,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -1141,7 +1141,7 @@ class TestDeleteRole(TestCase):
     TESTING = True
     def create_app(self):
         app = Flask(__name__)
-        app.register_blueprint(mod_users, url_prefix=None)
+        app.register_blueprint(api, url_prefix=None)
         app.config.from_object("config")
         app.config['TESTING'] = True
         login_manager = LoginManager(app)
@@ -1226,7 +1226,7 @@ if __name__ == '__main__':
 #+NAME: update_user
 #+BEGIN_SRC python
 
-@mod_users.route('/update_user', methods=['PUT'])
+@api.route('/update_user', methods=['PUT'])
 @login_required
 @requires_admin_auth
 def update_user():
@@ -1299,7 +1299,7 @@ from imp.runtime.rest import app, db, login_manager, requires_guest_auth, requir
 
 
 #from config import basedir
-#from app.users.controllers import mod_users
+#from app.users.controllers import api
 #from app.users.models import User, Roles
 #from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -1317,7 +1317,7 @@ class TestUpdateUsers(TestCase):
 	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
-		app.register_blueprint(mod_users, url_prefix=None)
+		app.register_blueprint(api, url_prefix=None)
 		app.config.from_object("config")
 		app.config['TESTING'] = True
 		login_manager = LoginManager(app)
@@ -1779,7 +1779,7 @@ from flask_login import LoginManager, login_required, login_user, \
     logout_user, current_user, UserMixin
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
-from app import app, db, login_manager,requires_guest_auth,requires_admin_auth
+from app import app, db, login_manager, requires_guest_auth, requires_admin_auth
 from app.users.models import User, Roles
 import os
 import json
