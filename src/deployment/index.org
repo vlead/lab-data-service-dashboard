@@ -50,7 +50,6 @@ if __name__ == "__main__":
 
 #+END_SRC
 
-
 * Install all dependencies and setup the software
   Install all dependencies, including the OS related packages, Python packages,
   setup the database, configure the webserver, and finally deploy the

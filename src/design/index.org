@@ -1,7 +1,7 @@
 #+TITLE: Design of lab-data-service-dashboard
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-09 Friday]
-#+SETUPFILE: ../../org-templates/level-2.org
+#+SETUPFILE: ../org-templates/level-1.org
 #+TAGS: boilerplate(b)
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil

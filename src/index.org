@@ -13,13 +13,13 @@
 
 1. [[./req/index.org][Requirements]]
 
-2. [[./imp/design/index.org][Design]]
+2. [[./design/index.org][Design]]
 
-3. [[./imp/data-model/index.org][Data Model]]
+3. [[./data-model/index.org][Data Model]]
 
-4. [[./imp/runtime/index.org][Runtime]]
+4. [[./runtime/index.org][Runtime]]
 
-5. [[./imp/deployment/index.org][Deployment]]
+5. [[./deployment/index.org][Deployment]]
 
 
 

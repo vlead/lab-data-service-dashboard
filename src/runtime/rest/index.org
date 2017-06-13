@@ -1,4 +1,4 @@
-#+TITLE: Runtime of Application
+#+TITLE: REST Interface for LDS Dashboard
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-05 Mon]
 #+SETUPFILE: ../../org-templates/level-2.org
@@ -6,19 +6,14 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
+The REST package hold two modules
 
-* Introduction
+ - [[./app.org][=app=]]
 
-  The =runtime= of the application is defined by:
+ - [[./api.org][=api=]]
 
- - [[./rest/backend.org][=Backend=]]
-
- - [[./rest/index.org][=REST API=]]
-
- - =Web Front End=
 
 * Tangle                                       :boilerplate:
 #+BEGIN_SRC python :eval no :tangle __init__.py
-print "runtime package"
+print "rest package"
 #+END_SRC
-
