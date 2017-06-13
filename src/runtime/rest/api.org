@@ -146,14 +146,6 @@ class Auth:
 
 #+END_SRC
  
-*** Login Manager
-#+NAME: login_manager
-#+BEGIN_SRC python
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-#+END_SRC
-
 ** Logout API
    When user clicks on =logout= button from front end dashboard it will invoke =/logout= api
    and thereby it will destroy all session variables.
@@ -1398,7 +1390,7 @@ This is the HTML code for Login page
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
     <title>LOGIN</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700|Nosifer">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -1413,7 +1405,7 @@ This is the HTML code for Login page
             <h3>TO</h3>
             <h2>LAB DATA SERVICE</h2>
             <br>
-            <a href="{{auth_url}}" class="btn btn-dark btn-lg">LOGIN</a>
+            <button class= "btn btn-dark btn-lg" onclick="window.location.href='{{auth_url}}'">LOGIN</button>
         </div>
     </header>
 </button>
@@ -1429,7 +1421,10 @@ This is the HTML code for Login page
 <html>
 <head>
     <title>HOME</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -1438,7 +1433,7 @@ This is the HTML code for Login page
 
 
 </head>
-<body>
+<body id="body">
     <div class="wrapper">
     <header class="main-header">    
       <nav class="navbar navbar navbar-static-top  navbar-inverse">
@@ -1446,23 +1441,37 @@ This is the HTML code for Login page
         <a href="{{ data['email'] }}" class="sidebar-toggle" data-toggle="push-menu" role="button">
           <span class="sr-only">Toggle navigation</span>
         </a>
+  <div class="navbar-header">
+        <a class="navbar-brand" href="#">LAB DATA SERVICE</a>
+      </div>
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav navbar-right">
             <!-- Messages: style can be found in dropdown.less-->     
             <!-- User Account: style can be found in dropdown.less -->
-            <li class="dropdown user dropdown-menu-right user-menu">
+            <li class="dropdown">
+              <button class="navbar-btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" >{{data['email']}}
+                <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <li><a href='#'> {{data['name']}}</a> </li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </li>
+            <li> <span class="col-sm-4"></span> </li>
+              <!--
+            </div>
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <span class="col-sm-4">{{data['name']}}</span>
               </a>
               <ul class="dropdown-menu">
-                <!-- User image -->
+         
                 <li class="user-header">
                   <p> 
                     {{data['email']}}
                   </p>
                 </li>
-                <!-- Menu Footer-->
+     
                 <li class="user-footer">
                   <div class="pull-left">
                     <a href="/" class="btn btn-default btn-flat">Home</a>
@@ -1471,8 +1480,7 @@ This is the HTML code for Login page
                     <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
                   </div>
                 </li>
-              </ul>
-            </li>
+              </ul> //-->
           </ul>
         
         </div>
@@ -1546,7 +1554,10 @@ This is the HTML code for Login page
 <html>
 <head>
     <title>HOME</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -1563,23 +1574,37 @@ This is the HTML code for Login page
         <a href="{{ data['email'] }}" class="sidebar-toggle" data-toggle="push-menu" role="button">
           <span class="sr-only">Toggle navigation</span>
         </a>
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">LAB DATA SERVICE</a>
+      </div>
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav navbar-right">
             <!-- Messages: style can be found in dropdown.less-->     
             <!-- User Account: style can be found in dropdown.less -->
-            <li class="dropdown user dropdown-menu-right user-menu">
+            <li class="dropdown">
+              <button class="navbar-btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" >{{data['email']}}
+                <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <li><a href='#'> {{data['name']}}</a> </li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </li>
+            <li> <span class="col-sm-4"></span> </li>
+              <!--
+            </div>
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <span class="col-sm-4">{{data['name']}}</span>
               </a>
               <ul class="dropdown-menu">
-                <!-- User image -->
+         
                 <li class="user-header">
                   <p> 
                     {{data['email']}}
                   </p>
                 </li>
-                <!-- Menu Footer-->
+     
                 <li class="user-footer">
                   <div class="pull-left">
                     <a href="/" class="btn btn-default btn-flat">Home</a>
@@ -1588,14 +1613,13 @@ This is the HTML code for Login page
                     <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
                   </div>
                 </li>
-              </ul>
-            </li>
+              </ul> //-->
           </ul>
         
         </div>
       
       </nav>
-    </header>
+    </header>  
 
 <div class="col-lg-3 col-md-3 col-sm-4">
   <div class="list-group table-of-contents">
@@ -1625,10 +1649,23 @@ This is the HTML code for Login page
     <a class="list-group-item" href='/cancel-mess'> ADD Hosting Info</a>
     <a class="list-group-item" href='/cancel-mess'> GET Integration Status</a>
     <a class="list-group-item" href='/cancel-mess'> ADD Integration Status
-	</a>
+  </a>
   </div>
 </div>
-  <div class = "intro-heading" style="text-align:center">
+<div class="col-lg-3 col-md-3 col-sm-4" style="float:right">
+    <div class="list-group table-of-contents">  
+      <a class="list-group-item" href='/'> Add User</a>
+      <a class="list-group-item" href='/'> Add Role</a>
+      <a class="list-group-item" href='/'> View Users</a>
+      <a class="list-group-item" href='/'> View Roles</a>
+      <a class="list-group-item" href='/'> Edit User</a>
+      <a class="list-group-item" href='/'> Delete User</a>
+      <a class="list-group-item" href="/">Delete Role</a>
+    </div>
+</div>
+
+  <!--<div style="text-align:center">-->
+  <div style="padding-top:10%; text-align:center; float:center">
   <h3> Hello, {{data['name']}}! </h3>
   <h4> Email id - {{data['email']}} </h4>
   <h4> Role - {{data['role']}} </h4>
@@ -1690,7 +1727,37 @@ This is the HTML code for Login page
           <h2>You Found The End Of Our Little Infinite Universe.</h2>
         </div>
         <p>Jokes Aside<br/>
-          The Page You Requested Could Not Be Found On Our Server</p>
+          Make sure you know what you are trying to do. If you think this is an error then contact us by dropping an e-mail</p>
+          </div>
+    </section>  
+  </div>
+</div>
+
+</body>
+</html>
+#+END_SRC
+
+** Error 405 page
+#+NAME: 404
+#+BEGIN_SRC html :tangle app/templates/405.html
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Error 405</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='404/styles/404.css')}}">
+</head>
+<body>
+<div class="wrapper row2">
+  <div id="container" class="clear">
+    <section id="fof" class="clear">
+      <div class="positioned">
+        <div class="hgroup">
+          <h1>Ohh NO!</h1>
+          <h2>The method you used to access this route is not allowed. Apologies.</h2>
+        </div>
+        <p>Jokes Aside<br/>
+          Make sure you know what you are trying to do. If you think this is an error then contact us by dropping an e-mail</p>
                 </div>
     </section>  
   </div>
@@ -1699,6 +1766,8 @@ This is the HTML code for Login page
 </body>
 </html>
 #+END_SRC
+
+
 * JS
 ** login
 This function checks whether the user trying to login
@@ -1726,15 +1795,16 @@ error is shown that user is not availed to LDS.
 *** Imports 
 #+name: imports_for_sources
 #+BEGIN_SRC python
+
 # -*- coding: utf-8 -*-
 from flask import Blueprint, Flask, url_for, redirect, \
     render_template, session, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_required, login_user, \
-    logout_user, current_user, UserMixin
+from flask_login import login_required, login_user, \
+    logout_user, current_user
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
-from runtime.rest.app import app, db, login_manager, requires_guest_auth, requires_admin_auth
+from runtime.rest.app import app, db, requires_guest_auth, requires_admin_auth
 from runtime.rest.app.users.db import User, Roles
 import os
 import json
@@ -1760,7 +1830,6 @@ api = Blueprint('users', __name__)
 #+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
 <<imports_for_sources>>
 <<google_oauth_configuration>>
-<<login_manager>>
 <<oauth_session_creation>>
 <<serve_index_html>>
 <<login_route>>	
