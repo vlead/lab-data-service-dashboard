@@ -45,12 +45,6 @@
   source venv/bin/activate
   #+END_EXAMPLE
 
-
-* Run Make again
-  The =make= again and time it should pass all the test cases. Change directory
-  to =lab-data-service-dashboard= and run =make=.
-
-
 * Setting up dependencies
   Install all the dependencies for running the =lds= applciation.  The
   =setup.py= script is in the =build/code/deployment/= directory
@@ -93,9 +87,9 @@
    apt-get install python-dev
    #+END_EXAMPLE
 
-
-
-
+* Run Make again
+  The =make= again and time it should pass all the test cases. Change directory
+  to =lab-data-service-dashboard= and run =make=.
 
 * Set SQLALCHEMY_DATABASE_URI
   The variable =SQLALCHEMY_DATABASE_URI= has to be set to proper value in
@@ -104,7 +98,6 @@
   #+BEGIN_EXAMPLE
   SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:<yourpswd>@localhost/ldsdashboard'
   #+END_EXAMPLE
-
 
 * Export PYTHONPATH
   Set PYTHONPATH variable and export it to access python modules. 
