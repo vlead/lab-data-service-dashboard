@@ -20,16 +20,20 @@ class Roles(db.Model, UserMixin):
     __tablename__ = "roles"
     role_name = db.Column(db.String(10),primary_key=True)
 
-    def __init__(self,role):
-        self.role_name = role
-
     def __repr__(self):
         return '<Role\'s Name is: %r>' %(self.role_name)
+
+    def __init__(self,role):
+        self.role_name = role
 
     def to_dict(self):
         return {
             'role': self.role_name
         }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 #+END_SRC
 ** User
    This is the model of =User=.
@@ -47,7 +51,7 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return 'User\'s Id is: %d, User\'s Name is: %r & User\'s Email is: %r>' %(self.id, self.name, self.email)
-    
+
     def to_dict(self):
         return {
             'id' : self.id,
@@ -56,6 +60,9 @@ class User(db.Model, UserMixin):
             'role': self.role
         }
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 #+END_SRC
 
 * Infra

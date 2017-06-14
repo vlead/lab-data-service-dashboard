@@ -8,6 +8,8 @@
 
 * Introduction
   The application that runs the FLASK Web App.
+
+
 * __INIT__ FILE
 This is the __init__.py file in which the app is being configured 
 and also login manager is configured.
@@ -18,7 +20,7 @@ Blueprint =api= is registered in this file.
 # Initialize your application using flask, it will be referred to as app.
 # Import the configuration from the config file.
 app = Flask(__name__)
-app.config.from_object("runtime.rest.config")
+app.config.from_object("runtime.config.flask_app_config")
 app.config['TRAP_HTTP_EXCEPTIONS']=True
 
 # Build the database:
@@ -32,6 +34,7 @@ login_manager.login_view = "users.login"
 login_manager.session_protection = "strong"
 oauth = OAuth()
 #+END_SRC
+
 
 * Error Handling
 This is error handler function. It returns 404.html file when 
@@ -48,6 +51,7 @@ def handle_404(e):
 def handle_404(e):
     return render_template('405.html'), 405
 #+END_SRC
+
 
 * Roles
 ** Admin Authorisation
@@ -100,6 +104,7 @@ def requires_guest_auth(f):
     return decorated
 #+END_SRC
 
+
 * Login Managar
 
 #+NAME: login_manager
@@ -114,6 +119,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 #+END_SRC
 
+
 * Register Blueprint(s)
 Database is created. The following code shows the database
 being created.
@@ -126,12 +132,14 @@ from runtime.rest.app.users.api import api
 app.register_blueprint(api)
 #+END_SRC
 
-* Socket 
+
+* Socket
 #+NAME: socket_workaround
 #+BEGIN_SRC python 
 #Workaround for socket file pipes not getting enough time to restart while changes are made in debugger mode.
 time.sleep(3)
 #+END_SRC
+
 
 * SSL
 ** SSL_DEVCERT
@@ -142,6 +150,8 @@ from werkzeug.serving import make_ssl_devcert
 make_ssl_devcert('./ssl', host='localhost')
 
 #+END_SRC
+
+
 * Run Server
 #+NAME: run_server
 #+BEGIN_SRC python :tangle run.py
@@ -151,6 +161,8 @@ if __name__ == '__main__':
 	app.run(host = "localhost", debug = True, ssl_context = ('./ssl.crt', './ssl.key'))
 
 #+END_SRC
+
+
 * Imports
   
 #+NAME: imports
@@ -165,9 +177,10 @@ import os
 import time
 from functools import wraps
 #+END_SRC
-* Tangle 
+  
 
-#+BEGIN_SRC python :tangle app/__init__.py :eval no :noweb yes
+* Tangle
+#+BEGIN_SRC python :tangle app/__init__.py :eval no :noweb yes 
 <<imports>>
 <<configure>>
 <<admin_auth>>

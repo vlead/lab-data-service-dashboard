@@ -69,15 +69,22 @@ setup(
 
 * Program to set up the database
 #+BEGIN_SRC python :tangle db_setup.py :eval no
-from runtime.rest.app import create_app
-from runtime.config import flask_app_config as config
-from runtime.config.system_config import KEY
+from flask import Flask
+from runtime.rest.app import db
+from runtime.rest.app.users.db import *
 
 def populate():
-    pass
+    role1 = Roles(role="admin")
+    role1.save()
+    user = User(name="admin_user",
+                email="admin@email.com",
+                role="admin")
+    user.save()
 
 if __name__ == "__main__":
-    db.create_all(app=create_app(config))
+    app = Flask(__name__)
+    app.config.from_object("runtime.config.flask_app_config")
+    db.create_all()
     populate()
 
 #+END_SRC

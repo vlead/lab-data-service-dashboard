@@ -275,12 +275,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
 	}
@@ -294,7 +294,7 @@ class TestAddUser(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("runtime.rest.config")
+        app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -518,12 +518,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
     }
@@ -536,7 +536,7 @@ class TestAddRole(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("runtime.rest.config")
+        app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -634,12 +634,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
     }
@@ -653,7 +653,7 @@ class TestShowUsers(TestCase):
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("runtime.rest.config")
+		app.config.from_object("runtime.config.flask_app_config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
@@ -767,12 +767,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
     }
@@ -787,7 +787,7 @@ class TestShowRole(TestCase):
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("runtime.rest.config")
+		app.config.from_object("runtime.config.flask_app_config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
@@ -904,12 +904,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
     }
@@ -922,7 +922,7 @@ class TestDeleteUser(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("runtime.rest.config")
+        app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -1073,12 +1073,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
     }
@@ -1091,7 +1091,7 @@ class TestDeleteRole(TestCase):
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
-        app.config.from_object("runtime.rest.config")
+        app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
         login_manager = LoginManager(app)
@@ -1244,12 +1244,12 @@ import datetime
 from flask_login import LoginManager
 from runtime.rest.app.users.db import User, Roles
 import re
-from runtime.rest.config import basedir
+
 from runtime.rest.app import app, db
 import client
 
 config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + os.path.join(basedir, "app.db"),
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
         'DATABASE_CONNECT_OPTIONS': {},
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
     }
@@ -1262,7 +1262,7 @@ class TestUpdateUsers(TestCase):
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("runtime.rest.config")
+		app.config.from_object("runtime.config.flask_app_config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
 		login_manager = LoginManager(app)
@@ -1767,7 +1767,6 @@ This is the HTML code for Login page
 </html>
 #+END_SRC
 
-
 * JS
 ** login
 This function checks whether the user trying to login
@@ -1804,6 +1803,7 @@ from flask_login import login_required, login_user, \
     logout_user, current_user
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
+from runtime.config.goauth_config import Auth
 from runtime.rest.app import app, db, requires_guest_auth, requires_admin_auth
 from runtime.rest.app.users.db import User, Roles
 import os
@@ -1829,7 +1829,6 @@ api = Blueprint('users', __name__)
 ** sources
 #+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
 <<imports_for_sources>>
-<<google_oauth_configuration>>
 <<oauth_session_creation>>
 <<serve_index_html>>
 <<login_route>>	
