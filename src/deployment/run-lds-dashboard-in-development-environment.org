@@ -1,4 +1,4 @@
-#+TITLE: Running Lab Data Service on Developement Environment
+g#+TITLE: Running Lab Data Service on Developement Environment
 #+Author: VLEAD
 #+Date: [2017-05-06 Fri]
 #+PROPERTY: results output
@@ -24,10 +24,10 @@
 
 
 * Initial make
-  Run make from =lab-data-service-dashboard= directory to build the application.  The
-  code gets tangled but the test cases will fail.  This is because some of the
-  dependencies have not been set up.  To insall the dependencies and run the
-  application, follow the steps listed below.
+  Run make from =lab-data-service-dashboard= directory to build the
+  application.  The code gets tangled but the test cases will fail.  This is
+  because some of the dependencies have not been set up.  To insall the
+  dependencies and run the application, follow the steps listed below.
 
   #+BEGIN_EXAMPLE
   make
@@ -47,14 +47,13 @@
 
 
 * Run Make again
-  The =make= again and time it should pass all the test cases. Change directory to =lab-data-service-dashboard=
-  and run =make=.
+  The =make= again and time it should pass all the test cases. Change directory
+  to =lab-data-service-dashboard= and run =make=.
 
 
 * Setting up dependencies
-
-  Install all the dependencies for running the =lds= applciation.
-  The =setup.py= script is in the =build/code/deployment/= directory
+  Install all the dependencies for running the =lds= applciation.  The
+  =setup.py= script is in the =build/code/deployment/= directory
   #+BEGIN_EXAMPLE
   cd build/code/deployment/
   python setup.py install
@@ -100,10 +99,10 @@
 
 * Set SQLALCHEMY_DATABASE_URI
   The variable =SQLALCHEMY_DATABASE_URI= has to be set to proper value in
-  =build/code/runtime/config/flask_app_config.py= so that the application
-  can use the database.
+  =build/code/runtime/config/flask_app_config.py= so that the application can
+  use the database.
   #+BEGIN_EXAMPLE
-  SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:yourpswd@localhost/ldsdashboard'
+  SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:<yourpswd>@localhost/ldsdashboard'
   #+END_EXAMPLE
 
 
@@ -116,9 +115,9 @@
 
   
 * Insert Dafault data
-  Go to =build/code/deployment= and open ~dp_setup.py~. Change the
+  Go to =build/code/deployment= and open =db_setup.py=. Change the
   user email and name to your google account e-mail and name. Now 
-  Run db_setup.py to create the database schema with you as an admin.
+  Run =db_setup.py= to create the database schema with you as an admin.
   
   #+BEGIN_EXAMPLE
   cd build/code/deployment
