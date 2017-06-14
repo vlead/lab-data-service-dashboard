@@ -1,4 +1,4 @@
-g#+TITLE: Running Lab Data Service on Developement Environment
+#+TITLE: Running Lab Data Service on Developement Environment
 #+Author: VLEAD
 #+Date: [2017-05-06 Fri]
 #+PROPERTY: results output
