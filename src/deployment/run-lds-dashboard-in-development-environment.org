@@ -125,7 +125,7 @@
   #+END_EXAMPLE
 
 
-* [[./google-oauth-configuration.org][Obtain Google OAuth Credentials]]
+* [[./google_oauth_configuration.org][Obtain Google OAuth Credentials]]
 
 * Configure OAuth for Application
   Edit =src/runtime/config/goauth_config.py= to set =CLIENT_KEY= and
