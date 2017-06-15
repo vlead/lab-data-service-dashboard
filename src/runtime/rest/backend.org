@@ -22,10 +22,7 @@ class Roles(db.Model, UserMixin):
 
     def __repr__(self):
         return '<Role\'s Name is: %r>' %(self.role_name)
-
-    def __init__(self,role):
-        self.role_name = role
-
+        
     def to_dict(self):
         return {
             'role': self.role_name
