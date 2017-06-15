@@ -493,7 +493,7 @@ def create_role():
     if not name:
         return jsonify(success=False, message="No role provided"), 400
 
-    u = Roles(name)
+    u = Roles(role_name=name)
     db.session.add(u)
     try:
         db.session.commit()
