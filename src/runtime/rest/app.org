@@ -41,12 +41,14 @@ This is error handler function. It returns 404.html file when
 an error is raised.
 #+NAME: error_handling
 #+BEGIN_SRC python
-#App 404 error handler, redirects to 404.html whenever non exitent/registered route is tried to be accessed.
+#App 404 error handler, redirects to 404.html whenever non exitent/registered
+#route is tried to be accessed.
 @app.errorhandler(404)
 def handle_404(e):
     return render_template('404.html'), 404
 
-#App 405 error handler, redirects to 405.html whenever a existing/registered route is tried to be accessed using a method which is not allowed.
+#App 405 error handler, redirects to 405.html whenever a existing/registered
+#route is tried to be accessed using a method which is not allowed.
 @app.errorhandler(405)
 def handle_404(e):
     return render_template('405.html'), 405
@@ -63,8 +65,8 @@ a message and success as =False=.
 If the user logged in is admin, function becomes true.
 #+NAME: admin_auth
 #+BEGIN_SRC python  
-#Custom decorator declartions to segregrate CRUD functionality available to an user on the basis of his/her role.
-#1. Admin
+#Custom decorator declartions to segregrate CRUD functionality available to an
+#user on the basis of his/her role.  1. Admin
 def requires_admin_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -73,7 +75,8 @@ def requires_admin_auth(f):
         if 'type' not in session:
             return jsonify(message="Unauthorized", success=False), 401
         if session['type'] != 'admin':
-            return jsonify(message="Sorry,you are not admin. You Dont have access to this", success=False), 401
+            return jsonify(message="Sorry,you are not admin. \
+                        You Dont have access to this", success=False), 401
         return f(*args, **kwargs)
     return decorated
 
@@ -109,8 +112,9 @@ def requires_guest_auth(f):
 
 #+NAME: login_manager
 #+BEGIN_SRC python 
-#LoginManager decorated user_loader function to intialise current_user
-#If your models are declared in a separate module, import them before calling create_all()
+#LoginManager decorated user_loader function to intialise current_user If your
+#models are declared in a separate module, import them before calling
+#create_all()
 from runtime.rest.app.users.db import User, Roles
 db.create_all()
 
@@ -121,13 +125,13 @@ def load_user(user_id):
 
 
 * Register Blueprint(s)
-Database is created. The following code shows the database
-being created.
+  Database is created. The following code shows the database being created.
 #+NAME: blueprints
 #+BEGIN_SRC python 
 
-# Register blueprint(s) which is generally a template for generating main section of our web application.
-# In order to visit the routes in our api we need to register our blueprint (like in unittesting) 
+# Register blueprint(s) which is generally a template for generating main
+# section of our web application.  In order to visit the routes in our api we
+# need to register our blueprint (like in unittesting)
 from runtime.rest.app.users.api import api
 app.register_blueprint(api)
 #+END_SRC
@@ -136,7 +140,8 @@ app.register_blueprint(api)
 * Socket
 #+NAME: socket_workaround
 #+BEGIN_SRC python 
-#Workaround for socket file pipes not getting enough time to restart while changes are made in debugger mode.
+#Workaround for socket file pipes not getting enough time to restart while
+#changes are made in debugger mode.
 time.sleep(3)
 #+END_SRC
 
@@ -155,10 +160,11 @@ make_ssl_devcert('./ssl', host='localhost')
 * Run Server
 #+NAME: run_server
 #+BEGIN_SRC python :tangle run.py
-from app import app
+from app import app as application
 
 if __name__ == '__main__':
-	app.run(host = "localhost", debug = True, ssl_context = ('./ssl.crt', './ssl.key'))
+	application.run(host = "localhost", debug = True,
+                        ssl_context = ('./ssl.crt', './ssl.key'))
 
 #+END_SRC
 

@@ -147,8 +147,8 @@ class Auth:
 #+END_SRC
  
 ** Logout API
-   When user clicks on =logout= button from front end dashboard it will invoke =/logout= api
-   and thereby it will destroy all session variables.
+   When user clicks on =logout= button from front end dashboard it will invoke
+   =/logout= api and thereby it will destroy all session variables.
 
 *** API Design
 
@@ -205,8 +205,9 @@ def logout():
     #+END_EXAMPLE
 
 *** Implementation
-Only Admin has the right to add a user and assign role to him. To add a user =Name= , =Email= and =Role= fields are required.
-Implementation of the =Add User API= is given below.
+    Only Admin has the right to add a user and assign role to him. To add a
+user =Name= , =Email= and =Role= fields are required.  Implementation of the
+=Add User API= is given below.
 
 #+NAME: add_user
 #+BEGIN_SRC python 
@@ -266,7 +267,8 @@ def create_user():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify    
+from flask import Flask, Blueprint, json, render_template, request, session,\
+     jsonify    
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
@@ -452,7 +454,7 @@ if __name__ == '__main__':
 
 #+END_SRC
 ** Add Role
-API to add a role
+   API to add a role
 *** API Design
  - URL :: /add_role
   - Method :: POST
@@ -469,8 +471,9 @@ API to add a role
     http://localhost:5000/add_role
     #+END_EXAMPLE
 *** Implementation
-Admin has the right to add a role thus restricting the access to the LDS servive.To add a role =role_name= field should be given.
-Implementation of the =Add Role= API is given below.
+    Admin has the right to add a role thus restricting the access to the LDS
+servive.To add a role =role_name= field should be given.  Implementation of the
+=Add Role= API is given below.
 #+NAME: add_role
 #+BEGIN_SRC python 
 @api.route('/add_role', methods=['POST'])
@@ -484,7 +487,8 @@ def create_role():
         try:
             name = request.args['role_name']
         except KeyError as e:
-            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+            return jsonify(success=False, message="%s not sent in the request"
+                               % e.args), 400
 
     if not name:
         return jsonify(success=False, message="No role provided"), 400
@@ -509,7 +513,8 @@ def create_role():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
+from flask import Flask, Blueprint, json, render_template, request, session, \
+     jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
@@ -559,7 +564,8 @@ class TestAddRole(TestCase):
         payload = {'role_name': 'admin'}
         headers = {'Content-Type': 'application/json'}
         
-        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
         
         self.assertEqual(response.status_code, 200)
     def test_add_role_2(self):
@@ -567,7 +573,8 @@ class TestAddRole(TestCase):
         payload = {'role_name': ''}
         headers = {'Content-Type': 'application/json'}
         
-        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
         
         self.assertEqual(response.status_code, 400)   
 
@@ -576,7 +583,8 @@ class TestAddRole(TestCase):
         payload = {'role_name': None}
         headers = {'Content-Type': 'application/json'}
         
-        response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
         
         self.assertEqual(response.status_code, 400)
 #+END_SRC
@@ -601,12 +609,11 @@ if __name__ == '__main__':
     #+END_EXAMPLE
 
 *** Implementation
-This API shows the list of all users who are registered for the LDS.
-The implementation is given below.
+    This API shows the list of all users who are registered for the LDS.  The
+implementation is given below.
 
 #+NAME: show_users
 #+BEGIN_SRC python 
-
 @api.route('/users', methods=['GET'])
 @login_required
 def show_users():
@@ -625,7 +632,8 @@ def show_users():
 import unittest
 import os
 import sys
-from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
+from flask import Flask, Blueprint, json, render_template, request, session, \
+     jsonify        
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
@@ -649,70 +657,75 @@ config = {
 #+NAME: test_show_users
 #+BEGIN_SRC python :tangle app/tests/test_show_users.py
 class TestShowUsers(TestCase):
-	TESTING = True
-	def create_app(self):
-		app = Flask(__name__)
-		app.register_blueprint(api, url_prefix=None)
-		app.config.from_object("runtime.config.flask_app_config")
-		app.config['TESTING'] = True
-		app.config['LOGIN_DISABLED'] = True
-		login_manager = LoginManager(app)
-		login_manager.login_view = "users.login"
-		self.app = app.test_client()
-		db.init_app(app)
-		return app
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(api, url_prefix=None)
+        app.config.from_object("runtime.config.flask_app_config")
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
 
-	def setUp(self):
-		app.config['TESTING'] = True
-		app.config['LOGIN_DISABLED'] = True
-		db.create_all()
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        db.create_all()
 
-	def tearDown(self):
-		db.session.remove()
-		db.drop_all()
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
 		
-	def test_show_user_1(self):
-		print "test_show_user_1"
-		payload = {'role_name': 'admin'}
-		headers = {'Content-Type': 'application/json'}
+    def test_show_user_1(self):
+        print "test_show_user_1"
+        payload = {'role_name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
 		
-		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
 		
-		payload = {'name': 'Test1',
+        payload = {'name': 'Test1',
 			       'email': 'test1@gmail.com',
 		           'role' : 'admin'
 		           }
-		headers = {'Content-Type': 'application/json'}
+        headers = {'Content-Type': 'application/json'}
 		
-		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_user", data=json.dumps(payload),
+                                        headers=headers)
 
-		response = self.client.get("/users", headers=headers)
+        response = self.client.get("/users", headers=headers)
 		
-		self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-	def test_show_user_2(self):
-		print "test_show_user_2"
-		payload = {'name': 'admin'}
-		headers = {'Content-Type': 'application/json'}
+    def test_show_user_2(self):
+        print "test_show_user_2"
+        payload = {'name': 'admin'}
+        headers = {'Content-Type': 'application/json'}
         
-		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_role", data=json.dumps(payload),
+                                        headers=headers)
     
-		payload = {
+        payload = {
                     'name': 'Test2',
                     'email': 'test2@gmail.com',
                     'role': ''
                   }
-		headers = {'Content-Type': 'application/json'}
+        headers = {'Content-Type': 'application/json'}
 
-		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+        response = self.client.post("/add_user", data=json.dumps(payload),
+                                        headers=headers)
 
-		response = self.client.get("/users", headers=headers)
-		self.assertEqual(response.status_code, 200)
+        response = self.client.get("/users", headers=headers)
+        self.assertEqual(response.status_code, 200)
 
-	def test_show_user_3(self):
-		print "test_show_user_3"
-		response = self.client.get("/users")
-		self.assertEqual(response.status_code, 200)
+    def test_show_user_3(self):
+        print "test_show_user_3"
+        response = self.client.get("/users")
+        self.assertEqual(response.status_code, 200)
+
 #+END_SRC
 **** Running tests
 #+NAME: run_test_cases
