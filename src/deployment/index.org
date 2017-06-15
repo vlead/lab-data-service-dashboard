@@ -74,7 +74,7 @@ from runtime.rest.app import db
 from runtime.rest.app.users.db import *
 
 def populate():
-    role1 = Roles(role="admin")
+    role1 = Roles(role_name="admin")
     role1.save()
     user = User(name="admin_user",
                 email="admin@email.com",
