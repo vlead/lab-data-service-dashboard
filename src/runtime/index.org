@@ -15,7 +15,7 @@
 
  - [[./rest/index.org][=REST API=]]
 
- - =Web Front End=
+ - [[./rest/web-frontend.org][=Web Front End=]]
 
 * Tangle                                       :boilerplate:
 #+BEGIN_SRC python :eval no :tangle __init__.py

@@ -1,7 +1,18 @@
+#+TITLE: Web Frontend for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  This document illustrates building of Web Frontend for LDS.
+* JS
 ** Docoding a JSON
-These functions take a JSON object,decodes the JSON and generates the specific
-HTML. Basic idea is to automate things. You just have to give JSON specifications
-and all the HTML gets generated with least amount of efforts.
+   These functions take a JSON object,decodes the JSON and generates the
+specific HTML. Basic idea is to automate things. You just have to give JSON
+specifications and all the HTML gets generated with least amount of efforts.
 
 
 #+NAME: Decoding_json
@@ -33,8 +44,9 @@ var attachDivsionsToBody = function(divisions) {
 
 #+END_SRC
 
+* JSON
 ** JSON
-This is a JSON file in which we have given necessary specifications to 
+   This is a JSON file in which we have given necessary specifications to
 generate HTML to add a user to the database.
 #+NAME: JSON_spec_file
 #+BEGIN_SRC json :tangle app/static/js/main.json
