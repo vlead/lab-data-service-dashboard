@@ -1,0 +1,123 @@
+#+TITLE: Plan for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-19 Mon]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
+
+* Introduction
+  - This document briefly explains plan for =lab-data-service-dashboard= project.
+
+
+* Plan ([[https://github.com/vlead/lab-data-service-dashboard/milestone/1][Milestone 1]])
+  :PROPERTIES:
+  :CUSTOM_ID: plan-for-milestone1
+  :END: 
+  This milestone captures the requirements, design and implementation for login
+and logout pages with implementation and deployment.
+
+|------+-------------------------+--------+----------+--------+--------+----------|
+| S.NO | Tasks                   | Github | Expected | Actual | Status | Assignee |
+|      |                         | Issues | Effort   | Effort |        |          |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   1. | Requirements            | [[https://github.com/vlead/lab-data-service-dashboard/issues/1][#1]]     | 2 hrs    | 1 hr   | Done   | Madhavi  |
+|      | Gathering               |        |          |        |        | Puliraju |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   2. | Implement Log in        | [[https://github.com/vlead/lab-data-service-dashboard/issues/2][#2]]     |          |        | Done   | Utkarsh  |
+|      | and logout feature      |        |          |        |        |          |
+|      | with Google             |        |          |        |        |          |
+|      | authentication          |        |          |        |        |          |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   3. | Implement API's         | [[https://github.com/vlead/lab-data-service-dashboard/issues/3][#3]],    |          |        | Done   | Yahnit   |
+|      | for log in and log out, |        |          |        |        |          |
+|      | users and roles         |        |          |        |        |          |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   4. | Implement the           | [[https://github.com/vlead/lab-data-service-dashboard/issues/4][#4]]     |          |        | Done   | Yahnit   |
+|      | unit test cases         |        |          |        |        |          |
+|      | for log in, log out,    |        |          |        |        |          |
+|      | users and roles         |        |          |        |        |          |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   5. | Integration of          | [[https://github.com/vlead/lab-data-service-dashboard/issues/5][#5]]     |          |        | Done   | Utkarsh  |
+|      | google authentication   |        |          |        |        |          |
+|      | with log in and logout  |        |          |        |        |          |
+|      | API's                   |        |          |        |        |          |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   6. | Data Model for Lab      | [[https://github.com/vlead/lab-data-service-dashboard/issues/6][#6]]     |          |        | Done   | Madhavi  |
+|      | Data Service Dashboard  |        |          |        |        | Puliraju |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   7. | Documention to run      | [[https://github.com/vlead/lab-data-service-dashboard/issues/7][#7]]     |          |        | Done   | Madhavi  |
+|      | the lds dashboard in    |        |          |        |        | Puliraju |
+|      | development environment |        |          |        |        |          |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   8. | Auto Deployment         | [[https://github.com/vlead/lab-data-service-dashboard/issues/11][#11]]    |          |        | Done   | Madhavi  |
+|      | of LDS Dashboard        |        |          |        |        | Puliraju |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|   9. | first level Model       | [[https://github.com/vlead/lab-data-service-dashboard/issues/12][#12]]    |          |        | Done   | Madhavi  |
+|      | Review for milestone1   |        |          |        |        | Puliraju |
+|------+-------------------------+--------+----------+--------+--------+----------|
+|  10. | First Review            | [[https://github.com/vlead/lab-data-service-dashboard/issues/13][#13]]    |          |        | Done   | Madhavi  |
+|      | Comments [09-06-2017]   |        |          |        |        | Puliraju |
+|------+-------------------------+--------+----------+--------+--------+----------|
+
+
+  *Note* : Expected and Actual Efforts are calculated in person hours. 
+
+
+* Plan ([[https://github.com/vlead/lab-data-service/milestone/2][Milestone 2]])
+  :PROPERTIES:
+  :CUSTOM_ID: plan-for-milestone2
+  :END: 
+  Implementation of Front End with Login, Logout, Admin and Guest Dashboards as
+  Single Page Applications (SPA). This Implementation does not use any
+  framework. Implementation will be done using pure java script.
+|------+------------------------+--------+----------+--------+-------------+----------|
+| S.NO | Tasks                  | Github | Expected | Actual | Status      | Assignee |
+|      |                        | Issues | Effort   | Effort |             |          |
+|------+------------------------+--------+----------+--------+-------------+----------|
+|   1. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/9][#9]]     |          |        | In Progress | Yahnit,  |
+|      | of Admin Dashboard     |        |          |        |             | Utkarsh  |
+|------+------------------------+--------+----------+--------+-------------+----------|
+|   2. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/10][#10]]    |          |        | In Progress | Yahnit,  |
+|      | of 'Guest' Dashboard   |        |          |        |             | Utkarsh  |
+|------+------------------------+--------+----------+--------+-------------+----------|
+|   3. | Re-Implementation      | [[https://github.com/vlead/lab-data-service-dashboard/issues/14][#14]]    |          |        | In Progress | Utkarsh  |
+|      | of Log in and Log out  |        |          |        |             |          |
+|      | using Single Page      |        |          |        |             |          |
+|      | Application (SPA)      |        |          |        |             |          |
+|------+------------------------+--------+----------+--------+-------------+----------|
+|   4. | Read Json elements     | [[https://github.com/vlead/lab-data-service-dashboard/issues/15][#15]]    |          |        | Done        | Yahnit   |
+|      | and generate html code |        |          |        |             |          |
+|------+------------------------+--------+----------+--------+-------------+----------|
+|   5. | Implement Event        | [[https://github.com/vlead/lab-data-service-dashboard/issues/16][#16]]    |          |        | In Progress | Yahnit   |
+|      | handlers for all       |        |          |        |             |          |
+|      | CRUD operations        |        |          |        |             |          |
+|      | in front end           |        |          |        |             |          |
+|------+------------------------+--------+----------+--------+-------------+----------|
+
+  *Note*: Expected and Actual Efforts are calculated in person hours. 
+
+
+* Realization 
+    :PROPERTIES:
+    :CUSTOM_ID: cc_realization
+    :END:    
+
+  Implementing the above plan will result into the following -
+   + Admin will be able to do all =CRUD= operations on labs data through Admin
+     portal in LDS dashboard.
+   + Admin Role should be able to perform all the =CRUD= operations through LDS
+     dashboard. 
+   + Admin Role should be able to add other users and assign roles to them in
+     Admin portal in LDS dashboard.
+   + Guest Role should be able to =Read/View= the labs data through guest
+     portal in LDS dashboard.
+   + Authentication and Authorization should be provided for all the LDS
+     Dashboard users. 
+   + LDS Dashboard will be able to Generate HTML code from the given JSON
+     specification. 
+
+
+ 
+  

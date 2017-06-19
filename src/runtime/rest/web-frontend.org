@@ -14,7 +14,6 @@
 specific HTML. Basic idea is to automate things. You just have to give JSON
 specifications and all the HTML gets generated with least amount of efforts.
 
-
 #+NAME: Decoding_json
 #+BEGIN_SRC js :app/static/js/tangle main.js 
 var createElements = function(element) {
@@ -48,6 +47,7 @@ var attachDivsionsToBody = function(divisions) {
 ** JSON
    This is a JSON file in which we have given necessary specifications to
 generate HTML to add a user to the database.
+
 #+NAME: JSON_spec_file
 #+BEGIN_SRC json :tangle app/static/js/main.json
 

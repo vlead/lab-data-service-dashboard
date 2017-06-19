@@ -11,7 +11,7 @@
   virtual labs. Based on the given role, user will be able to perform CRUD
   operations on labs data.
 
-1. [[./req/index.org][Requirements]]
+1. [[./requirements/index.org][Requirements]]
 
 2. [[./design/index.org][Design]]
 
