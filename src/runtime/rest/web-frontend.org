@@ -9,6 +9,126 @@
 * Introduction 
   This document illustrates building of Web Frontend for LDS.
 * JS
+** Auth API
+
+#+NAME: auth_api
+#+BEGIN_SRC js 
+var AuthAPI = {
+
+  home: function() {
+	  window.location.href = '/';
+  },
+
+  login: function() {
+    window.location.href = '/login';
+  },
+
+  logout: function() {
+    window.location.href = '/logout';
+  },
+
+};
+
+#+END_SRC
+
+** Get JSON
+
+#+NAME: get_json
+#+BEGIN_SRC js 
+var getJSON = function() {
+  $.ajax({
+    url:'static/js/main.json',
+    dataType:'json',
+    async: false,
+    success: function(response) {
+      data = response['divisions_spec']
+      //console.log(data);
+    },
+    error: function() {
+      data = null;
+      //console.log('Lover of time');
+    }
+  });
+  return data;
+};
+
+#+END_SRC
+
+** Logged In
+This is to check whether a user is logged into LDS or not.This
+function returns true if the user is logged in and returns false
+if the user is not logged in.
+#+NAME: logged_in
+#+BEGIN_SRC js 
+var is_logged_in = function() {
+	$.ajax({
+		url:'logged_in',
+		type: 'GET',
+		contentType:'charset=UTF-8',
+		async: false,
+		success: function(response) {
+			logged = true;
+		},
+		error: function(response) {
+			logged = false;
+		} 
+	});
+	return logged;
+};
+
+#+END_SRC
+
+** Show and Hide containers.
+We can either show or hide the containers depending on our
+requirements. For example,if we want to Add a User,we can
+hide all the containers and display only the Add User
+container.
+#+NAME: show_hide
+#+BEGIN_SRC js 
+function show_all_containers() {
+    var containers = document.querySelectorAll('[id$="-container"]');
+  [].forEach.call(containers, function(container) {
+      container.classList.remove('hidden');
+  });
+}
+
+function hide_all_containers() {
+  var containers = document.querySelectorAll('[id$="-container"]');
+  [].forEach.call(containers, function(container) {
+      container.className = 'hidden';
+  });
+};
+
+#+END_SRC
+
+** Navigate
+We can navigate and get the present hashes at any point of time
+using the functions below.
+#+NAME: navigate
+#+BEGIN_SRC js
+var get_window_hash_path = function() {
+  var hash = window.location.href.split('#')[1] || '';
+};
+
+var navigate = function(path) {
+  var current = window.location.href;
+  window.location.href = current.replace(/#(.*)$/, '') + '#' + path;
+};
+
+#+END_SRC
+** Onload
+Whenever the page refreshes or loads again, the following functions 
+are called. Appropriate HTML is generated based on the hash.
+#+NAME: onload
+#+BEGIN_SRC js
+window.onload = function() {
+  hide_all_containers();
+  index_handler();
+  get_window_hash_path();
+  attachDivsionsToBody(createDivisions());
+};
+
+#+END_SRC  
 ** Docoding a JSON
    These functions take a JSON object,decodes the JSON and generates the
 specific HTML. Basic idea is to automate things. You just have to give JSON
