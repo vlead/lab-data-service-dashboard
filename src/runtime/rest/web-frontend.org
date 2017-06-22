@@ -904,6 +904,111 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
+** Add Discipline
+#+NAME: add_discipline_spec
+#+BEGIN_SRC  
+ var divisions_spec = [
+   {
+      "typeofdiv":"div",
+      "id":"add-discipline-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Discipline"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-discipline",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"disicpline_id_label",
+                  "innerText":"Discipline Id:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-discipline-id-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"discipline_name_label",
+                  "innerText":"Discipline Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-discipline-name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"asset_label",
+                  "innerText":"Asset:"
+                },
+
+                {
+                  "typeofdiv":"select",
+                  "id":"add-asset-id",
+                  "innerText":"Asset:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Asset",
+                  "onclick":""
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Discipline",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
 ** Add Lab
 #+NAME: add_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
