@@ -799,6 +799,88 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 ** LDS Specifications
    This is a JSON file in which the necessary specifications are given to
 generate HTML to do the CRUD operations on LDS database.
+** Add Asset
+#+NAME: add_asset_spec
+#+BEGIN_SRC  
+ var divisions_spec = [
+   {
+      "typeofdiv":"div",
+      "id":"add-asset-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Asset"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-asset",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"asset_path_label",
+                  "innerText":"Path:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-asset-path-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"asset_type_label",
+                  "innerText":"Type:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-asset-type-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Asset",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
+
 ** Add Institute
 #+NAME: add_institute_spec
 #+BEGIN_SRC  
@@ -1009,6 +1091,73 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
+** Add Section
+#+NAME: add_section_spec
+#+BEGIN_SRC  
+ var divisions_spec = [
+   {
+      "typeofdiv":"div",
+      "id":"add-section-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Section"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-section",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"name_label",
+                  "innerText":"Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-section-name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Section",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
+
 ** Add Experiment
 #+NAME: add_experiment_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
@@ -1666,6 +1815,7 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
+
 
 ** Edit Lab
 #+NAME: edit_lab_spec
