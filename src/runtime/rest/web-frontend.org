@@ -1585,6 +1585,88 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
+** Add Developer
+#+NAME: add_developer_spec
+#+BEGIN_SRC  
+ var divisions_spec = [
+   {
+      "typeofdiv":"div",
+      "id":"add-developer-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Developer"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-developer",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"developer_name_label",
+                  "innerText":"Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-developer-name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"developer_email_label",
+                  "innerText":"Email:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-developer-email-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Developer",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
+
 ** Edit Lab
 #+NAME: edit_lab_spec
 #+BEGIN_SRC 
