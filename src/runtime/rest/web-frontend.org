@@ -315,9 +315,9 @@ var attachDivsionsToBody = function(divisions) {
 #+END_SRC
 
 * JSON
-** JSON
-   This is a JSON file in which we have given necessary specifications to
-generate HTML to add a user to the database.
+** User and Role Specifications
+   This is a JSON file in which the necessary specifications are given to
+generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 
 #+NAME: JSON_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
@@ -738,6 +738,630 @@ generate HTML to add a user to the database.
         }
       ]
     },
+    {
+      "typeofdiv":"div",
+      "id":"show-roles-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Show Roles"
+        },
+         {
+          "typeofdiv":"table",
+          "class":"table table-striped",
+          "id":"role-table",
+          "elements":[
+           {
+              "typeofdiv":"thead",
+              "class":"thead",
+              "elements":[
+                  {
+                    "typeofdiv":"tr",
+                    "elements":[
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Id"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Name"
+                     }
+                    ]
+                  } 
+              ]
+           },
+           {
+              "typeofdiv":"tbody",
+              "class":"tbody  "
+           }
+          ]
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"show-roles",
+          "elements":[
+
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+  ]
+}
+
+#+END_SRC
+** LDS Specifications
+   This is a JSON file in which the necessary specifications are given to
+generate HTML to do the CRUD operations on LDS database.
+** Add Lab
+#+NAME: add_lab_spec
+#+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
+{
+  "divisions_spec":[
+    {
+      "typeofdiv":"div",
+      "id":"add-lab-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Lab"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-lab",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"id_label",
+                  "innerText":"Id:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"id-box",
+                  "type":"text"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"name_label",
+                  "innerText":"Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"overview_label",
+                  "innerText":"Overview:"
+                },
+                {
+                  "typeofdiv":"input",
+                   "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-discipline-id",
+                  "innerText":"Discipline:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-institute-id",
+                  "innerText":"Institute:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-developer-id",
+                  "innerText":"Developer:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-hosting-info-id",
+                  "innerText":"HostingInfo:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"integration_level_label",
+                  "innerText":"IntegrationLevel:"
+                },
+                {
+                  "typeofdiv":"input",
+                   "type":"number",
+                   "min":"0",
+                   "max":"6"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-asset-id",
+                  "innerText":"Asset:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-section-id",
+                  "innerText":"Section:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "class":"btn btn-primary",
+                  "type":"button",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+#+END_SRC
+** Edit Lab
+#+NAME: edit_lab_spec
+#+BEGIN_SRC 
+    {
+      "typeofdiv":"div",
+      "id":"update-lab-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Edit Lab"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"edit-lab",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-lab-email",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-name-label",
+                  "innerText":"New Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-name",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-email-label",
+                  "innerText":"New Email:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-email",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-user-role",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"done",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Done",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+
+#+END_SRC
+** Delete Lab
+#+NAME: delete_lab_spec
+#+BEGIN_SRC 
+    {
+      "typeofdiv":"div",
+      "id":"remove-user-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Delete User"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"delete-user",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"delete-user-email",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"delete",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Delete",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    {
+      "typeofdiv":"div",
+      "id":"remove-role-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Delete Role"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"delete-role",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"delete-user-role",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"delete",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Delete Role",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+
+
+#+END_SRC
+** Show Labs
+#+NAME: show_labs_spec
+#+BEGIN_SRC 
+    { 
+      "typeofdiv":"div",
+      "id":"show-users-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Show Users"
+        },
+        {
+          "typeofdiv":"table",
+          "class":"table table-striped",
+          "id":"user-table",
+          "elements":[
+           {
+              "typeofdiv":"thead",
+              "class":"thead",
+              "elements":[
+                  {
+                    "typeofdiv":"tr",
+                    "elements":[
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Id"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Name"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Email"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Role"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":""
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":""
+					 }
+                    ]
+                  } 
+              ]
+           },
+           {
+              "typeofdiv":"tbody",
+              "class":"tbody  "
+           }
+          ]
+
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"show-users",
+          "elements":[
+
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+
+#+END_SRC
+** Add Experiment
+#+NAME: add_exp_spec
+#+BEGIN_SRC  
+   {
+      "typeofdiv":"div",
+      "id":"add-role-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Role"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-role",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"role_label",
+                  "innerText":"Role:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-role-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Role",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+
+#+END_SRC
+** Show Experiments
+#+NAME: show_experiments_spec
+#+BEGIN_SRC 
     {
       "typeofdiv":"div",
       "id":"show-roles-container",
