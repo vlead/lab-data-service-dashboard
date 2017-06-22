@@ -799,6 +799,111 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 ** LDS Specifications
    This is a JSON file in which the necessary specifications are given to
 generate HTML to do the CRUD operations on LDS database.
+** Add Institute
+#+NAME: add_institute_spec
+#+BEGIN_SRC  
+ var divisions_spec = [
+   {
+      "typeofdiv":"div",
+      "id":"add-institute-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Institute"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-institute",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"institute_id_label",
+                  "innerText":"Institute Id:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-institute-id-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"institute_name_label",
+                  "innerText":"Institute Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-institute-name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"asset_label",
+                  "innerText":"Asset:"
+                },
+
+                {
+                  "typeofdiv":"select",
+                  "id":"add-asset-id",
+                  "innerText":"Asset:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Asset",
+                  "onclick":""
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Institute",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
 ** Add Lab
 #+NAME: add_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
@@ -1316,70 +1421,6 @@ generate HTML to do the CRUD operations on LDS database.
           "id":"show-users",
           "elements":[
 
-          ]
-        },
-        {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
-        }
-      ]
-    },
-
-#+END_SRC
-** Add Experiment
-#+NAME: add_exp_spec
-#+BEGIN_SRC  
-   {
-      "typeofdiv":"div",
-      "id":"add-role-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Add Role"
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"add-role",
-          "elements":[
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"label",
-                  "id":"role_label",
-                  "innerText":"Role:"
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"add-role-box",
-                  "type":"text"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"input",
-                  "id":"add",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Add Role",
-                  "onclick":""
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"cancel",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Cancel",
-                  "onclick":""
-                }
-              ]
-            }
           ]
         },
         {
