@@ -78,6 +78,24 @@ var is_logged_in = function() {
 
 #+END_SRC
 
+** Hash to Handler Map
+=hash_to_handlers= is an object which maps a =hash= to a 
+=handler= so that when the hash is changed, appropriate
+handler is called.
+
+#+NAME: hash_to_handlers_map
+#+BEGIN_SRC js
+hash_to_handlers_map = {home:'home'};
+
+var handlers_map = function () {
+  var select = document.querySelectorAll('[id^="home-btn-"]');
+  [].forEach.call(select, function (hash_name) {
+    var id = hash_name.id.slice(9);
+    hash_to_handlers_map[id.valueOf()] = id;
+  });
+};
+
+#+END_SRC
 ** Show and Hide containers.
 We can either show or hide the containers depending on our
 requirements. For example,if we want to Add a User,we can
@@ -101,6 +119,109 @@ function hide_all_containers() {
 
 #+END_SRC
 
+** Index Handler
+Whenever hash is changed to 'index', index_handler function
+is called which hides all the other conatainers and displays
+only index page based on whether the user is logged in or not.
+#+NAME: index_handler
+#+BEGIN_SRC js
+var index_handler = function() {
+  var logged = is_logged_in();
+  var auth_btn = $('#login-logout-btn')[0];
+  var span_btn = $('#login-logout-spn')[0];
+  if (logged) {
+    get_users();
+    get_roles();
+    show_one_container('side-nav-container');
+    load_role_users();
+    auth_btn.onclick = AuthAPI.logout;
+    auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGOUT';
+    span_btn = $('#login-logout-spn')[0];
+    span_btn.className = 'glyphicon glyphicon-log-out';
+  }
+  else {
+    hide_all_containers();
+    auth_btn.onclick = AuthAPI.login;
+    auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGIN';
+    span_btn = $('#login-logout-spn')[0];
+    span_btn.className = 'glyphicon glyphicon-log-in';
+  }
+};
+
+#+END_SRC
+** Get Users
+AJAX call is made to the backend server to get the users availed
+to LDS.
+#+NAME: get_users
+#+BEGIN_SRC js
+var get_users = function() {
+    $.ajax({
+      url: 'users',
+      type: 'GET',
+      contentType: 'charset=UTF-8',
+      async: false,
+      success: function (response) {
+        users_List = response.users;
+      },
+      error: function (response) {
+        users_List = null;
+      }
+    });
+};
+
+#+END_SRC
+** Get Roles
+AJAX call is made to the backend server to get the roles availed
+to LDS.
+#+NAME: get_roles
+#+BEGIN_SRC js
+var get_roles = function() {
+    $.ajax({
+      url: 'roles',
+      type: 'GET',
+      contentType: 'charset=UTF-8',
+      async: false,
+      success: function (response) {
+        roles_List = response.roles;
+      },
+      error: function (response) {
+        roles_List = null;
+      }
+    });
+}; 
+
+#+END_SRC
+
+** Delete User
+AJAX call is made to the backend server to delete a user availed
+to LDS.
+#+NAME: delete_user
+#+BEGIN_SRC js
+var remove_users = function (button) {
+$(document).on('click', '#'+button.id, function(clickEvent) {
+    var data = JSON.stringify({
+      user_email: $('#'+button.id).attr('email')
+    });
+    $.ajax({
+      url: 'delete_user',
+      data: data,
+      type: 'POST',
+      contentType: 'application/json;charset=utf-8',
+      async: false,
+      success: function (response) {
+        get_users();
+        window.alert ('User was deleted.');
+        populate_tables_update();
+        updateHelperFunction();
+      },
+      error: function (response) {
+        window.alert ('There was an error deleting the user, please check the information you provided.');
+      }
+    });
+});
+}
+
+#+END_SRC
 ** Navigate
 We can navigate and get the present hashes at any point of time
 using the functions below.
