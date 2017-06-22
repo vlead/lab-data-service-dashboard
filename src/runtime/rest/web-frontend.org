@@ -1489,6 +1489,102 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
+** Add Hosting Info
+#+NAME: add_hosting_info_spec
+#+BEGIN_SRC  
+ var divisions_spec = [
+   {
+      "typeofdiv":"div",
+      "id":"add-hosting-info-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Hosting Info"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-hosting-info",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"hosted_url_label",
+                  "innerText":"Hosted URL:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-hosted-url-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"hosting_status_label",
+                  "innerText":"Hosting Status:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-hosting-status-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"hosting_on_label",
+                  "innerText":"Hosted On:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-hosted-on-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Hosting Info",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
 ** Edit Lab
 #+NAME: edit_lab_spec
 #+BEGIN_SRC 
