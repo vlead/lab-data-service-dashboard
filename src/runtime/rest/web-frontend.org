@@ -119,6 +119,36 @@ function hide_all_containers() {
 
 #+END_SRC
 
+** Register on hash change
+Whenever =hash= is changed,the change is detected and the function
+checks if the new hash is valid or not. If the new hash is valid,
+we are navigated to the new hash, else an error is thrown. 
+
+#+NAME: register_on_hash_change
+#+BEGIN_SRC js
+var register_onhashchange_handlers = function(hash_to_handlers_map) {
+  $(window).on('hashchange', function(e) {
+    hash_path = get_window_hash_path();
+    console.log(hashNotClicked);
+    if (hash_to_handlers_map.hasOwnProperty(hash_path)) {
+      if (!hashNotClicked) {
+        document.getElementById('home-btn-'+ hash_path).click();
+      }
+    //  hashChangeUpdate();
+    //  hide_all_containers();
+    //  show_one_container('side-nav-container');
+    //  show_one_container(hash_path+'-container');
+    //  navigate(hash_path);
+    }
+    else {
+      window.alert('You are trying to access a wrong page');
+      navigate('home');
+    }
+      hashNotClicked=false;
+  });
+};
+
+#+END_SRC
 ** Index Handler
 Whenever hash is changed to 'index', index_handler function
 is called which hides all the other conatainers and displays
@@ -242,11 +272,16 @@ Whenever the page refreshes or loads again, the following functions
 are called. Appropriate HTML is generated based on the hash.
 #+NAME: onload
 #+BEGIN_SRC js
-window.onload = function() {
+window.onload = function () {
+  navigate('home');
+  attachDivsionsToBody(createDivisions());
   hide_all_containers();
   index_handler();
   get_window_hash_path();
-  attachDivsionsToBody(createDivisions());
+  onClickFunctions();
+  onChangeFunctions();
+  handlers_map();
+  register_onhashchange_handlers(hash_to_handlers_map);
 };
 
 #+END_SRC  
