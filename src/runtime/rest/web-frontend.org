@@ -55,9 +55,9 @@ var getJSON = function() {
 #+END_SRC
 
 ** Logged In
-This is to check whether a user is logged into LDS or not.This
-function returns true if the user is logged in and returns false
-if the user is not logged in.
+   This is to check whether a user is logged into LDS or not.This function
+returns true if the user is logged in and returns false if the user is not
+logged in.
 #+NAME: logged_in
 #+BEGIN_SRC js 
 var is_logged_in = function() {
@@ -79,9 +79,8 @@ var is_logged_in = function() {
 #+END_SRC
 
 ** Hash to Handler Map
-=hash_to_handlers= is an object which maps a =hash= to a 
-=handler= so that when the hash is changed, appropriate
-handler is called.
+   =hash_to_handlers= is an object which maps a =hash= to a =handler= so that
+when the hash is changed, appropriate handler is called.
 
 #+NAME: hash_to_handlers_map
 #+BEGIN_SRC js
@@ -97,10 +96,9 @@ var handlers_map = function () {
 
 #+END_SRC
 ** Show and Hide containers.
-We can either show or hide the containers depending on our
-requirements. For example,if we want to Add a User,we can
-hide all the containers and display only the Add User
-container.
+   We can either show or hide the containers depending on our requirements. For
+example,if we want to Add a User,we can hide all the containers and display
+only the Add User container.
 #+NAME: show_hide
 #+BEGIN_SRC js 
 function show_all_containers() {
@@ -120,9 +118,9 @@ function hide_all_containers() {
 #+END_SRC
 
 ** Register on hash change
-Whenever =hash= is changed,the change is detected and the function
-checks if the new hash is valid or not. If the new hash is valid,
-we are navigated to the new hash, else an error is thrown. 
+   Whenever =hash= is changed,the change is detected and the function checks if
+the new hash is valid or not. If the new hash is valid, we are navigated to the
+new hash, else an error is thrown.
 
 #+NAME: register_on_hash_change
 #+BEGIN_SRC js
@@ -150,9 +148,9 @@ var register_onhashchange_handlers = function(hash_to_handlers_map) {
 
 #+END_SRC
 ** Index Handler
-Whenever hash is changed to 'index', index_handler function
-is called which hides all the other conatainers and displays
-only index page based on whether the user is logged in or not.
+   Whenever hash is changed to 'index', index_handler function is called which
+hides all the other conatainers and displays only index page based on whether
+the user is logged in or not.
 #+NAME: index_handler
 #+BEGIN_SRC js
 var index_handler = function() {
@@ -180,8 +178,7 @@ var index_handler = function() {
 
 #+END_SRC
 ** Get Users
-AJAX call is made to the backend server to get the users availed
-to LDS.
+   AJAX call is made to the backend server to get the users availed to LDS.
 #+NAME: get_users
 #+BEGIN_SRC js
 var get_users = function() {
@@ -201,8 +198,7 @@ var get_users = function() {
 
 #+END_SRC
 ** Get Roles
-AJAX call is made to the backend server to get the roles availed
-to LDS.
+   AJAX call is made to the backend server to get the roles availed to LDS.
 #+NAME: get_roles
 #+BEGIN_SRC js
 var get_roles = function() {
@@ -223,8 +219,7 @@ var get_roles = function() {
 #+END_SRC
 
 ** Delete User
-AJAX call is made to the backend server to delete a user availed
-to LDS.
+   AJAX call is made to the backend server to delete a user availed to LDS.
 #+NAME: delete_user
 #+BEGIN_SRC js
 var remove_users = function (button) {
@@ -253,8 +248,8 @@ $(document).on('click', '#'+button.id, function(clickEvent) {
 
 #+END_SRC
 ** Navigate
-We can navigate and get the present hashes at any point of time
-using the functions below.
+   We can navigate and get the present hashes at any point of time using the
+functions below.
 #+NAME: navigate
 #+BEGIN_SRC js
 var get_window_hash_path = function() {
@@ -267,9 +262,9 @@ var navigate = function(path) {
 };
 
 #+END_SRC
-** Onload
-Whenever the page refreshes or loads again, the following functions 
-are called. Appropriate HTML is generated based on the hash.
+** On load
+   Whenever the page refreshes or loads again, the following functions are
+called. Appropriate HTML is generated based on the hash.
 #+NAME: onload
 #+BEGIN_SRC js
 window.onload = function () {
@@ -326,102 +321,478 @@ generate HTML to add a user to the database.
 
 #+NAME: JSON_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
+{
+  "divisions_spec":[
+    {
+      "typeofdiv":"div",
+      "id":"add-user-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add User"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-user",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"name_label",
+                  "innerText":"Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"email_label",
+                  "innerText":"Email:"
+                },
+                {
+                  "typeofdiv":"input",
+                   "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"add-user-role",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "class":"btn btn-primary",
+                  "type":"button",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    {
+      "typeofdiv":"div",
+      "id":"add-role-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Role"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-role",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"role_label",
+                  "innerText":"Role:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add-role-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Role",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    {
+      "typeofdiv":"div",
+      "id":"update-user-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Edit User"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"edit-user",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-user-email",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-name-label",
+                  "innerText":"New Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-name",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-email-label",
+                  "innerText":"New Email:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-email",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-user-role",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"done",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Done",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    {
+      "typeofdiv":"div",
+      "id":"remove-user-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Delete User"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"delete-user",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"delete-user-email",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"delete",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Delete",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    {
+      "typeofdiv":"div",
+      "id":"remove-role-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Delete Role"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"delete-role",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"delete-user-role",
+                  "innerText":"Role:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"delete",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Delete Role",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    { 
+      "typeofdiv":"div",
+      "id":"show-users-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Show Users"
+        },
+        {
+          "typeofdiv":"table",
+          "class":"table table-striped",
+          "id":"user-table",
+          "elements":[
+           {
+              "typeofdiv":"thead",
+              "class":"thead",
+              "elements":[
+                  {
+                    "typeofdiv":"tr",
+                    "elements":[
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Id"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Name"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Email"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Role"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":""
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":""
+					 }
+                    ]
+                  } 
+              ]
+           },
+           {
+              "typeofdiv":"tbody",
+              "class":"tbody  "
+           }
+          ]
 
-var divisions_spec = [
-  
-  {
-    "typeofdiv":"div",
-    "id": "add-user-container",
-    "class":"hidden",
-    "elements": [
-      {
-	"typeofdiv": "p",
-	"innerHTML":"Add User"
-      },
-      {
-	"typeofdiv": "ul",
-	"id":"add-user",
-	"elements":[
-	  {
-	    "typeofdiv": "li",
-	    "elements":[
-	      {
-		"typeofdiv": "label",
-		"id": "name_label",
-		"innerText": "Name:"
-	      },
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"show-users",
+          "elements":[
 
-	      {
-		"typeofdiv": "input",
-		"id": "name-box",
-		"type": "text"
-	      }
-	    ]
-	  },
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    },
+    {
+      "typeofdiv":"div",
+      "id":"show-roles-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Show Roles"
+        },
+         {
+          "typeofdiv":"table",
+          "class":"table table-striped",
+          "id":"role-table",
+          "elements":[
+           {
+              "typeofdiv":"thead",
+              "class":"thead",
+              "elements":[
+                  {
+                    "typeofdiv":"tr",
+                    "elements":[
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Id"
+                     },
+                     {
+                      "typeofdiv":"th",
+                      "innerHTML":"Name"
+                     }
+                    ]
+                  } 
+              ]
+           },
+           {
+              "typeofdiv":"tbody",
+              "class":"tbody  "
+           }
+          ]
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"show-roles",
+          "elements":[
 
-	  {
-	    "typeofdiv": "li",
-	    "elements":[
-	      {
-		"typeofdiv": "label",
-		"id": "email_label",
-		"innerText": "Email:"
-	      },
-
-	      {
-		"typeofdiv": "input",
-		"id": "email-box",
-		"type": "text"
-	      }
-	    ]
-	  },
-
-
-	  {
-	    "typeofdiv": "li",
-	    "elements":[
-	      {
-		"typeofdiv": "label",
-		"id": "role_label",
-		"innerText": "Role:"
-	      },
-
-	      {
-		"typeofdiv": "input",
-		"id": "role-box",
-		"type": "text"
-	      }
-	    ]
-	  },
-	  {
-	    "typeofdiv": "li",
-	    "elements":[
-	      {
-		"typeofdiv": "button",
-		"id": "add",
-		"value": "Add",
-		"onclick":""
-	      },
-
-	      {
-		"typeofdiv": "button",
-		"id": "cancel",
-		"value": "Cancel",
-		"onclick":""
-	      }
-	    ]
-	  }
-	]
-      },
-
-
-      {
-	"typeofdiv": "label",
-	"id": "error-box",
-	"value": "Error"
-      }
-    ]
-  }
-]
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+  ]
+}
 
 #+END_SRC
