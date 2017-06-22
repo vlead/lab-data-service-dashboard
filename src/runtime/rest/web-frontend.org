@@ -1009,6 +1009,246 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
+** Add Experiment
+#+NAME: add_experiment_spec
+#+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
+ var divisions_spec = [
+    {
+      "typeofdiv":"div",
+      "id":"add-experiment-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Add Experiment"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"add-experiment",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"id_label",
+                  "innerText":"Id:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"id-box",
+                  "type":"text"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"name_label",
+                  "innerText":"Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"name-box",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"overview_label",
+                  "innerText":"Overview:"
+                },
+                {
+                  "typeofdiv":"input",
+                   "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"discipline_label",
+                  "innerText":"Discipline:"
+                },
+                {
+                  "typeofdiv":"select",
+                  "id":"add-discipline-id",
+                  "innerText":"Discipline:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"institute_label",
+                  "innerText":"Institute:"
+                },
+                {
+                  "typeofdiv":"select",
+                  "id":"add-institute-id",
+                  "innerText":"Institute:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"developer_label",
+                  "innerText":"Developer:"
+                },
+
+                {
+                  "typeofdiv":"select",
+                  "id":"add-developer-id",
+                  "innerText":"Developer:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Developer",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"hosting_info_label",
+                  "innerText":"Hosting Info:"
+                },
+                {
+                  "typeofdiv":"select",
+                  "id":"add-hosting-info-id",
+                  "innerText":"Hosting Info:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Hosting Info",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"integration_level_label",
+                  "innerText":"Integration Level:"
+                },
+                {
+                  "typeofdiv":"input",
+                   "type":"number",
+                   "min":"0",
+                   "max":"6"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"asset_label",
+                  "innerText":"Asset:"
+                },
+
+                {
+                  "typeofdiv":"select",
+                  "id":"add-asset-id",
+                  "innerText":"Asset:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Asset",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"section_label",
+                  "innerText":"Section:"
+                },
+                {
+                  "typeofdiv":"select",
+                  "id":"add-section-id",
+                  "innerText":"Section:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add Section",
+                  "onclick":""
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"add",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Add",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "class":"btn btn-primary",
+                  "type":"button",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
 ** Add Lab
 #+NAME: add_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
