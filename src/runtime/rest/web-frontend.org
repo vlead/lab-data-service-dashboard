@@ -317,11 +317,7 @@ $(document).on('click', '#add-role-sbt', function(clickEvent) {
 #+NAME: update_user_table
 #+BEGIN_SRC js
 var populate_tables_user = function() {
-  console.log($('#user-table').find('tr:not(:first)'));
-  console.log($('#user-table').find('td'));
-  $('#user-table').find('td').remove();
   $('#user-table').find('tr:not(:first)').remove();
-  console.log('removed');
   var tableRef = document.getElementById('user-table').getElementsByTagName('tbody')[0];
   for (var i in users_List) {
       var newRow = tableRef.insertRow(-1);
@@ -336,6 +332,7 @@ var populate_tables_user = function() {
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
       newCell.appendChild(document.createTextNode(users_List[i].role));
+      
       var newCell = newRow.insertCell(-1);
       var updateButton = document.createElement('button');
       updateButton.setAttribute('id','update-user-pre-sbt-'+i);
@@ -344,16 +341,17 @@ var populate_tables_user = function() {
       updateButton.setAttribute('role', users_List[i].role);
       updateButton.appendChild(document.createTextNode('Update'));
       newCell.appendChild(updateButton);
+
       var newCell = newRow.insertCell(-1);
-      var updateButton = document.createElement('button');
-      updateButton.setAttribute('id','remove-user-pre-sbt-'+i);
-      updateButton.setAttribute('email', users_List[i].email);
-      updateButton.appendChild(document.createTextNode('Delete'));
-      newCell.appendChild(updateButton);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-user-pre-sbt-'+i);
+      removeButton.setAttribute('email', users_List[i].email);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+
   }
   updateHelperFunction();
 };
-
 #+END_SRC
 ** Update User Helper on Admin Dash
 #+NAME: updateUserHelperFunction
@@ -376,7 +374,8 @@ var update_users = function(button) {
 	email = $('#'+button.id).attr('email');
   name = $('#'+button.id).attr('name');
   role = $('#'+button.id).attr('role');
-  $(document).on('click', '#'+button.id, function(clickEvent){
+
+  $('#'+button.id).on('click', function(clickEvent){
     hashNotClicked=true;
     $('#update-user-sbt').attr('email',email);
     $('#edit-new-name').val(name);
@@ -413,9 +412,8 @@ $(document).on('click', '#update-user-sbt', function(clickEvent) {
    AJAX call is made to the backend server to delete a user availed to LDS.
 #+NAME: delete_user
 #+BEGIN_SRC js
-
 var remove_users = function (button) {
-$(document).on('click', '#'+button.id, function(clickEvent) {
+$('#'+button.id).on('click', function(clickEvent) {   
     var data = JSON.stringify({
       user_email: $('#'+button.id).attr('email')
     });
@@ -436,7 +434,6 @@ $(document).on('click', '#'+button.id, function(clickEvent) {
     });
 });
 }
-
 #+END_SRC
 ** Update Role Tables
 #+NAME: update_role_table
@@ -450,21 +447,22 @@ var populate_tables_role = function() {
       newCell.appendChild(document.createTextNode(Number(i)+1));
       var newCell = newRow.insertCell(-1);
       newCell.appendChild(document.createTextNode(roles_List[i]));
+      
       var newCell = newRow.insertCell(-1);
-      var updateButton = document.createElement('button');
-      updateButton.setAttribute('id','remove-role-pre-sbt-'+i);
-      updateButton.setAttribute('role',roles_List[i]);
-      updateButton.appendChild(document.createTextNode('Delete'));
-      newCell.appendChild(updateButton);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-role-pre-sbt-'+i);
+      removeButton.setAttribute('role',roles_List[i]);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
   }
   removeHelperFunction();
 };
+
 #+END_SRC
 ** Update Role Helper on Admin Dash
 #+NAME: updateRoleHelperFunction
 #+BEGIN_SRC js
 var removeHelperFunction = function() {
-  console.log('called');
   var buttons = document.querySelectorAll('[id^="remove-role-pre-sbt"]');
     [].forEach.call(buttons, function (button) {
        remove_roles(button);
@@ -577,7 +575,6 @@ window.onload = function () {
   handlers_map();
   register_onhashchange_handlers(hash_to_handlers_map);
 };
-
 #+END_SRC  
 * JSON
 ** User and Role Specifications
