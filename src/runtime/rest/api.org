@@ -1421,391 +1421,87 @@ if __name__ == '__main__':
 #+END_SRC
 * HTML
 ** Login
-This is the HTML code for Login page
-#+NAME: login_page
-#+BEGIN_SRC html :tangle app/templates/login.html
+The App is now a SPA. Here's the basic skeleton.
+~Side Nav to be removed from here in future releases.~
+#+NAME: index
+#+BEGIN_SRC html :tangle app/templates/index.html
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
-    <title>LOGIN</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700|Nosifer">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="../static/css/style.css" rel="stylesheet">
-    <script src="static/js/login.js"></script>
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes"/>
+	<title>LDS Dashboard</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="./static/css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->	
+	<script type="text/javascript" src="./static/js/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="./static/js/main.js"></script>
 </head>
 <body>
-    <header id="top" class="header">
-        <div class="text-vertical-center">
-            <h1>WELCOME</h1>
-            <h3>TO</h3>
-            <h2>LAB DATA SERVICE</h2>
-            <br>
-            <button class= "btn btn-dark btn-lg" onclick="window.location.href='{{auth_url}}'">LOGIN</button>
-        </div>
-    </header>
-</button>
-
-</body>
-</html>
-#+END_SRC
-
-** Guest Home
-#+NAME: guest_home
-#+BEGIN_SRC html :tangle app/templates/guest_home.html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>HOME</title>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="static/js/guest.js"></script>
-    <link href="../static/css/style.css" rel="stylesheet">
-
-
-</head>
-<body id="body">
-    <div class="wrapper">
-    <header class="main-header">    
-      <nav class="navbar navbar navbar-static-top  navbar-inverse">
-      <!-- Sidebar toggle button-->
-        <a href="{{ data['email'] }}" class="sidebar-toggle" data-toggle="push-menu" role="button">
-          <span class="sr-only">Toggle navigation</span>
-        </a>
-  <div class="navbar-header">
-        <a class="navbar-brand" href="#">LAB DATA SERVICE</a>
-      </div>
-
-        <div class="navbar-custom-menu">
-          <ul class="nav navbar-nav navbar-right">
-            <!-- Messages: style can be found in dropdown.less-->     
-            <!-- User Account: style can be found in dropdown.less -->
-            <li class="dropdown">
-              <button class="navbar-btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" >{{data['email']}}
-                <span class="caret"></span></button>
-              <ul class="dropdown-menu">
-                <li><a href='#'> {{data['name']}}</a> </li>
-                <li><a href="/">Home</a></li>
-                <li><a href="/logout">Logout</a></li>
-              </ul>
-            </li>
-            <li> <span class="col-sm-4"></span> </li>
-              <!--
-            </div>
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="col-sm-4">{{data['name']}}</span>
-              </a>
-              <ul class="dropdown-menu">
-         
-                <li class="user-header">
-                  <p> 
-                    {{data['email']}}
-                  </p>
-                </li>
-     
-                <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="/" class="btn btn-default btn-flat">Home</a>
-                  </div>
-                  <div class="pull-right">
-                    <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
-                  </div>
-                </li>
-              </ul> //-->
-          </ul>
-        
-        </div>
-      
-      </nav>
-    </header>  
-<!--
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="side-header">MAIN NAVIGATION</li>
-        
-          <ul class="">
-               <li> <a  href="/inactive-list">GET LABS</a>                            </li>       
-               <li> <a  href='/active-list'>GET LAB</a>                               </li>         
-               <li> <a  href='/view-student'> GET LAB By Institute</a>                </li>          
-               <li> <a  href='/view-registration'>GET LAB By Lab Name</a>             </li>        
-               <li> <a  href='/monthly-registration'> GET LAB By Discipline</a>       </li>          
-               <li> <a  href='/reset-password'> GET LAB By Asset</a>                  </li>         
-               <li> <a  href='/add-student-admin'> GET LAB By passing keyword</a>     </li>          
-               <li> <a  href='/update-mess'>GET INSTITUTES</a>                        </li>        
-               <li> <a  href='/change-registration'>GET INSTITUTE By Institute ID</a> </li>             
-               <li> <a  href='/cancel-mess'> GET DISCIPLINES</a>                      </li>             
-               <li> <a  href='/complaints'> GET DISCIPLINE BY Discipline ID</a>       </li>              
-               <li> <a  href='/cancel-mess'> GET EXPERIMENTS</a>                      </li>              
-               <li> <a  href='/cancel-mess'> GET EXPERIMENTS By Experiment ID</a>     </li>                      
-               <li> <a  href='/cancel-mess'> GET SECTIONS</a>                         </li>              
-               <li> <a  href='/cancel-mess'> GET HOSTING INFO</a>                     </li>                  
-               <li> <a  href='/cancel-mess'> GET Integration Status</a>               </li>                
-          </ul>
-        </li>
-      
-      </ul>
-    </section>
-  </aside>
-//-->
-<div class="col-lg-3 col-md-3 col-sm-4">
-  <div class="list-group table-of-contents">
-    <a class="list-group-item" href="/inactive-list">GET LABS</a>
-    <a class="list-group-item" href='/active-list'>GET LAB</a>
-    <a class="list-group-item" href='/view-student'> GET LAB By Institute</a>
-    <a class="list-group-item" href='/view-registration'>GET LAB By Lab Name</a>
-    <a class="list-group-item" href='/monthly-registration'> GET LAB By Discipline</a>
-    <a class="list-group-item" href='/reset-password'> GET LAB By Asset</a>
-    <a class="list-group-item" href='/add-student-admin'> GET LAB By passing keyword</a>
-    <a class="list-group-item" href='/update-mess'>GET INSTITUTES</a>
-    <a class="list-group-item" href='/change-registration'>GET INSTITUTE By Institute ID</a>
-    <a class="list-group-item" href='/cancel-mess'> GET DISCIPLINES</a>
-    <a class="list-group-item" href='/complaints'> GET DISCIPLINE BY Discipline ID</a>
-
-    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS</a>
-    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS By Experiment ID</a>
-    <a class="list-group-item" href='/cancel-mess'> GET SECTIONS</a>
-    <a class="list-group-item" href='/cancel-mess'> GET HOSTING INFO</a>
-    <a class="list-group-item" href='/cancel-mess'> GET Integration Status</a>
-  </div>
+	<nav class="navbar navbar-inverse"> 
+  		<div class="container-fluid">
+    		<div class="navbar-header">
+      			<a class="navbar-brand">LDS Dashboard</a>
+    		</div>
+    		<ul class="nav navbar-nav">
+      			<li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick="#"><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
+    		</ul>
+    		<ul class="nav navbar-nav navbar-right">
+      			<li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
+    		</ul>
+  		</div>
+	</nav>
+<div id="side-nav-container" class="sidenav">
+  	<div class="list-group table-of-contents">
+		<button id="home-btn-add-user" class="list-group-item"> Add User </button>
+		<button id="home-btn-add-role" class="list-group-item"> Add Role </button>
+		<button id="home-btn-show-users" class="list-group-item"> Show Users </button>
+		<button id="home-btn-show-roles" class="list-group-item"> Show Roles </button>
+  	</div>
 </div>
-  <div class = "intro-heading" style="text-align:center">
-  <h3> Hello, {{data['name']}}! </h3>
-  <h4> Email id - {{data['email']}} </h4>
-  <h4> Role - {{data['role']}} </h4>
-  </div>
+<div id=main>
+
 </div>
+
 </body>
 </html>
 
 #+END_SRC
 
-** Admin Home
-#+NAME: admin_home
-#+BEGIN_SRC html :tangle app/templates/admin_home.html :eval no :noweb yes
-<!DOCTYPE html>
-<html>
-<head>
-    <title>HOME</title>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="static/js/guest.js"></script>
-    <link href="../static/css/style.css" rel="stylesheet">
+* CSS
+** CSS
+This is styling code for our side nav bar.
+~Will be removed from here in future releases~
+#+NAME: style
+#+BEGIN_SRC :tangle app/static/css/style.css 
+.sidenav {
+height: 100%;
+width: 250px;
+z-index: 1;
+top: 0;
+left: 0;
+margin-top: 100px;
+vertical-align:middle;
+position: fixed;
+background-color: #FFF;
+overflow-x: hidden;
+transition: 0.5s;
+}
 
+.sidenav button {
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+color: #818181;
+display: block;
+transition: 0.3s;
+}
 
-</head>
-<body>
-    <div class="wrapper">
-    <header class="main-header">    
-      <nav class="navbar navbar navbar-static-top  navbar-inverse">
-      <!-- Sidebar toggle button-->
-        <a href="{{ data['email'] }}" class="sidebar-toggle" data-toggle="push-menu" role="button">
-          <span class="sr-only">Toggle navigation</span>
-        </a>
-    <div class="navbar-header">
-        <a class="navbar-brand" href="#">LAB DATA SERVICE</a>
-      </div>
-
-        <div class="navbar-custom-menu">
-          <ul class="nav navbar-nav navbar-right">
-            <!-- Messages: style can be found in dropdown.less-->     
-            <!-- User Account: style can be found in dropdown.less -->
-            <li class="dropdown">
-              <button class="navbar-btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" >{{data['email']}}
-                <span class="caret"></span></button>
-              <ul class="dropdown-menu">
-                <li><a href='#'> {{data['name']}}</a> </li>
-                <li><a href="/">Home</a></li>
-                <li><a href="/logout">Logout</a></li>
-              </ul>
-            </li>
-            <li> <span class="col-sm-4"></span> </li>
-              <!--
-            </div>
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="col-sm-4">{{data['name']}}</span>
-              </a>
-              <ul class="dropdown-menu">
-         
-                <li class="user-header">
-                  <p> 
-                    {{data['email']}}
-                  </p>
-                </li>
-     
-                <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="/" class="btn btn-default btn-flat">Home</a>
-                  </div>
-                  <div class="pull-right">
-                    <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
-                  </div>
-                </li>
-              </ul> //-->
-          </ul>
-        
-        </div>
-      
-      </nav>
-    </header>  
-
-<div class="col-lg-3 col-md-3 col-sm-4">
-  <div class="list-group table-of-contents">
-    <a class="list-group-item" href="/inactive-list">GET LABS</a>
-    <a class="list-group-item" href='/active-list'>GET LAB</a>
-    <a class="list-group-item" href='/view-student'> GET LAB By Institute</a>
-    <a class="list-group-item" href='/view-registration'>GET LAB By Lab Name</a>
-    <a class="list-group-item" href='/monthly-registration'> GET LAB By Discipline</a>
-    <a class="list-group-item" href='/reset-password'> GET LAB By Asset</a>
-    <a class="list-group-item" href='/add-student-admin'> GET LAB By passing keyword</a>
-    <a class="list-group-item" href='/view-mess-bill'>ADD LAB</a>
-    <a class="list-group-item" href='/view-student-bill'>UPDATE LAB</a>
-    <a class="list-group-item" href='/update-mess'>GET INSTITUTES</a>
-    <a class="list-group-item" href='/change-registration'>GET INSTITUTE By Institute ID</a>
-    <a class="list-group-item" href='/view_daily_users'>ADD INSTITUTE</a>
-    <a class="list-group-item" href='/cancel-mess'> GET DISCIPLINES</a>
-    <a class="list-group-item" href='/complaints'> GET DISCIPLINE BY Discipline ID</a>
-
-    <a class="list-group-item" href='/cancel-mess'> ADD DISCIPLINE</a>
-    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS</a>
-    <a class="list-group-item" href='/cancel-mess'> GET EXPERIMENTS By Experiment ID</a>
-    <a class="list-group-item" href='/cancel-mess'> ADD EXPERIMENT</a>
-    <a class="list-group-item" href='/cancel-mess'> GET SECTIONS</a>
-    <a class="list-group-item" href='/cancel-mess'> ADD SECTION</a>
-    <a class="list-group-item" href='/cancel-mess'> GET HOSTING INFO</a>
-    <a class="list-group-item" href='/cancel-mess'> DELETE LAB</a>
-    <a class="list-group-item" href='/cancel-mess'> ADD Hosting Info</a>
-    <a class="list-group-item" href='/cancel-mess'> GET Integration Status</a>
-    <a class="list-group-item" href='/cancel-mess'> ADD Integration Status
-  </a>
-  </div>
-</div>
-<div class="col-lg-3 col-md-3 col-sm-4" style="float:right">
-    <div class="list-group table-of-contents">  
-      <a class="list-group-item" href='/'> Add User</a>
-      <a class="list-group-item" href='/'> Add Role</a>
-      <a class="list-group-item" href='/'> View Users</a>
-      <a class="list-group-item" href='/'> View Roles</a>
-      <a class="list-group-item" href='/'> Edit User</a>
-      <a class="list-group-item" href='/'> Delete User</a>
-      <a class="list-group-item" href="/">Delete Role</a>
-    </div>
-</div>
-
-  <!--<div style="text-align:center">-->
-  <div style="padding-top:10%; text-align:center; float:center">
-  <h3> Hello, {{data['name']}}! </h3>
-  <h4> Email id - {{data['email']}} </h4>
-  <h4> Role - {{data['role']}} </h4>
-  </div>
-</div>
-</body>
-</html>
-
+#main {
+	margin-left: 280px;
+}
 #+END_SRC
-** Not Autherized Page
-#+NAME: auth_req
-#+BEGIN_SRC html :tangle app/templates/auth_req.html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not Autherized</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700|Nosifer">
-
-    <link href="../static/css/style.css" rel="stylesheet">
-</head>
-<body>
-            <section id="auth_req" class="section-space-padding pattern-bg-auth">
-              <div class="container auth-container">
-                    
-                 <div class="section-title-auth">
-                   <h1><span>OOPs!</span></h1>
-                  </div>
-                        <div class="auth-us">
-                          <p>It seems that the email with you tried to log in our system was not registered in our database and if it was there then your data seems to be misplaced, so you are not autherized to proceed further. Inorder to register yourself or sort the problem with your account, send us an email to admin@gmail.com specifying your details, we will be contacting you shortly. </p>
-                        </div>
-                    </div>
-                     
-                    </div>
-                </div>
-            </section>
-</body>
-</html>
-#+END_SRC
-** Error 404 page
-#+NAME: 404
-#+BEGIN_SRC html :tangle app/templates/404.html
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-    <meta charset="UTF-8">
-    <title>Error 404</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='404/styles/404.css')}}">
-</head>
-<body>
-<div class="wrapper row2">
-  <div id="container" class="clear">
-    <section id="fof" class="clear">
-      <div class="positioned">
-        <div class="hgroup">
-          <h1>Congratulations!</h1>
-          <h2>You Found The End Of Our Little Infinite Universe.</h2>
-        </div>
-        <p>Jokes Aside<br/>
-          Make sure you know what you are trying to do. If you think this is an error then contact us by dropping an e-mail</p>
-          </div>
-    </section>  
-  </div>
-</div>
-
-</body>
-</html>
-#+END_SRC
-
-** Error 405 page
-#+NAME: 404
-#+BEGIN_SRC html :tangle app/templates/405.html
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-    <meta charset="UTF-8">
-    <title>Error 405</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='404/styles/404.css')}}">
-</head>
-<body>
-<div class="wrapper row2">
-  <div id="container" class="clear">
-    <section id="fof" class="clear">
-      <div class="positioned">
-        <div class="hgroup">
-          <h1>Ohh NO!</h1>
-          <h2>The method you used to access this route is not allowed. Apologies.</h2>
-        </div>
-        <p>Jokes Aside<br/>
-          Make sure you know what you are trying to do. If you think this is an error then contact us by dropping an e-mail</p>
-                </div>
-    </section>  
-  </div>
-</div>
-
-</body>
-</html>
-#+END_SRC
-   
 * Infra                                                         :boilerplate:
 
   
