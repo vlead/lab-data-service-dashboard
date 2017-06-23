@@ -49,7 +49,7 @@ specific HTML. Basic idea is to automate things. You just have to give JSON
 specifications and all the HTML gets generated with least amount of efforts.
 
 #+NAME: Decoding_json
-#+BEGIN_SRC json :tangle ./app/static/js/main.js
+#+BEGIN_SRC js
 var createElements = function(element) {
   var new_ele = document.createElement(element.typeofdiv);
   for (i in element) {
