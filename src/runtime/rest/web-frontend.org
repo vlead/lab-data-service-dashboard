@@ -409,7 +409,7 @@ $(document).on('click', '#update-user-sbt', function(clickEvent) {
   $('#update-user-sbt').removeAttr('email');
 });
 #+END_SRC
-** Delete User
+** Remove User
    AJAX call is made to the backend server to delete a user availed to LDS.
 #+NAME: delete_user
 #+BEGIN_SRC js
@@ -471,7 +471,7 @@ var removeHelperFunction = function() {
   });
 };
 #+END_SRC
-** Delete Role
+** Remove Role
 #+NAME: delete_role
 #+BEGIN_SRC js
 var remove_roles = function (button) {  
