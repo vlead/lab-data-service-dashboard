@@ -72,7 +72,7 @@ def login():
     auth_url, state = google.authorization_url(
         Auth.AUTH_URI, access_type='offline')
     session['oauth_state'] = state
-    return render_template('login.html', auth_url=auth_url)
+    return redirect(auth_url, code=302)
  #+END_SRC
 
 *** Google Callback response =API=
@@ -452,6 +452,25 @@ class TestAddUser(TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+#+END_SRC
+** Logged In
+ API to return current session state.
+*** API Design
+   - URL :: /logged_in
+   - Method :: GET
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+*** Implemenation
+#+NAME: logged_in
+#+BEGIN_SRC python
+@api.route('/logged_in', methods=['GET'])
+def loggedin():
+    if 'google_token' in session:
+        return jsonify(success=True, session=session['type']), 200
+    else:
+        return jsonify(success=False), 300
 #+END_SRC
 ** Add Role
    API to add a role
@@ -875,29 +894,31 @@ if __name__ == '__main__':
 @requires_admin_auth
 def delete_user():
     try:
-        email = request.args['user_email']
-    except KeyError as e:
-        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
-    
-    
-    user = User.query.filter(User.email==email)
-    user_todel = user.first() 
+        temp = json.loads(request.data)
+        email = temp['user_email']
+    except:
+        try:
+            email = request.args['user_email']
+        except KeyError as e:
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 100
+
+    user = User.query.filter(User.email == email)
+    user_todel = user.first()
     
     if user_todel is None:
-        return jsonify(success=False, message="This email does not exists"), 400
+        return jsonify(success=False, message="This email does not exists"), 300
     elif (user_todel == current_user):
-    	return jsonify(success=False, message="This is not an valid operation"), 400
+    	return jsonify(success=False, message="This is not an valid operation"), 600
     elif (user_todel.role == 'admin' and len(user) == 1):
-    	return jsonify(success=False, message="At least one admin must be present"), 400
+    	return jsonify(success=False, message="At least one admin must be present"),700
 
-    db.session.delete(user_todel) 
+    db.session.delete(user_todel)
     try:
         db.session.commit()
     except IntegrityError as e:
         db.session.rollback()
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
-
 
 #+END_SRC
 *** Test Cases
@@ -1045,9 +1066,13 @@ if __name__ == '__main__':
 @requires_admin_auth	
 def delete_role():
     try:
-        role_name = request.args['role_name']
-    except KeyError as e:
-        return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+        temp = json.loads(request.data)
+        role_name = temp['role_name']
+    except:
+        try:
+            role_name = request.args['role_name']
+        except KeyError as e:
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
 
     if not role_name:
         return jsonify(success=False, message="No role provided"), 400
@@ -1066,6 +1091,7 @@ def delete_role():
         db.session.rollback()
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
+
 
 #+END_SRC
 
@@ -1779,62 +1805,7 @@ This is the HTML code for Login page
 </body>
 </html>
 #+END_SRC
-
-* JS
-** login
-This function checks whether the user trying to login
-is there is the database or not.If the user is there
-in the database, page is redirected to google,else
-error is shown that user is not availed to LDS.
-#+NAME: login
-#+BEGIN_SRC javascript :tangle app/static/js/login.js
-
-#+END_SRC
-** guest
-This function checks whether the user trying to login
-is there is the database or not.If the user is there
-in the database, page is redirected to google,else
-error is shown that user is not availed to LDS.
-#+NAME: guest
-#+BEGIN_SRC javascript :tangle app/static/js/guest.js
-
-#+END_SRC
-
-** Docoding a JSON
-These functions take a JSON object,decodes the JSON and generates the specific
-HTML. Basic idea is to automate things. You just have to give JSON specifications
-and all the HTML gets generated with least amount of efforts.
-
-
-#+NAME: Decoding_json
-#+BEGIN_SRC js :app/static/js/tangle main.js 
-var createElements = function(element) {
-  var new_ele = document.createElement(element['typeofdiv']);
-  for (var i in element)
-    if(i!="elements" && i!="typeofdiv")
-    new_ele[i] = element[i];
-
-  if(element['elements'])
-  {
-    element['elements'].forEach(function(ele) {
-    var temp_element = createElements(ele);
-      new_ele.append(temp_element)
-    });
-  }
-  return new_ele;
-};
-
-var createDivisions = function() {
-  return divisions_spec.map(createElements);
-};
-var attachDivsionsToBody = function(divisions) {
-  divisions.forEach(function(division) {
-    document.getElementsByTagName("body")[0].appendChild(division);
-  });
-};
-
-#+END_SRC
-
+   
 * Infra                                                         :boilerplate:
 
   
@@ -1882,6 +1853,7 @@ api = Blueprint('users', __name__)
 <<login_route>>	
 <<callback_google_api>>
 <<logout_route>>
+<<logged_in>>
 <<add_user>>
 <<add_role>>
 <<show_users>>
@@ -1893,3 +1865,4 @@ api = Blueprint('users', __name__)
    
 
 
+   
