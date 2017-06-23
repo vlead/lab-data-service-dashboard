@@ -14,21 +14,13 @@
 #+NAME: auth_api
 #+BEGIN_SRC js 
 var AuthAPI = {
-
-  home: function() {
-	  window.location.href = '/';
-  },
-
   login: function() {
     window.location.href = '/login';
   },
-
   logout: function() {
     window.location.href = '/logout';
-  },
-
+  }
 };
-
 #+END_SRC
 
 ** Get JSON
@@ -37,21 +29,55 @@ var AuthAPI = {
 #+BEGIN_SRC js 
 var getJSON = function() {
   $.ajax({
-    url:'static/js/main.json',
-    dataType:'json',
+    url: 'static/js/main.json',
+    dataType: 'json',
     async: false,
-    success: function(response) {
-      data = response['divisions_spec']
-      //console.log(data);
+    success: function (response) {
+      data = response.admin_dash;
     },
     error: function() {
       data = null;
-      //console.log('Lover of time');
     }
   });
   return data;
 };
+#+END_SRC
 
+** Docoding a JSON
+   These functions take a JSON object,decodes the JSON and generates the
+specific HTML. Basic idea is to automate things. You just have to give JSON
+specifications and all the HTML gets generated with least amount of efforts.
+
+#+NAME: Decoding_json
+#+BEGIN_SRC json :tangle ./app/static/js/main.js
+var createElements = function(element) {
+  var new_ele = document.createElement(element.typeofdiv);
+  for (i in element) {
+    if (i === 'class') {
+      new_ele.className = element[i];
+    }
+    else if (i !== 'elements' && i !== 'typeofdiv') {
+      new_ele[i] = element[i];
+    }
+  }
+  if (element['elements']) {
+    element['elements'].forEach(function (ele) {
+      var temp_element = createElements(ele);
+      new_ele.append(temp_element)
+    });
+  }
+  return new_ele;
+};
+
+var createDivisions = function () {
+  return getJSON().map(createElements);
+};
+
+var attachDivsionsToBody = function (divisions) {
+  divisions.forEach(function (division) {
+    document.getElementById('main').appendChild(division);
+  });
+};
 #+END_SRC
 
 ** Logged In
@@ -61,21 +87,20 @@ logged in.
 #+NAME: logged_in
 #+BEGIN_SRC js 
 var is_logged_in = function() {
-	$.ajax({
-		url:'logged_in',
-		type: 'GET',
-		contentType:'charset=UTF-8',
-		async: false,
-		success: function(response) {
-			logged = true;
-		},
-		error: function(response) {
-			logged = false;
-		} 
-	});
-	return logged;
+  $.ajax({
+    url: 'logged_in',
+    type: 'GET',
+    contentType: 'charset=UTF-8',
+    async: false,
+    success: function (response) {
+      logged = true;
+    },
+    error: function (response) {
+      logged = false;
+    }
+  });
+  return logged;
 };
-
 #+END_SRC
 
 ** Hash to Handler Map
@@ -84,16 +109,29 @@ when the hash is changed, appropriate handler is called.
 
 #+NAME: hash_to_handlers_map
 #+BEGIN_SRC js
-hash_to_handlers_map = {home:'home'};
+hash_to_handlers_map = {home:'home'}; 
 
 var handlers_map = function () {
-  var select = document.querySelectorAll('[id^="home-btn-"]');
+  var select = document.querySelectorAll('[id$="-container"]');
   [].forEach.call(select, function (hash_name) {
-    var id = hash_name.id.slice(9);
+    var id = hash_name.id.slice(0,-10);
     hash_to_handlers_map[id.valueOf()] = id;
   });
 };
 
+#+END_SRC
+** Hash Route Navigation
+#+NAME: hash_navigation
+#+BEGIN_SRC js
+var get_window_hash_path = function() {
+  var hash = window.location.href.split('#')[1] || '';
+  return hash;
+};
+
+var navigate = function (path) {
+  var current = window.location.href;
+  window.location.href = current.replace(/#(.*)$/, '') + '#' + path;
+};
 #+END_SRC
 ** Show and Hide containers.
    We can either show or hide the containers depending on our requirements. For
@@ -101,20 +139,23 @@ example,if we want to Add a User,we can hide all the containers and display
 only the Add User container.
 #+NAME: show_hide
 #+BEGIN_SRC js 
-function show_all_containers() {
-    var containers = document.querySelectorAll('[id$="-container"]');
-  [].forEach.call(containers, function(container) {
-      container.classList.remove('hidden');
-  });
-}
-
-function hide_all_containers() {
+var show_all_containers = function() {
   var containers = document.querySelectorAll('[id$="-container"]');
-  [].forEach.call(containers, function(container) {
-      container.className = 'hidden';
+  [].forEach.call(containers, function (container) {
+    container.classList.remove('hidden');
   });
 };
 
+var show_one_container = function(containerID) {
+  $('#'+containerID).removeClass('hidden');
+};
+
+var hide_all_containers = function() {
+  var containers = document.querySelectorAll('[id$="-container"]');
+  [].forEach.call(containers, function (container) {
+    container.classList.add('hidden');
+  });
+};
 #+END_SRC
 
 ** Register on hash change
@@ -127,16 +168,25 @@ new hash, else an error is thrown.
 var register_onhashchange_handlers = function(hash_to_handlers_map) {
   $(window).on('hashchange', function(e) {
     hash_path = get_window_hash_path();
-    console.log(hashNotClicked);
     if (hash_to_handlers_map.hasOwnProperty(hash_path)) {
-      if (!hashNotClicked) {
-        document.getElementById('home-btn-'+ hash_path).click();
+      if (hashNotClicked) {
+        if (hash_path=='update-user') {  
+          hide_all_containers();
+          show_one_container('side-nav-container');
+          show_one_container(hash_path+'-container');
+          navigate(hash_path);
+        }
       }
-    //  hashChangeUpdate();
-    //  hide_all_containers();
-    //  show_one_container('side-nav-container');
-    //  show_one_container(hash_path+'-container');
-    //  navigate(hash_path);
+      else if (!hashNotClicked) {
+        if (hash_path=='update-user') {
+          window.alert('You are trying to access the page using wrong way!');
+          navigate('home');
+        }
+        else {
+          console.log('Nightmare is back!');
+          document.getElementById('home-btn-'+ hash_path).click();
+        }
+      }
     }
     else {
       window.alert('You are trying to access a wrong page');
@@ -145,7 +195,6 @@ var register_onhashchange_handlers = function(hash_to_handlers_map) {
       hashNotClicked=false;
   });
 };
-
 #+END_SRC
 ** Index Handler
    Whenever hash is changed to 'index', index_handler function is called which
@@ -175,7 +224,6 @@ var index_handler = function() {
     span_btn.className = 'glyphicon glyphicon-log-in';
   }
 };
-
 #+END_SRC
 ** Get Users
    AJAX call is made to the backend server to get the users availed to LDS.
@@ -218,10 +266,154 @@ var get_roles = function() {
 
 #+END_SRC
 
+** Add User
+#+NAME: add_role
+#+BEGIN_SRC js
+$(document).on('click', '#add-user-sbt', function(clickEvent) {
+  var data = JSON.stringify({
+    name: $('#add-user-name').val(),
+    email: $('#add-user-email').val(),
+    role: $('#add-user-role').val()
+  });
+  $.ajax({
+    url: 'add_user',
+    data: data,
+    type: 'POST',
+    contentType: 'application/json;charset=utf-8',
+    async: false,
+    success: function (response) {
+      window.alert ('User was added');
+    },
+    error: function (response) {
+      window.alert ('There was an error adding the user, please check the information you provided.');
+    }
+  });
+});
+
+#+END_SRC
+** Add Role
+#+NAME: add_role
+#+BEGIN_SRC js
+$(document).on('click', '#add-role-sbt', function(clickEvent) {
+  var data = JSON.stringify({
+    role_name: $('#add-role-name').val()
+  });
+  $.ajax({
+    url: 'add_role',
+    data: data,
+    type: 'POST',
+    contentType: 'application/json;charset=utf-8',
+    async: false,
+    success: function (response) {
+      window.alert ('Role was added');
+    },
+    error: function (response) {
+      window.alert ('There was an error adding the role, please check the information you provided.');
+    }
+  });
+});
+#+END_SRC
+** Update User Tables
+#+NAME: update_user_table
+#+BEGIN_SRC js
+var populate_tables_user = function() {
+  console.log($('#user-table').find('tr:not(:first)'));
+  console.log($('#user-table').find('td'));
+  $('#user-table').find('td').remove();
+  $('#user-table').find('tr:not(:first)').remove();
+  console.log('removed');
+  var tableRef = document.getElementById('user-table').getElementsByTagName('tbody')[0];
+  for (var i in users_List) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(users_List[i].name));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(users_List[i].email));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(users_List[i].role));
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-user-pre-sbt-'+i);
+      updateButton.setAttribute('email', users_List[i].email);
+      updateButton.setAttribute('name', users_List[i].name);
+      updateButton.setAttribute('role', users_List[i].role);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','remove-user-pre-sbt-'+i);
+      updateButton.setAttribute('email', users_List[i].email);
+      updateButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(updateButton);
+  }
+  updateHelperFunction();
+};
+
+#+END_SRC
+** Update User Helper on Admin Dash
+#+NAME: updateUserHelperFunction
+#+BEGIN_SRC js
+var updateHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-user-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_users(button);
+  });
+  var buttons = document.querySelectorAll('[id^="remove-user-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       remove_users(button);
+  });
+}
+#+END_SRC
+** Update Users
+#+NAME: update_users
+#+BEGIN_SRC js
+var update_users = function(button) {
+	email = $('#'+button.id).attr('email');
+  name = $('#'+button.id).attr('name');
+  role = $('#'+button.id).attr('role');
+  $(document).on('click', '#'+button.id, function(clickEvent){
+    hashNotClicked=true;
+    $('#update-user-sbt').attr('email',email);
+    $('#edit-new-name').val(name);
+    $('#edit-new-email').val(email);
+    $('#edit-user-role').val(role);
+		navigate('update-user');
+	});
+};
+
+$(document).on('click', '#update-user-sbt', function(clickEvent) {
+  var data = JSON.stringify({
+    email: $('#update-user-sbt').attr('email'),
+    new_name: $('#edit-new-name').val(),
+    new_email: $('#edit-new-email').val(),
+    new_role: $('#edit-user-role').val()
+  });
+  $.ajax({
+    url: 'update_user',
+    data: data,
+    type: 'PUT',
+    contentType: 'application/json;charset=utf-8',
+    async: false,
+    success: function (response) {
+      window.alert ('User was updated');
+    },
+    error: function (response) {
+      window.alert ('There was an error updating the user, please check the information you provided.');
+    }
+  });
+  $('#update-user-sbt').removeAttr('email');
+});
+#+END_SRC
 ** Delete User
    AJAX call is made to the backend server to delete a user availed to LDS.
 #+NAME: delete_user
 #+BEGIN_SRC js
+
 var remove_users = function (button) {
 $(document).on('click', '#'+button.id, function(clickEvent) {
     var data = JSON.stringify({
@@ -236,8 +428,7 @@ $(document).on('click', '#'+button.id, function(clickEvent) {
       success: function (response) {
         get_users();
         window.alert ('User was deleted.');
-        populate_tables_update();
-        updateHelperFunction();
+        populate_tables_user();
       },
       error: function (response) {
         window.alert ('There was an error deleting the user, please check the information you provided.');
@@ -247,20 +438,128 @@ $(document).on('click', '#'+button.id, function(clickEvent) {
 }
 
 #+END_SRC
-** Navigate
-   We can navigate and get the present hashes at any point of time using the
-functions below.
-#+NAME: navigate
+** Update Role Tables
+#+NAME: update_role_table
 #+BEGIN_SRC js
-var get_window_hash_path = function() {
-  var hash = window.location.href.split('#')[1] || '';
+var populate_tables_role = function() {
+  $('#role-table').find('tr:not(:first)').remove();
+  var tableRef = document.getElementById('role-table').getElementsByTagName('tbody')[0];
+  for (var i in roles_List) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(roles_List[i]));
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','remove-role-pre-sbt-'+i);
+      updateButton.setAttribute('role',roles_List[i]);
+      updateButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(updateButton);
+  }
+  removeHelperFunction();
 };
-
-var navigate = function(path) {
-  var current = window.location.href;
-  window.location.href = current.replace(/#(.*)$/, '') + '#' + path;
+#+END_SRC
+** Update Role Helper on Admin Dash
+#+NAME: updateRoleHelperFunction
+#+BEGIN_SRC js
+var removeHelperFunction = function() {
+  console.log('called');
+  var buttons = document.querySelectorAll('[id^="remove-role-pre-sbt"]');
+    [].forEach.call(buttons, function (button) {
+       remove_roles(button);
+  });
 };
+#+END_SRC
+** Delete Role
+#+NAME: delete_role
+#+BEGIN_SRC js
+var remove_roles = function (button) {  
+$(document).on('click', '#'+button.id, function(clickEvent) {
+  var data = JSON.stringify({
+    role_name: $('#'+button.id).attr('role')
+  });
+  $.ajax({
+    url: 'delete_role',
+    data: data,
+    type: 'POST',
+    contentType: 'application/json;charset=utf-8',
+    async: false,
+    success: function (response) {
+      get_roles();
+      window.alert ('Role is deleted!');
+      populate_tables_role();
+    },
+    error: function (response) {
+      window.alert ('There was an error deleting the role, please check the information you provided.');
+    }
+  });
+});
+}
+#+END_SRC
+** OnClick Event Handlers
+#+NAME: onClick_event_handle
+#+BEGIN_SRC js
+var onClickFunctions = function() {
 
+  var select = document.querySelectorAll('[class$="update-btn"]');
+  [].forEach.call(select, function (button) {
+    $(document).on('click','#'+button.id, function(clickEvent) {
+      get_roles();
+      get_users();
+      load_role_users();
+    });  
+  }); 
+  
+  var select = document.querySelectorAll('[id^="home-btn-"]');
+  [].forEach.call(select, function (button) {
+    var oid = button.id.slice(9);
+    var id = oid + '-container';
+    $(document).on('click','#'+button.id, function(clickEvent) {
+      hashNotClicked=true;
+      hide_all_containers();
+      show_one_container('side-nav-container');
+      show_one_container(id);
+      navigate(oid);
+    });
+  });  
+
+  $(document).on('click', '#home-btn-show-users', function(clickEvent) {
+    populate_tables_user(); 
+  });
+  
+  $(document).on('click', '#home-btn-show-roles', function(clickEvent) {
+    populate_tables_role();
+  });
+  
+  $(document).on('click', '#home-btn-update-user', function(clickEvent) {
+    updateHelperFunction();
+  });
+};
+#+END_SRC
+** Update User and Roles Dropdown
+#+NAME: update_role_drop
+#+BEGIN_SRC js
+var load_role_users = function() {
+  var select = document.querySelectorAll('[id$="-user-role"]');
+  var newOptions = roles_List;
+  [].forEach.call(select, function (dropdown) {
+    $('option', dropdown).remove();
+    $.each(newOptions, function(text, val) { 
+      var option = new Option(val, val);
+      dropdown.append(option); 
+    });
+  });
+  var select = document.querySelectorAll('[id$="-user-email"]');
+  var newOptions = users_List;
+  [].forEach.call(select, function (dropdown) {
+    $('option',dropdown).remove();
+      $.each(newOptions, function(text, val) { 
+        var option = new Option(val.email, val.email);
+        dropdown.append(option); 
+      });
+  });
+};
 #+END_SRC
 ** On load
    Whenever the page refreshes or loads again, the following functions are
@@ -280,40 +579,6 @@ window.onload = function () {
 };
 
 #+END_SRC  
-** Docoding a JSON
-   These functions take a JSON object,decodes the JSON and generates the
-specific HTML. Basic idea is to automate things. You just have to give JSON
-specifications and all the HTML gets generated with least amount of efforts.
-
-#+NAME: Decoding_json
-#+BEGIN_SRC json :tangle ./app/static/js/main.js
-var createElements = function(element) {
-  var new_ele = document.createElement(element['typeofdiv']);
-  for (var i in element)
-    if(i!="elements" && i!="typeofdiv")
-    new_ele[i] = element[i];
-
-  if(element['elements'])
-  {
-    element['elements'].forEach(function(ele) {
-    var temp_element = createElements(ele);
-      new_ele.append(temp_element)
-    });
-  }
-  return new_ele;
-};
-
-var createDivisions = function() {
-  return divisions_spec.map(createElements);
-};
-var attachDivsionsToBody = function(divisions) {
-  divisions.forEach(function(division) {
-    document.getElementsByTagName("body")[0].appendChild(division);
-  });
-};
-
-#+END_SRC
-
 * JSON
 ** User and Role Specifications
    This is a JSON file in which the necessary specifications are given to
@@ -322,7 +587,13 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 #+NAME: JSON_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
 {
-  "divisions_spec":[
+  "beflogin_dash":[
+
+  ],
+  "onlogin_dash": [
+
+  ],
+  "admin_dash":[
     {
       "typeofdiv":"div",
       "id":"add-user-container",
@@ -346,7 +617,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"name-box",
+                  "id":"add-user-name",
                   "type":"text"
                 }
               ]
@@ -361,6 +632,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                 },
                 {
                   "typeofdiv":"input",
+                  "id":"add-user-email",
                    "type":"text"
                 }
               ]
@@ -380,9 +652,9 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-user-sbt",
                   "type":"button",
-                  "class":"btn btn-primary",
+                  "class":"btn btn-primary update-btn",
                   "value":"Add",
                   "onclick":""
                 },
@@ -429,7 +701,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add-role-box",
+                  "id":"add-role-name",
                   "type":"text"
                 }
               ]
@@ -439,9 +711,9 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-role-sbt",
                   "type":"button",
-                  "class":"btn btn-primary",
+                  "class":"btn btn-primary update-btn",
                   "value":"Add Role",
                   "onclick":""
                 },
@@ -478,16 +750,6 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
           "typeofdiv":"ul",
           "id":"edit-user",
           "elements":[
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"select",
-                  "id":"edit-user-email",
-                  "innerText":"Role:"
-                }
-              ]
-            },
             {
               "typeofdiv":"li",
               "elements":[
@@ -533,118 +795,10 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"done",
+                  "id":"update-user-sbt",
                   "type":"button",
-                  "class":"btn btn-primary",
+                  "class":"btn btn-primary update-btn",
                   "value":"Done",
-                  "onclick":""
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"cancel",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Cancel",
-                  "onclick":""
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
-        }
-      ]
-    },
-    {
-      "typeofdiv":"div",
-      "id":"remove-user-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Delete User"
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"delete-user",
-          "elements":[
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"select",
-                  "id":"delete-user-email",
-                  "innerText":"Role:"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"input",
-                  "id":"delete",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Delete",
-                  "onclick":""
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"cancel",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Cancel",
-                  "onclick":""
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
-        }
-      ]
-    },
-    {
-      "typeofdiv":"div",
-      "id":"remove-role-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Delete Role"
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"delete-role",
-          "elements":[
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"select",
-                  "id":"delete-user-role",
-                  "innerText":"Role:"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"input",
-                  "id":"delete",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Delete Role",
                   "onclick":""
                 },
                 {
@@ -705,13 +859,11 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                       "innerHTML":"Role"
                      },
                      {
-                      "typeofdiv":"th",
-                      "innerHTML":""
+                      "typeofdiv":"th"
                      },
                      {
-                      "typeofdiv":"th",
-                      "innerHTML":""
-					 }
+                      "typeofdiv":"th"
+                     }
                     ]
                   } 
               ]
@@ -766,6 +918,9 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                      {
                       "typeofdiv":"th",
                       "innerHTML":"Name"
+                     },
+                     {
+                      "typeofdiv":"th"
                      }
                     ]
                   } 
@@ -792,6 +947,9 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
         }
       ]
     }
+  ],
+  "guest_dash": [
+
   ]
 }
 
