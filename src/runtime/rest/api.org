@@ -39,7 +39,7 @@ def index():
   - Error Response ::
     + Code: 400 - Google OAuth error
     + Code: 401 - HTTP error
-*** =Login= API
+*** =Login API=
     When user clicks on =login= button from f/e it will invoke =/login= api and
     thereby it will forward request to =google=. User must sign in using it's 
     google credentials which is then stored in our database.
