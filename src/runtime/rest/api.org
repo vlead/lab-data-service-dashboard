@@ -95,7 +95,7 @@ def callback():
             return 'You have been denied access.'
         return 'Error encountered.'
     if 'code' not in request.args and 'state' not in request.args:
-        return redirect("login")
+        return redirect("/")
     else:
         google = get_google_auth(state=session.get('oauth_state'))
         try:
@@ -112,20 +112,24 @@ def callback():
         if resp.status_code == 200:
             email = data['email']
             user = User.query.filter_by(email=email).first()
-
             if user is None:
                 return render_template("auth_req.html")
-
-            login_user(user)
- 
-            if (user.role == "admin"):
-                session['type'] = 'admin'
-            elif (user.role == "guest"):
-                session['type'] = 'guest'
+            roles = Roles.query.all()
+            allroles = []
+            for i in roles:
+                temp = i.to_dict()
+                allroles.append(temp['role'])
+            if user.role in allroles:
+                login_user(user)
+                session['type'] = user.role
             else:
                 return render_template("auth_req.html")
-            return redirect('/')    
-        
+
+            session['google_token'] = token
+            session['data'] = user.to_dict()
+            print session['data']
+            return redirect('/')
+
         return  jsonify(success=False, message="Couldn't fetch information"), 400
 #+END_SRC
 
@@ -1650,89 +1654,6 @@ class TestUpdateUsers(TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-#+END_SRC
-* HTML
-** Login
-The App is now a SPA. Here's the basic skeleton.
-~Side Nav to be removed from here in future releases.~
-#+NAME: index
-#+BEGIN_SRC html :tangle app/templates/index.html
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes"/>
-	<title>LDS Dashboard</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="./static/css/style.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<!-- jQuery library -->	
-	<script type="text/javascript" src="./static/js/jquery-3.2.1.js"></script>
-	<script type="text/javascript" src="./static/js/main.js"></script>
-</head>
-<body>
-	<nav class="navbar navbar-inverse"> 
-  		<div class="container-fluid">
-    		<div class="navbar-header">
-      			<a class="navbar-brand">LDS Dashboard</a>
-    		</div>
-    		<ul class="nav navbar-nav">
-      			<li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick="#"><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
-    		</ul>
-    		<ul class="nav navbar-nav navbar-right">
-      			<li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
-    		</ul>
-  		</div>
-	</nav>
-<div id="side-nav-container" class="sidenav">
-  	<div class="list-group table-of-contents">
-		<button id="home-btn-add-user" class="list-group-item"> Add User </button>
-		<button id="home-btn-add-role" class="list-group-item"> Add Role </button>
-		<button id="home-btn-show-users" class="list-group-item"> Show Users </button>
-		<button id="home-btn-show-roles" class="list-group-item"> Show Roles </button>
-  	</div>
-</div>
-<div id=main>
-
-</div>
-
-</body>
-</html>
-
-#+END_SRC
-
-* CSS
-** CSS
-This is styling code for our side nav bar.
-~Will be removed from here in future releases~
-#+NAME: style
-#+BEGIN_SRC :tangle app/static/css/style.css 
-.sidenav {
-height: 100%;
-width: 250px;
-z-index: 1;
-top: 0;
-left: 0;
-margin-top: 100px;
-vertical-align:middle;
-position: fixed;
-background-color: #FFF;
-overflow-x: hidden;
-transition: 0.5s;
-}
-
-.sidenav button {
-padding: 8px 8px 8px 32px;
-text-decoration: none;
-color: #818181;
-display: block;
-transition: 0.3s;
-}
-
-#main {
-	margin-left: 280px;
-}
 #+END_SRC
 * Infra                                                         :boilerplate:
 
