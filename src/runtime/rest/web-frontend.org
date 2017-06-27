@@ -251,7 +251,7 @@ var get_window_hash_path = function() {
 #+END_SRC
 
 #+NAME: hash_navigate_function
-#+BEGIN_SRC 
+#+BEGIN_SRC js
 var navigate = function (path) {
   var current = window.location.href;
   window.location.href = current.replace(/#(.*)$/, '') + '#' + path;
@@ -738,6 +738,82 @@ window.onload = function () {
   register_onhashchange_handlers(hash_to_handlers_map);
   
 #+END_SRC  
+
+
+* HTML
+** Index
+The App is now a SPA. Here's the basic skeleton.
+~Side Nav to be removed from here in future releases.~
+#+NAME: index
+#+BEGIN_SRC html :tangle app/templates/index.html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes"/>
+	<title>LDS Dashboard</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="./static/css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->	
+	<script type="text/javascript" src="./static/js/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="./static/js/main.js"></script>
+</head>
+<body id="body">
+	<nav class="navbar navbar-inverse"> 
+  		<div class="container-fluid">
+    		<div class="navbar-header">
+      			<a class="navbar-brand">LDS Dashboard</a>
+    		</div>
+    		<ul class="nav navbar-nav">
+      			<li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick=""><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
+    		</ul>
+    		<ul class="nav navbar-nav navbar-right">
+      			<li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
+    		</ul>
+  		</div>
+	</nav>
+</body>
+</html>
+
+
+#+END_SRC
+
+
+
+* CSS
+** CSS
+This is styling code for our side nav bar.
+~Will be removed from here in future releases~
+#+NAME: style
+#+BEGIN_SRC :tangle app/static/css/style.css 
+.sidenav {
+height: 100%;
+width: 250px;
+z-index: 1;
+top: 0;
+left: 0;
+margin-top: 100px;
+vertical-align:middle;
+position: fixed;
+background-color: #FFF;
+overflow-x: hidden;
+transition: 0.5s;
+}
+
+.sidenav button {
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+color: #818181;
+display: block;
+transition: 0.3s;
+}
+
+#main {
+	margin-left: 280px;
+}
+#+END_SRC
 
 
 * JSON
