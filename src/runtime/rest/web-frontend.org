@@ -1805,7 +1805,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"id-box",
+                  "id":"add-experiment-id-box",
                   "type":"text"
                 }
               ]
@@ -1821,7 +1821,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"name-box",
+                  "id":"add-experiment-name-box",
                   "type":"text"
                 }
               ]
@@ -1836,7 +1836,8 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                   "type":"text"
+                   "type":"text",
+                   "id": "add-experiment-overview-box"
                 }
               ]
             },
@@ -1850,7 +1851,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
-                  "id":"add-discipline-id",
+                  "id":"add-experiment-discipline-id-box",
                   "innerText":"Discipline:"
                 }
               ]
@@ -1865,7 +1866,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
-                  "id":"add-institute-id",
+                  "id":"add-experiment-institute-id-box",
                   "innerText":"Institute:"
                 }
               ]
@@ -1931,7 +1932,8 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"input",
                    "type":"number",
                    "min":"0",
-                   "max":"6"
+                   "max":"6",
+                   "id": "add-experiment-integration-level-box"
                 }
               ]
             },
