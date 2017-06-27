@@ -31,9 +31,12 @@
   local files. Then finally function aiding the dynamic behaviour of our page which includes generation of elements and their
   updatation. We now begin with a variable declaration(s) which will aid the functions required for our first step.
   
-  Naming conventions play a key role in our implementation in order to make the functions work for any further addition or modification 
-  to data. Pay close attention to exploitation of naming convention in order to make most out of functions and make them immutable to 
-  addition/deletion of data, which is basically the DOM elements, they are required to process.
+  Naming conventions play a key role in our implementation in order to
+  make the functions work for any further addition or modification to
+  data. Pay close attention to exploitation of naming convention in
+  order to make most out of functions and make them immutable to
+  addition/deletion of data, which is basically the DOM elements, they
+  are required to process.
 
 ** Auth API
    In our implementation the top naviagation bar is the only DOM entity to be harcoded in our HTML file and thus remain constant in 
@@ -99,13 +102,15 @@ var is_logged_in = function() {
     async: false,
     success: function (response) {
       logged = true;
+      session_detail = response.session;
+      Object.freeze(session_detail);
     },
-    error: function (response) {
+    error: function (response) { 
       logged = false;
     }
   });
   return logged;
-};
+};  
 #+END_SRC
 
 ** Get JSON
@@ -163,7 +168,7 @@ var createDivisions = function () {
 };
 #+END_SRC
 
-#+NAME: Decoding_json
+#+NAME: decoding_Json
 #+BEGIN_SRC js
 var createElements = function(element) {
   var new_ele = document.createElement(element.typeofdiv);
@@ -376,7 +381,7 @@ var get_roles = function() {
 #+END_SRC
 
 ** Add User
-#+NAME: add_role
+#+NAME: add_user
 #+BEGIN_SRC js
 $(document).on('click', '#add-user-sbt', function(clickEvent) {
   var data = JSON.stringify({
@@ -582,7 +587,7 @@ var removeHelperFunction = function() {
 #+NAME: delete_role
 #+BEGIN_SRC js
 var remove_roles = function (button) {  
-$(document).on('click', '#'+button.id, function(clickEvent) {
+$('#'+button.id).on('click', function(clickEvent) {
   var data = JSON.stringify({
     role_name: $('#'+button.id).attr('role')
   });
@@ -735,8 +740,9 @@ window.onload = function () {
   get_window_hash_path();
   onClickFunctions();
   handlers_map();
-  register_onhashchange_handlers(hash_to_handlers_map);
-  
+  register_onhashchange_handlers(hash_to_handlers_map); 
+  }
+};  
 #+END_SRC  
 
 
@@ -3039,3 +3045,48 @@ generate HTML to do the CRUD operations on LDS database.
 }
 
 #+END_SRC
+
+
+* Tangle                                                        :boilerplate:
+  
+** sources
+#+BEGIN_SRC js :tangle app/static/js/main.js :eval no :noweb yes
+<<auth_api>>
+<<index_handler>>
+<<logged_in>>
+<<get_json_dash>>
+<<get_json_nav>>
+<<create_Division>>
+<<decoding_Json>>
+<<attach_Division>>
+<<handlers_map>>
+<<handlers_map_func_def>>
+<<current_window_hash>>
+<<hash_navigate_function>>
+<<register_on_hash_change>>
+<<show_all_container>>
+<<show_one_container>>
+<<hide_all_container>>
+<<get_users>>
+<<get_roles>>
+<<add_user>>
+<<add_role>>
+<<update_user_table>>
+<<updateUserHelperFunction>>
+<<update_users>>
+<<delete_user>>
+<<update_role_table>>
+<<updateRoleHelperFunction>>
+<<delete_role>>
+<<update_own_click>>
+<<onClick_event_handle>>
+<<update_role_drop>>
+<<hash_home>>
+<<onload>>
+
+#+END_SRC
+   
+
+
+   
+
