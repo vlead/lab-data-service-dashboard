@@ -560,12 +560,12 @@ var populate_tables_role = function() {
       var newCell = newRow.insertCell(-1);
       newCell.appendChild(document.createTextNode(Number(i)+1));
       var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(roles_List[i]));
+      newCell.appendChild(document.createTextNode(roles_List[i].role));
       
       var newCell = newRow.insertCell(-1);
       var removeButton = document.createElement('button');
       removeButton.setAttribute('id','remove-role-pre-sbt-'+i);
-      removeButton.setAttribute('role',roles_List[i]);
+      removeButton.setAttribute('role',roles_List[i].role);
       removeButton.appendChild(document.createTextNode('Delete'));
       newCell.appendChild(removeButton);
   }
@@ -763,7 +763,7 @@ The App is now a SPA. Here's the basic skeleton.
 	<link rel="stylesheet" href="./static/css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<!-- jQuery library -->	
-	<script type="text/javascript" src="./static/js/jquery-3.2.1.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="./static/js/main.js"></script>
 </head>
 <body id="body">
