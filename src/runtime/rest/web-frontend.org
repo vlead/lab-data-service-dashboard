@@ -698,7 +698,7 @@ var load_role_users = function() {
   [].forEach.call(select, function (dropdown) {
     $('option', dropdown).remove();
     $.each(newOptions, function(text, val) { 
-      var option = new Option(val, val);
+      var option = new Option(val.role, val.role);
       dropdown.append(option); 
     });
   });
