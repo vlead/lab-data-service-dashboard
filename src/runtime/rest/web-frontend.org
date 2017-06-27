@@ -954,7 +954,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 ** LDS Specifications
    This is a JSON file in which the necessary specifications are given to
 generate HTML to do the CRUD operations on LDS database.
-** Add Asset
+*** Add Asset
 #+NAME: add_asset_spec
 #+BEGIN_SRC  
  var divisions_spec = [
@@ -1006,7 +1006,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-asset-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add Asset",
@@ -1036,7 +1036,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+END_SRC
 
-** Add Institute
+*** Add Institute
 #+NAME: add_institute_spec
 #+BEGIN_SRC  
  var divisions_spec = [
@@ -1099,10 +1099,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Asset",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1112,7 +1112,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-institute-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add Institute",
@@ -1141,7 +1141,7 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
-** Add Discipline
+*** Add Discipline
 #+NAME: add_discipline_spec
 #+BEGIN_SRC  
  var divisions_spec = [
@@ -1204,10 +1204,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Asset",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1217,7 +1217,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-discipline-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add Discipline",
@@ -1246,7 +1246,7 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
-** Add Section
+*** Add Section
 #+NAME: add_section_spec
 #+BEGIN_SRC  
  var divisions_spec = [
@@ -1283,7 +1283,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-section-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add Section",
@@ -1313,7 +1313,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+END_SRC
 
-** Add Experiment
+*** Add Experiment
 #+NAME: add_experiment_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
  var divisions_spec = [
@@ -1421,10 +1421,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"developer-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Developer",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1445,10 +1445,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"hosting-info-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Hosting Info",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1486,10 +1486,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"asset-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Asset",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1510,10 +1510,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"section-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Section",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1524,7 +1524,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-experiment-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add",
@@ -1553,7 +1553,7 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
-** Add Lab
+*** Add Lab
 #+NAME: add_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
  var divisions_spec = [
@@ -1661,10 +1661,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"developer-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Developer",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1685,10 +1685,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"hosting-info-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Hosting Info",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1726,10 +1726,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"asset-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Asset",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1750,10 +1750,10 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"section-ok-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Section",
+                  "value":"OK",
                   "onclick":""
                 }
               ]
@@ -1764,7 +1764,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-lab-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add",
@@ -1793,7 +1793,7 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
-** Add Hosting Info
+*** Add Hosting Info
 #+NAME: add_hosting_info_spec
 #+BEGIN_SRC  
  var divisions_spec = [
@@ -1860,7 +1860,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-hosting-info-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
                   "value":"Add Hosting Info",
@@ -1889,7 +1889,7 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
-** Add Developer
+*** Add Developer
 #+NAME: add_developer_spec
 #+BEGIN_SRC  
  var divisions_spec = [
@@ -1941,10 +1941,10 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"input",
-                  "id":"add",
+                  "id":"add-developer-sbt",
                   "type":"button",
                   "class":"btn btn-primary",
-                  "value":"Add Developer",
+                  "value":"Add",
                   "onclick":""
                 },
                 {
@@ -1972,9 +1972,10 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 
 
-** Edit Lab
+*** Edit Lab
 #+NAME: edit_lab_spec
 #+BEGIN_SRC 
+ var divisions_spec = [
     {
       "typeofdiv":"div",
       "id":"update-lab-container",
@@ -1992,23 +1993,13 @@ generate HTML to do the CRUD operations on LDS database.
               "typeofdiv":"li",
               "elements":[
                 {
-                  "typeofdiv":"select",
-                  "id":"edit-lab-email",
-                  "innerText":"Role:"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
                   "typeofdiv":"label",
-                  "id":"new-name-label",
-                  "innerText":"New Name:"
+                  "id":"new-name-lab-label",
+                  "innerText":"New Lab Name:"
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"edit-new-name",
+                  "id":"edit-new-lab-name",
                   "type":"text"
                 }
               ]
@@ -2018,12 +2009,12 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"new-email-label",
-                  "innerText":"New Email:"
+                  "id":"new-overview-label",
+                  "innerText":"New Overview:"
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"edit-new-email",
+                  "id":"edit-new-overview",
                   "type":"text"
                 }
               ]
@@ -2032,9 +2023,25 @@ generate HTML to do the CRUD operations on LDS database.
               "typeofdiv":"li",
               "elements":[
                 {
+                  "typeofdiv":"label",
+                  "id":"new-name-integration-level",
+                  "innerText":"Integration Level:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-integration-level",
+                  "type":"integer"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
                   "typeofdiv":"select",
-                  "id":"edit-user-role",
-                  "innerText":"Role:"
+                  "id":"edit-lab-institute",
+                  "innerText":"Institute:"
                 }
               ]
             },
@@ -2042,10 +2049,64 @@ generate HTML to do the CRUD operations on LDS database.
               "typeofdiv":"li",
               "elements":[
                 {
+                  "typeofdiv":"select",
+                  "id":"edit-lab-discipline",
+                  "innerText":"Discipline:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-lab-developers",
+                  "innerText":"Developer:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-lab-sections",
+                  "innerText":"Sections:"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-lab-assets",
+                  "innerText":"Assets:"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-lab-hosting-info",
+                  "innerText":"Hosting Info:"
+                }
+              ]
+            },
+
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
                   "typeofdiv":"input",
-                  "id":"done",
+                  "id":"update-lab-sbt",
                   "type":"button",
-                  "class":"btn btn-primary",
+                  "class":"btn btn-primary update-btn",
                   "value":"Done",
                   "onclick":""
                 },
@@ -2068,10 +2129,11 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    },
+    }
+ ];
 
 #+END_SRC
-** Delete Lab
+*** Delete Lab
 #+NAME: delete_lab_spec
 #+BEGIN_SRC 
     {
@@ -2185,7 +2247,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 
 #+END_SRC
-** Show Labs
+*** Show Labs
 #+NAME: show_labs_spec
 #+BEGIN_SRC 
     { 
@@ -2261,7 +2323,7 @@ generate HTML to do the CRUD operations on LDS database.
     },
 
 #+END_SRC
-** Show Experiments
+*** Show Experiments
 #+NAME: show_experiments_spec
 #+BEGIN_SRC 
     {
