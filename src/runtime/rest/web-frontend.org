@@ -2966,6 +2966,24 @@ generate HTML to do the CRUD operations on LDS database.
                 }
               ]
             },
+             {
+              "typeofdiv":"li",
+              "elements":[
+              {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-hosted-on-label",
+                  "innerText":"New Hosted on:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-hosted-on",
+                  "type":"text"
+                }
+              ]
+            },
 
             {
               "typeofdiv":"li",
@@ -2973,6 +2991,77 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"input",
                   "id":"update-hosting-status-sbt",
+                  "type":"button",
+                  "class":"btn btn-primary update-btn",
+                  "value":"Done",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
+*** Edit Developer
+
+#+NAME: edit_developer_spec
+#+BEGIN_SRC 
+ var divisions_spec = [
+    {
+      "typeofdiv":"div",
+      "id":"update-developer-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Edit Developer"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"edit-developer",
+          "elements":[
+             {
+              "typeofdiv":"li",
+              "elements":[
+              {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-developer-name-label",
+                  "innerText":"New Developer Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-developer-name",
+                  "type":"text"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"update-developer-sbt",
                   "type":"button",
                   "class":"btn btn-primary update-btn",
                   "value":"Done",
