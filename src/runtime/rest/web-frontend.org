@@ -2042,7 +2042,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"id_label",
+                  "id":"id-label",
                   "innerText":"Id:"
                 },
                 {
@@ -2058,7 +2058,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"name_label",
+                  "id":"name-label",
                   "innerText":"Name:"
                 },
                 {
@@ -2073,7 +2073,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"overview_label",
+                  "id":"lab-overview-label",
                   "innerText":"Overview:"
                 },
                 {
@@ -2087,7 +2087,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"discipline_label",
+                  "id":"discipline-label",
                   "innerText":"Discipline:"
                 },
                 {
@@ -2102,7 +2102,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"institute_label",
+                  "id":"institute-label",
                   "innerText":"Institute:"
                 },
                 {
@@ -2117,7 +2117,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"developer_label",
+                  "id":"developer-label",
                   "innerText":"Developer:"
                 },
 
@@ -2142,7 +2142,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"hosting_info_label",
+                  "id":"hosting-info-label",
                   "innerText":"Hosting Info:"
                 },
                 {
@@ -2166,7 +2166,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"integration_level_label",
+                  "id":"integration-level-label",
                   "innerText":"Integration Level:"
                 },
                 {
@@ -2207,7 +2207,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"section_label",
+                  "id":"section-label",
                   "innerText":"Section:"
                 },
                 {
@@ -2476,12 +2476,12 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"new-overview-label",
+                  "id":"new-lab-overview-label",
                   "innerText":"New Overview:"
                 },
                 {
                   "typeofdiv":"input",
-                  "id":"edit-new-overview",
+                  "id":"edit-new-lab-overview",
                   "type":"text"
                 }
               ]
@@ -2621,20 +2621,7 @@ generate HTML to do the CRUD operations on LDS database.
             {
               "typeofdiv":"li",
               "elements":[
-                {
-                  "typeofdiv":"label",
-                  "id":"new-instiute-id-label",
-                  "innerText":"New Institute Id:"
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"edit-new-institute",
-                  "type":"text"
-                }
-              ]
-            },
-
-            {
+              {
               "typeofdiv":"li",
               "elements":[
                 {
@@ -2715,20 +2702,7 @@ generate HTML to do the CRUD operations on LDS database.
             {
               "typeofdiv":"li",
               "elements":[
-                {
-                  "typeofdiv":"label",
-                  "id":"new-discipline-id-label",
-                  "innerText":"New Discipline Id:"
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"edit-new-discipline",
-                  "type":"text"
-                }
-              ]
-            },
-
-            {
+              {
               "typeofdiv":"li",
               "elements":[
                 {
@@ -2760,6 +2734,168 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"input",
                   "id":"update-discipline-sbt",
+                  "type":"button",
+                  "class":"btn btn-primary update-btn",
+                  "value":"Done",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
+*** Edit Experiment
+
+#+NAME: edit_experiment_spec
+#+BEGIN_SRC 
+ var divisions_spec = [
+    {
+      "typeofdiv":"div",
+      "id":"update-experiment-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Edit Experiment"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"edit-experiment",
+          "elements":[
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-name-experiment-label",
+                  "innerText":"New Experiment Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-experiment-name",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-experiment-overview-label",
+                  "innerText":"New Overview:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-experiment-overview",
+                  "type":"text"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-experiment-integration-level",
+                  "innerText":"Integration Level:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-experiment-integration-level",
+                  "type":"integer"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-experiment-institute",
+                  "innerText":"Institute:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-experiment-discipline",
+                  "innerText":"Discipline:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-experiment-developers",
+                  "innerText":"Developer:"
+                }
+              ]
+            },
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-experiment-sections",
+                  "innerText":"Sections:"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-experiment-assets",
+                  "innerText":"Assets:"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"select",
+                  "id":"edit-experiment-hosting-info",
+                  "innerText":"Hosting Info:"
+                }
+              ]
+            },
+
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"update-experiment-sbt",
                   "type":"button",
                   "class":"btn btn-primary update-btn",
                   "value":"Done",
