@@ -13,16 +13,9 @@
 ** Serve index.html
 #+NAME: serve_index_html
 #+BEGIN_SRC python 
-
 @api.route("/", methods=['GET'])
-@login_required
 def index():
-	data = current_user.to_dict()
-	user = User.query.filter_by(email=data['email']).first()
-	if session.get('type') == "guest":
-		return render_template('guest_home.html', data = data)
-	return render_template('admin_home.html', data = data)
-
+	return render_template('index.html')
 #+END_SRC
 
 ** Login API
@@ -74,7 +67,7 @@ def login():
     session['oauth_state'] = state
     return redirect(auth_url, code=302)
  #+END_SRC
-
+    
 *** Google Callback response =API=
     - Once the Google verfies the user credentials it will send callback
       response to =/authorized= api which should be registered at google's
@@ -113,7 +106,7 @@ def callback():
             email = data['email']
             user = User.query.filter_by(email=email).first()
             if user is None:
-                return render_template("auth_req.html")
+                return render_template("index.html")
             roles = Roles.query.all()
             allroles = []
             for i in roles:
@@ -123,7 +116,7 @@ def callback():
                 login_user(user)
                 session['type'] = user.role
             else:
-                return render_template("auth_req.html")
+                return render_template("index.html")
 
             session['google_token'] = token
             session['data'] = user.to_dict()
@@ -285,11 +278,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-	}
 #+end_src
 **** Test Add User
 
@@ -303,6 +291,8 @@ class TestAddUser(TestCase):
         app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -550,11 +540,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
 #+end_src
 **** Test Add Role
 #+NAME: test_add_role
@@ -567,6 +552,8 @@ class TestAddRole(TestCase):
         app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -669,12 +656,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
-
 #+end_src
 **** Test Show users
 #+NAME: test_show_users
@@ -687,6 +668,8 @@ class TestShowUsers(TestCase):
         app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -807,12 +790,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
-
 
 #+end_src
 **** Test Show Roles
@@ -826,6 +803,8 @@ class TestShowRole(TestCase):
 		app.config.from_object("runtime.config.flask_app_config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
+                app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+                app.config['DATABASE_CONNECT_OPTIONS'] = {}
 		login_manager = LoginManager(app)
 		login_manager.login_view = "users.login"
 		self.app = app.test_client()
@@ -904,17 +883,17 @@ def delete_user():
         try:
             email = request.args['user_email']
         except KeyError as e:
-            return jsonify(success=False, message="%s not sent in the request" % e.args), 100
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
 
     user = User.query.filter(User.email == email)
     user_todel = user.first()
     
     if user_todel is None:
-        return jsonify(success=False, message="This email does not exists"), 300
+        return jsonify(success=False, message="This email does not exists"), 400
     elif (user_todel == current_user):
-    	return jsonify(success=False, message="This is not an valid operation"), 600
+    	return jsonify(success=False, message="This is not an valid operation"), 400
     elif (user_todel.role == 'admin' and len(user) == 1):
-    	return jsonify(success=False, message="At least one admin must be present"),700
+    	return jsonify(success=False, message="At least one admin must be present"), 400
 
     db.session.delete(user_todel)
     try:
@@ -946,11 +925,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
 #+end_src
 **** Test Delete user
 #+NAME: test_delete_user
@@ -963,6 +937,8 @@ class TestDeleteUser(TestCase):
         app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -1100,7 +1076,7 @@ def delete_role():
 #+END_SRC
 
 *** Test Cases
-**** Imports 
+**** Imports
 #+name: imports_for_tests
 #+BEGIN_SRC python :tangle app/tests/test_delete_role.py
 # -*- coding: utf-8 -*-
@@ -1120,11 +1096,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
 #+end_src
 **** Test Delete role
 #+NAME: test_delete_role
@@ -1137,6 +1108,8 @@ class TestDeleteRole(TestCase):
         app.config.from_object("runtime.config.flask_app_config")
         app.config['TESTING'] = True
         app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
         login_manager = LoginManager(app)
         login_manager.login_view = "users.login"
         self.app = app.test_client()
@@ -1274,7 +1247,7 @@ def update_user():
 								:boilerplate:
 
 *** Test Cases
-**** Imports 
+**** Imports
 #+name: imports_for_tests
 #+BEGIN_SRC python :tangle app/tests/test_update_user.py
 # -*- coding: utf-8 -*-
@@ -1294,11 +1267,6 @@ import re
 from runtime.rest.app import app, db
 import client
 
-config = {
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
-        'DATABASE_CONNECT_OPTIONS': {},
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
-    }
 #+end_src
 **** Test Update user
 #+NAME: test_update_user
@@ -1311,6 +1279,8 @@ class TestUpdateUsers(TestCase):
 		app.config.from_object("runtime.config.flask_app_config")
 		app.config['TESTING'] = True
 		app.config['LOGIN_DISABLED'] = True
+		app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+		app.config['DATABASE_CONNECT_OPTIONS'] = {}
 		login_manager = LoginManager(app)
 		login_manager.login_view = "users.login"
 		self.app = app.test_client()
@@ -1355,7 +1325,7 @@ class TestUpdateUsers(TestCase):
 		
 		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
 
-		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.status_code, 400)
 
 	def test_update_user_2(self):
 		print "test_update_user_2"
