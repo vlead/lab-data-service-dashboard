@@ -468,7 +468,7 @@ if __name__ == '__main__':
 @api.route('/logged_in', methods=['GET'])
 def loggedin():
     if 'google_token' in session:
-        return jsonify(success=True, session=session['type']), 200
+        return jsonify(success=True, session=session['data']), 200
     else:
         return jsonify(success=False), 300
 #+END_SRC
@@ -1216,7 +1216,6 @@ if __name__ == '__main__':
     The implementation is given below.
 #+NAME: update_user
 #+BEGIN_SRC python
-
 @api.route('/update_user', methods=['PUT'])
 @login_required
 @requires_admin_auth
@@ -1240,15 +1239,19 @@ def update_user():
     if not (new_name or new_role or new_email):
         return jsonify(success=False, message="Invalid arguments were provided"), 400
 
-    user_toupdate = User.query.filter(User.email==email).first()
+    user_toupdate = User.query.filter(User.email == email).first()
+    user_checkupdate = User.query.filter(User.email == new_email).first()
+
     if user_toupdate is None:
         return jsonify(success=False, message="This email doesn't exists"), 400
+    elif user_checkupdate is not None:
+        return jsonify(success=False, message="Email is already registered in our database."), 400
 
-    check_role = Roles.query.filter(Roles.role_name==new_role).first()
+    check_role = Roles.query.filter(Roles.role_name == new_role).first()
     if check_role is None:
         return jsonify(success=False, message="Role doesn't exist"), 400
-    elif (check_role.role_name == 'admin' and check_role != current_user):
-        return jsonify(success=False, message="You cannot edit another admin"), 400    
+    elif check_role.role_name == 'admin' and check_role != current_user:
+        return jsonify(success=False, message="You cannot edit another admin"), 400
 
 
     user_toupdate.name = new_name
@@ -1270,6 +1273,235 @@ def update_user():
 **** Imports 
 #+name: imports_for_tests
 #+BEGIN_SRC python :tangle app/tests/test_update_user.py
+# -*- coding: utf-8 -*-
+import unittest
+import os
+import sys
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
+from flask_testing import TestCase
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
+import datetime
+from flask_login import LoginManager
+from runtime.rest.app.users.db import User, Roles
+import re
+
+from runtime.rest.app import app, db
+import client
+
+config = {
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' ,
+        'DATABASE_CONNECT_OPTIONS': {},
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,         
+    }
+#+end_src
+**** Test Update user
+#+NAME: test_update_user
+#+BEGIN_SRC python :tangle app/tests/test_update_user.py
+class TestUpdateUsers(TestCase):
+	TESTING = True
+	def create_app(self):
+		app = Flask(__name__)
+		app.register_blueprint(api, url_prefix=None)
+		app.config.from_object("runtime.config.flask_app_config")
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
+		login_manager = LoginManager(app)
+		login_manager.login_view = "users.login"
+		self.app = app.test_client()
+		db.init_app(app)
+		return app
+
+	def setUp(self):
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
+		db.create_all()
+
+	def tearDown(self):
+		db.session.remove()
+		db.drop_all()
+
+	def test_update_user_1(self):
+		print "test_update_user_1"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'role_name': 'user'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'name': 'Test1',
+			       'email': 'test1@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		
+		payload1 = {'new_name': 'Test_1',
+			       'email': 'test1@gmail.com',
+				   'new_email': 'test1@gmail.com',
+		           'new_role' : 'user'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
+
+		self.assertEqual(response.status_code, 200)
+
+	def test_update_user_2(self):
+		print "test_update_user_2"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'role_name': 'user'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'name': 'Test2',
+			       'email': 'test2@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		
+		payload1 = {'new_name': '',
+			       'email': 'test1@gmail.com',
+				   'new_email': 'test1@gmail.com',
+		           'new_role' : 'user'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
+
+		self.assertEqual(response.status_code, 400)
+
+	def test_update_user_3(self):
+		print "test_update_user_3"
+		payload = {'role_name': 'admin'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'role_name': 'user'}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_role", data=json.dumps(payload), headers=headers)
+
+		payload = {'name': 'Test3',
+			       'email': 'test3@gmail.com',
+		           'role' : 'admin'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
+		
+		payload1 = {'new_name': 'Test_3',
+			       'email': 'test@gmail.com',
+				   'new_email': 'test1@gmail.com',
+		           'new_role' : 'user'
+		           }
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.put("/update_user", data=json.dumps(payload1), headers=headers)
+
+		self.assertEqual(response.status_code, 400)
+#+END_SRC
+**** Running tests
+#+NAME: run_test_cases
+#+BEGIN_SRC python :tangle app/tests/test_update_user.py
+if __name__ == '__main__':
+    unittest.main()
+
+#+END_SRC
+** Update Profile
+   API to Update a User
+*** API Design
+ - URL :: /update_profile
+  - Method :: PUT
+  - URL Params ::  
+    {
+       "email" : "test@gmail.com"
+       "new_email" : "test1@gmail.com"
+       "new_role" : "admin"
+       "new_name" : "test1"
+    }
+  - Success Response ::
+    + Code: 200
+  - Error Response ::
+    + Code: 400
+  - Example ::
+    #+BEGIN_EXAMPLE
+    http://localhost:5000/update_profile?email=test@gmail.com
+    #+END_EXAMPLE
+*** Implementation
+    Admin has the right to edit the details of a student who is registered 
+    for the Lab Data Service. He can edit any of the details =name=,=email=
+    or =role=.
+    The implementation is given below.
+#+NAME: update_profile
+#+BEGIN_SRC python
+
+@api.route('/update_profile', methods=['PUT'])
+@login_required
+def update_own():
+
+    try:
+        temp = json.loads(request.data)
+        email = temp['email']
+        new_name = temp['new_name']
+        new_email = temp['new_email']
+    except:
+        try:
+            email = request.args.get['email']
+            new_name = request.args.get['new_name']
+            new_email = request.args.get['new_email']
+        except KeyError as e:
+            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+
+    print session['data']['email']
+
+    if email != session['data']['email']:
+        return jsonify(success=False, message="There was a session's email mismatch"), 400
+    elif not (new_name or new_email):
+        return jsonify(success=False, message="Invalid arguments were provided"), 400
+
+    user_toupdate = User.query.filter(User.email == email).first()
+    user_checkupdate = User.query.filter(User.email == new_email).first()
+
+    if user_toupdate is None:
+        return jsonify(success=False, message="This email doesn't exists."), 400
+    elif user_checkupdate is not None:
+        return jsonify(success=False, message="Email is already registered in our database."), 400
+
+    user_toupdate.name = new_name
+    user_toupdate.email = new_email
+
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        session.rollback()
+        return jsonify(success=False, message="Could not update the user"), 500
+    if user_toupdate.email == session['data']['email']:
+        return jsonify(success=True, logout=True), 200
+    else:
+        return jsonify(success=True, logout=False), 200
+#+END_SRC
+
+								:boilerplate:
+
+*** Test Cases
+**** Imports 
+#+name: imports_for_tests
+#+BEGIN_SRC python
 # -*- coding: utf-8 -*-
 import unittest
 import os
@@ -1557,6 +1789,7 @@ api = Blueprint('users', __name__)
 <<delete_user>>
 <<delete_role>>
 <<update_user>>
+<<update_profile>>
 #+END_SRC
    
 

@@ -6,11 +6,40 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
-* Introduction 
-  This document illustrates building of Web Frontend for LDS.
-* JS
-** Auth API
+* Introduction
+  This "Literate Document" is an illustration of building the client side frontend for our LDS app. This represents our
+  approach for the attempt to create a LDS dashboard as a "Single Page Application", which actually means that along with 
+  Decorative JS residing and HTML rendering which happens traditionally; Business Logic JS residing and HTML generation 
+  will also take place at the client side. This helps us achieve a lot of tasks which wouldn't have been possible with a 
+  simple website. Some of them just being
+  1. Redrawing only that part of the page that is needed and not whole of the page; thus there's a rapid rendering and
+     feedback attached to SPA.
+  2. Minimizing the response time by keeping the working data from the server to the browser whereever possible with assurance
+     of it's safety against any kind of manipulation.
+  3. Global accessibility since it only needs a browser that could render HTML and JS, which is now supported by most of OS
+     and simply saying devices for usage.
+  
+  Now the stage has been set with the basic sight of our aim we may now proceed towards writing JavaScript that would render our
+  frontend HTML and define the Business logic.
 
+ 
+* Front-End JavaScript
+  When we start to create a web page the first thing we need to do is to modularise the functionality. We need to start to Give 
+  thoughts about making functions and variables that aid those functions that could be the universal solutions for your functionality 
+  needs. We might begin with the function that will be governing the part of HTML (and it's inner elements) which are supposed to 
+  stay constant throughout any user session and then begin with definitions of functions to get required data from server and the
+  local files. Then finally function aiding the dynamic behaviour of our page which includes generation of elements and their
+  updatation. We now begin with a variable declaration(s) which will aid the functions required for our first step.
+  
+  Naming conventions play a key role in our implementation in order to make the functions work for any further addition or modification 
+  to data. Pay close attention to exploitation of naming convention in order to make most out of functions and make them immutable to 
+  addition/deletion of data, which is basically the DOM elements, they are required to process.
+
+** Auth API
+   In our implementation the top naviagation bar is the only DOM entity to be harcoded in our HTML file and thus remain constant in 
+   all user sessions but it's carries a button element that change it's attributes on the basis of session login state. Thus we define 
+   an object that could store the routes, which are already implemented in the backend, this button will redirect to. In our case it's 
+   just login and logout. 
 #+NAME: auth_api
 #+BEGIN_SRC js 
 var AuthAPI = {
@@ -22,18 +51,78 @@ var AuthAPI = {
   }
 };
 #+END_SRC
+   At first even route to home, since navigation bar had another button element for home; was part of this object but since functionality 
+   of home emerged more as hash route, it was removed from here. It now exist as a hash route, content for which other than the side
+   navigation bar has not been decided yet.
+
+** Index Handler
+   Now we needed a function that could change the attributes of elements of our navigation bar just on the basis the current login session
+   state. We came up with this function which would be taking login session state data from another helper function to update our DOM 
+   elements as required, which are innerHTML content in this case along with glyph icons for eye candy part. 
+#+NAME: index_handler
+#+BEGIN_SRC js
+
+var index_handler = function() {
+  var auth_btn = $('#login-logout-btn')[0];
+  var span_btn = $('#login-logout-spn')[0];
+  if (logged) {
+    get_users();
+    get_roles();
+    show_one_container('side-nav-container');
+    load_role_users();
+    auth_btn.onclick = AuthAPI.logout;
+    auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGOUT';
+    span_btn = $('#login-logout-spn')[0];
+    span_btn.className = 'glyphicon glyphicon-log-out';
+  }
+  else {
+    hide_all_containers();
+    auth_btn.onclick = AuthAPI.login;
+    auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGIN';
+    span_btn = $('#login-logout-spn')[0];
+    span_btn.className = 'glyphicon glyphicon-log-in';
+  }
+};
+#+END_SRC   
+   
+** Logged In
+   Now it is the time to define the define the helper function that would be provided our previous function the login session state details.
+   In order to get this data in need to interact with the server. We use an Synchronus AJAX call for it because we dont want the stale data
+   to interfere with the updatation fo DOM content at any given moment.
+#+NAME: logged_in
+#+BEGIN_SRC js 
+var is_logged_in = function() {
+  $.ajax({
+    url: 'logged_in',
+    type: 'GET',
+    contentType: 'charset=UTF-8',
+    async: false,
+    success: function (response) {
+      logged = true;
+    },
+    error: function (response) {
+      logged = false;
+    }
+  });
+  return logged;
+};
+#+END_SRC
 
 ** Get JSON
-
-#+NAME: get_json
+   After working on the DOM elements that were supposed to stay constant throught the user session to it is time to  define function that 
+   could will help us to get HTML data to populate for the current user session from the local JSON file. We define two functions to get
+   Dashboard and Side Navigation Bar seperately as of now which might change towards our final draft. This data is planned to be fed to 
+   functions that would genrate elements for us and finally appends them to the body.
+#+NAME: get_json_dash
 #+BEGIN_SRC js 
-var getJSON = function() {
+var getJSONDash = function(role) {
   $.ajax({
     url: 'static/js/main.json',
     dataType: 'json',
     async: false,
     success: function (response) {
-      data = response.admin_dash;
+      className = role+ '_dash';
+      data = response[className];
     },
     error: function() {
       data = null;
@@ -43,10 +132,36 @@ var getJSON = function() {
 };
 #+END_SRC
 
+#+NAME: get_json_nav
+#+BEGIN_SRC js
+var getJSONNav = function(role) {
+  $.ajax({
+    url: 'static/js/main.json',
+    dataType: 'json',
+    async: false,
+    success: function (response) {
+      className = role+ '_nav';
+      data = response[className];
+    },
+    error: function() {
+      data = null;
+    }
+  });
+  return data;
+};
+#+END_SRC
 ** Docoding a JSON
-   These functions take a JSON object,decodes the JSON and generates the
-specific HTML. Basic idea is to automate things. You just have to give JSON
-specifications and all the HTML gets generated with least amount of efforts.
+   Since we had the HTML data in JSON format we were in a need of functions to which would be able process this data and generatee the
+   required elements which we would be able to attach to our body one by one. We seperated the required functionality in three parts 
+   which are first to get the data, then process the data to create elements and then finally attach these elements to the body of HTML.
+
+#+NAME: create_Division
+#+BEGIN_SRC js
+var createDivisions = function () {
+  attachDivsionsToBody(getJSONNav(session_detail.role).map(createElements));
+  attachDivsionsToBody(getJSONDash(session_detail.role).map(createElements));
+};
+#+END_SRC
 
 #+NAME: Decoding_json
 #+BEGIN_SRC js
@@ -68,101 +183,88 @@ var createElements = function(element) {
   }
   return new_ele;
 };
-
-var createDivisions = function () {
-  return getJSON().map(createElements);
-};
-
-var attachDivsionsToBody = function (divisions) {
-  divisions.forEach(function (division) {
-    document.getElementById('main').appendChild(division);
-  });
-};
 #+END_SRC
 
-** Logged In
-   This is to check whether a user is logged into LDS or not.This function
-returns true if the user is logged in and returns false if the user is not
-logged in.
-#+NAME: logged_in
-#+BEGIN_SRC js 
-var is_logged_in = function() {
-  $.ajax({
-    url: 'logged_in',
-    type: 'GET',
-    contentType: 'charset=UTF-8',
-    async: false,
-    success: function (response) {
-      logged = true;
-    },
-    error: function (response) {
-      logged = false;
-    }
+#+NAME: attach_Division
+#+BEGIN_SRC js
+var attachDivsionsToBody = function (divisions) {
+  divisions.forEach(function (division) {
+    document.getElementById('body').appendChild(division);
   });
-  return logged;
 };
 #+END_SRC
 
 ** Hash to Handler Map
-   =hash_to_handlers= is an object which maps a =hash= to a =handler= so that
-when the hash is changed, appropriate handler is called.
+   For a Single Page Application like ours one of the must have part is a client side router. It knows how to tweak the content of the 
+   navigation/url bar and informs the rest system about the URL changes. We here tried to implement hash based routing for our app. A
+   hash based routing uses anchor part of the URL to simulate different actions on the browser screen. A hash of the page for the example 
+   given below will be ~first-page~.
 
-#+NAME: hash_to_handlers_map
+#+BEGIN_SRC js
+http://webapp.com/#first-page
+#+END_SRC
+
+   It is interesting to note that ~#first-page~ is never sent to server; hence doesn't need to be defined as route in our backend, since
+   hash-routing never involves reloading of the page, it just helps in making the page dynamic at the client side. Though, This might arise
+   another problem of 'Then how to register the accessible hashes?'. We would tackle all these problems and implementing our hash routing 
+   below using couple of functions.
+
+   We start of with define an object =hash_to_handlers_map= that would contain all the available hash routes for us. In our case since
+   home is common to all the user sessions, we start off with initialzing it with ~home~.
+
+#+NAME: handlers_map
 #+BEGIN_SRC js
 hash_to_handlers_map = {home:'home'}; 
+#+END_SRC
 
+   Now we need to add the rest of available hash routes for the logged in user depending upon it's privlidges. We accomplish this task by 
+   creating a function that would search for all the elements in current populated HTML page (based on the user's role in the current 
+   session) for the substring ~-container~ in end of all the element ids. Once all the hash-routes are added we freeze the object in order
+   to make sure no manipulation of our object takes places at the client side, which would prevent user to access unauthorized/non-existant
+   hash routes.
+
+#+NAME: handlers_map_func_def
+#+BEGIN_SRC js
 var handlers_map = function () {
   var select = document.querySelectorAll('[id$="-container"]');
   [].forEach.call(select, function (hash_name) {
     var id = hash_name.id.slice(0,-10);
     hash_to_handlers_map[id.valueOf()] = id;
   });
+  Object.freeze(hash_to_handlers_map);
 };
 
 #+END_SRC
+
 ** Hash Route Navigation
-#+NAME: hash_navigation
+   As we are now done with defining all our accessible hash routes, we now need the functions that could allow us to catch hold of the
+   current window hash route and further navigate to a different hash route. We use the inbuilt JavaScript function window.location 
+   for the same.
+   We can also use hash path functions which are predefined in the JavaScript library and thus the definitons of the current version
+   of this functions are subjected to change.
+#+NAME: current_window_hash
 #+BEGIN_SRC js
 var get_window_hash_path = function() {
   var hash = window.location.href.split('#')[1] || '';
   return hash;
 };
+#+END_SRC
 
+#+NAME: hash_navigate_function
+#+BEGIN_SRC 
 var navigate = function (path) {
   var current = window.location.href;
   window.location.href = current.replace(/#(.*)$/, '') + '#' + path;
 };
 #+END_SRC
-** Show and Hide containers.
-   We can either show or hide the containers depending on our requirements. For
-example,if we want to Add a User,we can hide all the containers and display
-only the Add User container.
-#+NAME: show_hide
-#+BEGIN_SRC js 
-var show_all_containers = function() {
-  var containers = document.querySelectorAll('[id$="-container"]');
-  [].forEach.call(containers, function (container) {
-    container.classList.remove('hidden');
-  });
-};
-
-var show_one_container = function(containerID) {
-  $('#'+containerID).removeClass('hidden');
-};
-
-var hide_all_containers = function() {
-  var containers = document.querySelectorAll('[id$="-container"]');
-  [].forEach.call(containers, function (container) {
-    container.classList.add('hidden');
-  });
-};
-#+END_SRC
 
 ** Register on hash change
-   Whenever =hash= is changed,the change is detected and the function checks if
-the new hash is valid or not. If the new hash is valid, we are navigated to the
-new hash, else an error is thrown.
-
+   Now we need a function that would change our web page as soon as a different =hash= in the url is requested. This functions was supposed
+   to check for the wether the hash change was done by side navigation bar button click or simply using the URL. This task has been
+   accomplished by using a variable ~hashNotClicked~ in order to keep the track of the button hit/url change. We even check for the requested
+   hash to be accessible to our user in the current session. Any attempt to access non-existant/unauthorized hash will give a alert and
+   redirection to home shall happen.
+ 
 #+NAME: register_on_hash_change
 #+BEGIN_SRC js
 var register_onhashchange_handlers = function(hash_to_handlers_map) {
@@ -180,51 +282,58 @@ var register_onhashchange_handlers = function(hash_to_handlers_map) {
       else if (!hashNotClicked) {
         if (hash_path=='update-user') {
           window.alert('You are trying to access the page using wrong way!');
+          hide_all_containers();
+          show_one_container('side-nav-container');
           navigate('home');
         }
         else {
-          console.log('Nightmare is back!');
           document.getElementById('home-btn-'+ hash_path).click();
         }
       }
     }
     else {
-      window.alert('You are trying to access a wrong page');
+      hide_all_containers();
+      show_one_container('side-nav-container');
       navigate('home');
+      window.alert('You are trying to access a wrong page');
     }
       hashNotClicked=false;
   });
 };
 #+END_SRC
-** Index Handler
-   Whenever hash is changed to 'index', index_handler function is called which
-hides all the other conatainers and displays only index page based on whether
-the user is logged in or not.
-#+NAME: index_handler
-#+BEGIN_SRC js
-var index_handler = function() {
-  var logged = is_logged_in();
-  var auth_btn = $('#login-logout-btn')[0];
-  var span_btn = $('#login-logout-spn')[0];
-  if (logged) {
-    get_users();
-    get_roles();
-    show_one_container('side-nav-container');
-    load_role_users();
-    auth_btn.onclick = AuthAPI.logout;
-    auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGOUT';
-    span_btn = $('#login-logout-spn')[0];
-    span_btn.className = 'glyphicon glyphicon-log-out';
-  }
-  else {
-    hide_all_containers();
-    auth_btn.onclick = AuthAPI.login;
-    auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGIN';
-    span_btn = $('#login-logout-spn')[0];
-    span_btn.className = 'glyphicon glyphicon-log-in';
-  }
+
+** Show and Hide containers.
+   We can either show or hide the containers depending on our requirements. For
+example,if we want to Add a User,we can hide all the containers and display
+only the Add User container.
+
+#+NAME: show_all_container
+#+BEGIN_SRC js 
+var show_all_containers = function() {
+  var containers = document.querySelectorAll('[id$="-container"]');
+  [].forEach.call(containers, function (container) {
+    container.classList.remove('hidden');
+  });
 };
 #+END_SRC
+
+#+NAME: show_one_container
+#+BEGIN_SRC js
+var show_one_container = function(containerID) {
+  $('#'+containerID).removeClass('hidden');
+};
+#+END_SRC
+
+#+NAME: hide_all_container
+#+BEGIN_SRC js
+var hide_all_containers = function() {
+  var containers = document.querySelectorAll('[id$="-container"]');
+  [].forEach.call(containers, function (container) {
+    container.classList.add('hidden');
+  });
+};
+#+END_SRC
+
 ** Get Users
    AJAX call is made to the backend server to get the users availed to LDS.
 #+NAME: get_users
@@ -495,6 +604,40 @@ $(document).on('click', '#'+button.id, function(clickEvent) {
 });
 }
 #+END_SRC
+** Update Profile
+#+NAME: update_own_click
+#+BEGIN_SRC js
+$(document).on('click', '#update-profile-sbt', function(clickEvent) {
+  var data = JSON.stringify({
+    email: session_detail.email,
+    new_name: $('#edit-new-name-own').val(),
+    new_email: $('#edit-new-email-own').val()
+  });
+  $.ajax({
+    url: 'update_profile',
+    data: data,
+    type: 'PUT',
+    contentType: 'application/json;charset=utf-8',
+    async: false,
+    success: function (response) {
+      window.alert ('User was updated');
+      if (response.logout == true) {
+        $('#login-logout-btn').click();
+      }
+      else {
+        navigate('show-users');
+        get_users();
+      }
+    },
+    error: function (response) {
+      navigate('show-users');      
+      window.alert ('There was an error updating the user, please check the information you provided.');
+    }
+  });
+  $('#update-user-sbt').removeAttr('email');
+});
+
+#+END_SRC
 ** OnClick Event Handlers
 #+NAME: onClick_event_handle
 #+BEGIN_SRC js
@@ -533,6 +676,12 @@ var onClickFunctions = function() {
   $(document).on('click', '#home-btn-update-user', function(clickEvent) {
     updateHelperFunction();
   });
+
+  $(document).on('click', '#home-btn-update-profile', function(clickEvent) {
+    $('#edit-new-name-own').val(session_detail.name);
+    $('#edit-new-email-own').val(session_detail.email);
+  });
+
 };
 #+END_SRC
 ** Update User and Roles Dropdown
@@ -559,23 +708,38 @@ var load_role_users = function() {
   });
 };
 #+END_SRC
+** On hash change
+#+NAME: hash_home
+#+BEGIN_SRC js
+$(window).on('hashchange', function(e) {
+  if (get_window_hash_path() == 'home') {
+      hide_all_containers();
+      show_one_container('side-nav-container');
+  }
+})
+#+END_SRC
 ** On load
    Whenever the page refreshes or loads again, the following functions are
 called. Appropriate HTML is generated based on the hash.
 #+NAME: onload
 #+BEGIN_SRC js
 window.onload = function () {
+  hashNotClicked=false;
+  logged = is_logged_in();
+  index_handler();  
+  if (logged){
   navigate('home');
-  attachDivsionsToBody(createDivisions());
+  createDivisions();
   hide_all_containers();
-  index_handler();
+  index_handler();  
   get_window_hash_path();
   onClickFunctions();
-  onChangeFunctions();
   handlers_map();
   register_onhashchange_handlers(hash_to_handlers_map);
-};
+  
 #+END_SRC  
+
+
 * JSON
 ** User and Role Specifications
    This is a JSON file in which the necessary specifications are given to
@@ -590,367 +754,592 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
   "onlogin_dash": [
 
   ],
+  "admin_nav":[
+    {
+      "typeofdiv":"div",
+      "id":"side-nav-container",
+      "class":"sidenav hidden",
+      "elements":[
+        {
+          "typeofdiv":"div",
+          "class":"list-group table-of-contents",
+          "elements":[
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-add-user",
+              "class":"list-group-item",
+              "innerHTML":" Add User "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-add-role",
+              "class":"list-group-item",
+              "innerHTML":" Add Role "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-update-profile",
+              "class":"list-group-item",
+              "innerHTML":" Update Profile "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-users",
+              "class":"list-group-item",
+              "innerHTML":" Show Users "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-roles",
+              "class":"list-group-item",
+              "innerHTML":" Show Roles "
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "admin_dash":[
-    {
-      "typeofdiv":"div",
-      "id":"add-user-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Add User"
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"add-user",
-          "elements":[
+  {
+    "typeofdiv":"div",
+    "id":"main",
+    "elements":[
+      {
+        "typeofdiv":"div",
+        "id":"add-user-container",
+        "class":"hidden",
+        "elements":[
             {
-              "typeofdiv":"li",
+              "typeofdiv":"p",
+              "innerHTML":"Add User"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"add-user",
               "elements":[
                 {
-                  "typeofdiv":"label",
-                  "id":"name_label",
-                  "innerText":"Name:"
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"name_label",
+                      "innerText":"Name:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"add-user-name",
+                      "type":"text"
+                    }
+                  ]
                 },
                 {
-                  "typeofdiv":"input",
-                  "id":"add-user-name",
-                  "type":"text"
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"email_label",
+                      "innerText":"Email:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"add-user-email",
+                       "type":"text"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "id":"add-user-role",
+                      "innerText":"Role:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"add-user-sbt",
+                      "type":"button",
+                      "class":"btn btn-primary update-btn",
+                      "value":"Add",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "class":"btn btn-primary",
+                      "type":"button",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
                 }
               ]
             },
             {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"label",
-                  "id":"email_label",
-                  "innerText":"Email:"
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"add-user-email",
-                   "type":"text"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"select",
-                  "id":"add-user-role",
-                  "innerText":"Role:"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"input",
-                  "id":"add-user-sbt",
-                  "type":"button",
-                  "class":"btn btn-primary update-btn",
-                  "value":"Add",
-                  "onclick":""
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"cancel",
-                  "class":"btn btn-primary",
-                  "type":"button",
-                  "value":"Cancel",
-                  "onclick":""
-                }
-              ]
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
             }
           ]
         },
         {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
-        }
-      ]
-    },
-    {
-      "typeofdiv":"div",
-      "id":"add-role-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Add Role"
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"add-role",
+          "typeofdiv":"div",
+          "id":"add-role-container",
+          "class":"hidden",
           "elements":[
             {
-              "typeofdiv":"li",
+              "typeofdiv":"p",
+              "innerHTML":"Add Role"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"add-role",
               "elements":[
                 {
-                  "typeofdiv":"label",
-                  "id":"role_label",
-                  "innerText":"Role:"
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"role_label",
+                      "innerText":"Role:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"add-role-name",
+                      "type":"text"
+                    }
+                  ]
                 },
                 {
-                  "typeofdiv":"input",
-                  "id":"add-role-name",
-                  "type":"text"
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"add-role-sbt",
+                      "type":"button",
+                      "class":"btn btn-primary update-btn",
+                      "value":"Add Role",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
                 }
               ]
             },
             {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"input",
-                  "id":"add-role-sbt",
-                  "type":"button",
-                  "class":"btn btn-primary update-btn",
-                  "value":"Add Role",
-                  "onclick":""
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"cancel",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Cancel",
-                  "onclick":""
-                }
-              ]
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
             }
           ]
         },
         {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
-        }
-      ]
-    },
-    {
-      "typeofdiv":"div",
-      "id":"update-user-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Edit User"
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"edit-user",
+          "typeofdiv":"div",
+          "id":"update-user-container",
+          "class":"hidden",
           "elements":[
             {
-              "typeofdiv":"li",
+              "typeofdiv":"p",
+              "innerHTML":"Edit User"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"edit-user",
               "elements":[
                 {
-                  "typeofdiv":"label",
-                  "id":"new-name-label",
-                  "innerText":"New Name:"
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"new-name-label",
+                      "innerText":"New Name:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"edit-new-name",
+                      "type":"text"
+                    }
+                  ]
                 },
                 {
-                  "typeofdiv":"input",
-                  "id":"edit-new-name",
-                  "type":"text"
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"new-email-label",
+                      "innerText":"New Email:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"edit-new-email",
+                      "type":"text"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "id":"edit-user-role",
+                      "innerText":"Role:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"update-user-sbt",
+                      "type":"button",
+                      "class":"btn btn-primary update-btn",
+                      "value":"Done",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
                 }
               ]
             },
             {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"label",
-                  "id":"new-email-label",
-                  "innerText":"New Email:"
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"edit-new-email",
-                  "type":"text"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"select",
-                  "id":"edit-user-role",
-                  "innerText":"Role:"
-                }
-              ]
-            },
-            {
-              "typeofdiv":"li",
-              "elements":[
-                {
-                  "typeofdiv":"input",
-                  "id":"update-user-sbt",
-                  "type":"button",
-                  "class":"btn btn-primary update-btn",
-                  "value":"Done",
-                  "onclick":""
-                },
-                {
-                  "typeofdiv":"input",
-                  "id":"cancel",
-                  "type":"button",
-                  "class":"btn btn-primary",
-                  "value":"Cancel",
-                  "onclick":""
-                }
-              ]
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
             }
           ]
         },
         {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
-        }
-      ]
-    },
-    { 
-      "typeofdiv":"div",
-      "id":"show-users-container",
-      "class":"hidden",
-      "elements":[
-        {
-          "typeofdiv":"p",
-          "innerHTML":"Show Users"
-        },
-        {
-          "typeofdiv":"table",
-          "class":"table table-striped",
-          "id":"user-table",
+          "typeofdiv":"div",
+          "id":"update-profile-container",
+          "class":"hidden",
           "elements":[
-           {
-              "typeofdiv":"thead",
-              "class":"thead",
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Edit User"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"edit-profile",
               "elements":[
-                  {
-                    "typeofdiv":"tr",
-                    "elements":[
-                     {
-                      "typeofdiv":"th",
-                      "innerHTML":"Id"
-                     },
-                     {
-                      "typeofdiv":"th",
-                      "innerHTML":"Name"
-                     },
-                     {
-                      "typeofdiv":"th",
-                      "innerHTML":"Email"
-                     },
-                     {
-                      "typeofdiv":"th",
-                      "innerHTML":"Role"
-                     },
-                     {
-                      "typeofdiv":"th"
-                     },
-                     {
-                      "typeofdiv":"th"
-                     }
-                    ]
-                  } 
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"new-name-own-label",
+                      "innerText":"New Name:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"edit-new-name-own",
+                      "type":"text"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"new-email-own-label",
+                      "innerText":"New Email:"
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"edit-new-email-own",
+                      "type":"text"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"update-profile-sbt",
+                      "type":"button",
+                      "class":"btn btn-primary update-btn",
+                      "value":"Done",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
               ]
-           },
-           {
-              "typeofdiv":"tbody",
-              "class":"tbody  "
-           }
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
           ]
-
         },
-        {
-          "typeofdiv":"ul",
-          "id":"show-users",
+        { 
+          "typeofdiv":"div",
+          "id":"show-users-container",
+          "class":"hidden",
           "elements":[
-
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Users"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"user-table",
+              "elements":[
+               {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                      {
+                        "typeofdiv":"tr",
+                        "elements":[
+                         {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                         },
+                         {
+                          "typeofdiv":"th",
+                          "innerHTML":"Name"
+                         },
+                         {
+                          "typeofdiv":"th",
+                          "innerHTML":"Email"
+                         },
+                         {
+                          "typeofdiv":"th",
+                          "innerHTML":"Role"
+                         },
+                         {
+                          "typeofdiv":"th"
+                         },
+                         {
+                          "typeofdiv":"th"
+                         }
+                        ]
+                      } 
+                  ]
+               },
+               {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+               }
+              ]
+    
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-users",
+              "elements":[
+    
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
           ]
         },
         {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
+          "typeofdiv":"div",
+          "id":"show-roles-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Roles"
+            },
+             {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"role-table",
+              "elements":[
+               {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                      {
+                        "typeofdiv":"tr",
+                        "elements":[
+                         {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                         },
+                         {
+                          "typeofdiv":"th",
+                          "innerHTML":"Name"
+                         },
+                         {
+                          "typeofdiv":"th"
+                         }
+                        ]
+                      } 
+                  ]
+               },
+               {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+               }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-roles",
+              "elements":[
+    
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
         }
       ]
-    },
+    }
+  ],
+  "guest_nav":[
     {
       "typeofdiv":"div",
-      "id":"show-roles-container",
-      "class":"hidden",
+      "id":"side-nav-container",
+      "class":"sidenav hidden",
       "elements":[
         {
-          "typeofdiv":"p",
-          "innerHTML":"Show Roles"
-        },
-         {
-          "typeofdiv":"table",
-          "class":"table table-striped",
-          "id":"role-table",
+          "typeofdiv":"div",
+          "class":"list-group table-of-contents",
           "elements":[
-           {
-              "typeofdiv":"thead",
-              "class":"thead",
-              "elements":[
-                  {
-                    "typeofdiv":"tr",
-                    "elements":[
-                     {
-                      "typeofdiv":"th",
-                      "innerHTML":"Id"
-                     },
-                     {
-                      "typeofdiv":"th",
-                      "innerHTML":"Name"
-                     },
-                     {
-                      "typeofdiv":"th"
-                     }
-                    ]
-                  } 
-              ]
-           },
-           {
-              "typeofdiv":"tbody",
-              "class":"tbody  "
-           }
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-update-profile",
+              "class":"list-group-item",
+              "innerHTML":" Update Profile "
+            }
           ]
-        },
-        {
-          "typeofdiv":"ul",
-          "id":"show-roles",
-          "elements":[
-
-          ]
-        },
-        {
-          "typeofdiv":"label",
-          "id":"error-box",
-          "value":"Error",
-          "class":"error hidden"
         }
       ]
     }
   ],
   "guest_dash": [
-
-  ]
-}
-
+  {
+    "typeofdiv":"div",
+    "id":"main",
+    "elements":[
+          {
+            "typeofdiv":"div",
+            "id":"update-profile-container",
+            "class":"hidden",
+            "elements":[
+              {
+                "typeofdiv":"p",
+                "innerHTML":"Edit User"
+              },
+              {
+                "typeofdiv":"ul",
+                "id":"edit-profile",
+                "elements":[
+                  {
+                    "typeofdiv":"li",
+                    "elements":[
+                      {
+                        "typeofdiv":"label",
+                        "id":"new-name-own-label",
+                        "innerText":"New Name:"
+                      },
+                      {
+                        "typeofdiv":"input",
+                        "id":"edit-new-name-own",
+                        "type":"text"
+                      }
+                    ]
+                  },
+                  {
+                    "typeofdiv":"li",
+                    "elements":[
+                      {
+                        "typeofdiv":"label",
+                        "id":"new-email-own-label",
+                        "innerText":"New Email:"
+                      },
+                      {
+                        "typeofdiv":"input",
+                        "id":"edit-new-email-own",
+                        "type":"text"
+                      }
+                    ]
+                  },
+                  {
+                    "typeofdiv":"li",
+                    "elements":[
+                      {
+                        "typeofdiv":"input",
+                        "id":"update-profile-sbt",
+                        "type":"button",
+                        "class":"btn btn-primary update-btn",
+                        "value":"Done",
+                        "onclick":""
+                      },
+                      {
+                        "typeofdiv":"input",
+                        "id":"cancel",
+                        "type":"button",
+                        "class":"btn btn-primary",
+                        "value":"Cancel",
+                        "onclick":""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "typeofdiv":"label",
+                "id":"error-box",
+                "value":"Error",
+                "class":"error hidden"
+              }
+            ]
+          }    
+        ]
+      }
+    ]
+  }
 #+END_SRC
+
 ** LDS Specifications
    This is a JSON file in which the necessary specifications are given to
 generate HTML to do the CRUD operations on LDS database.
@@ -1970,7 +2359,6 @@ generate HTML to do the CRUD operations on LDS database.
  ];
 
 #+END_SRC
-
 
 ** Edit Lab
 #+NAME: edit_lab_spec
