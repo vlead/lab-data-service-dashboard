@@ -212,6 +212,7 @@ from functools import wraps
 <<configure>>
 <<admin_auth>>
 <<guest_auth>>
+<<only_ajax>>
 <<error_handling>>
 <<login_manager>>
 <<blueprints>>
