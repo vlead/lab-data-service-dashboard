@@ -138,7 +138,7 @@ fi
 # Install pre-requsite dependencies: python-dev, mysqld-dev, setuptools,
 # apache, mod_wsgi etc.
 echo "Installing pre-requisite dependencies.."
-apt-get install -y python-dev libmysqld-dev python-setuptools apache2 libapache2-mod-wsgi libffi-dev
+apt-get install -y python-dev libmysqld-dev python-setuptools apache2 libapache2-mod-wsgi libffi-dev build-essential libssl-dev libxml2-dev libxslt1-dev 
 if [[ $? -ne 0 ]]; then
   echo "FATAL: Installing pre-requisite dependencies failed!"
   exit 1;
