@@ -827,7 +827,7 @@ transition: 0.3s;
    This is a JSON file in which the necessary specifications are given to
 generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 
-#+NAME: JSON_spec_file
+#+NAME: admin_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
 {
   "beflogin_dash":[
@@ -1313,9 +1313,12 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
             }
           ]
         }
-      ]
-    }
-  ],
+      
+#+END_SRC
+
+#+NAME :guest_spec_file
+#+BEGIN_SRC json
+
   "guest_nav":[
     {
       "typeofdiv":"div",
@@ -1428,7 +1431,6 @@ generate HTML to do the CRUD operations on LDS database.
 *** Add Asset
 #+NAME: add_asset_spec
 #+BEGIN_SRC  
- var divisions_spec = [
    {
       "typeofdiv":"div",
       "id":"add-asset-container",
@@ -1502,15 +1504,15 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 
 *** Add Institute
 #+NAME: add_institute_spec
 #+BEGIN_SRC  
- var divisions_spec = [
+
    {
       "typeofdiv":"div",
       "id":"add-institute-container",
@@ -1565,6 +1567,7 @@ generate HTML to do the CRUD operations on LDS database.
 
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-asset-id",
                   "innerText":"Asset:"
                 },
@@ -1608,14 +1611,14 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Add Discipline
 #+NAME: add_discipline_spec
 #+BEGIN_SRC  
- var divisions_spec = [
+
    {
       "typeofdiv":"div",
       "id":"add-discipline-container",
@@ -1670,6 +1673,7 @@ generate HTML to do the CRUD operations on LDS database.
 
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple", 
                   "id":"add-asset-id",
                   "innerText":"Asset:"
                 },
@@ -1713,14 +1717,14 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Add Section
 #+NAME: add_section_spec
 #+BEGIN_SRC  
- var divisions_spec = [
+
    {
       "typeofdiv":"div",
       "id":"add-section-container",
@@ -1779,15 +1783,15 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 
 *** Add Experiment
 #+NAME: add_experiment_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
- var divisions_spec = [
+
     {
       "typeofdiv":"div",
       "id":"add-experiment-container",
@@ -1857,6 +1861,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-experiment-discipline-id-box",
                   "innerText":"Discipline:"
                 }
@@ -1872,6 +1877,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-experiment-institute-id-box",
                   "innerText":"Institute:"
                 }
@@ -1888,6 +1894,7 @@ generate HTML to do the CRUD operations on LDS database.
 
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-developer-id",
                   "innerText":"Developer:"
                 },
@@ -1912,6 +1919,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-hosting-info-id",
                   "innerText":"Hosting Info:"
                 },
@@ -1954,6 +1962,7 @@ generate HTML to do the CRUD operations on LDS database.
 
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-asset-id",
                   "innerText":"Asset:"
                 },
@@ -1978,6 +1987,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-section-id",
                   "innerText":"Section:"
                 },
@@ -2022,14 +2032,14 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Add Lab
 #+NAME: add_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
- var divisions_spec = [
+
     {
       "typeofdiv":"div",
       "id":"add-lab-container",
@@ -2098,6 +2108,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-discipline-id",
                   "innerText":"Discipline:"
                 }
@@ -2113,6 +2124,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-institute-id",
                   "innerText":"Institute:"
                 }
@@ -2129,7 +2141,8 @@ generate HTML to do the CRUD operations on LDS database.
 
                 {
                   "typeofdiv":"select",
-                  "id":"add-developer-id",
+                  "multiple":"multiple", 
+                 "id":"add-developer-id",
                   "innerText":"Developer:"
                 },
                 {
@@ -2153,6 +2166,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-hosting-info-id",
                   "innerText":"Hosting Info:"
                 },
@@ -2194,6 +2208,7 @@ generate HTML to do the CRUD operations on LDS database.
 
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-asset-id",
                   "innerText":"Asset:"
                 },
@@ -2218,6 +2233,7 @@ generate HTML to do the CRUD operations on LDS database.
                 },
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"add-section-id",
                   "innerText":"Section:"
                 },
@@ -2262,14 +2278,14 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Add Hosting Info
 #+NAME: add_hosting_info_spec
 #+BEGIN_SRC  
- var divisions_spec = [
+
    {
       "typeofdiv":"div",
       "id":"add-hosting-info-container",
@@ -2358,14 +2374,14 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Add Developer
 #+NAME: add_developer_spec
 #+BEGIN_SRC  
- var divisions_spec = [
+
    {
       "typeofdiv":"div",
       "id":"add-developer-container",
@@ -2439,8 +2455,8 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 
@@ -2448,7 +2464,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+NAME: edit_lab_spec
 #+BEGIN_SRC 
- var divisions_spec = [
+
     {
       "typeofdiv":"div",
       "id":"update-lab-container",
@@ -2513,6 +2529,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-lab-institute",
                   "innerText":"Institute:"
                 }
@@ -2523,6 +2540,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-lab-discipline",
                   "innerText":"Discipline:"
                 }
@@ -2533,6 +2551,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-lab-developers",
                   "innerText":"Developer:"
                 }
@@ -2554,6 +2573,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-lab-assets",
                   "innerText":"Assets:"
                 }
@@ -2565,6 +2585,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-lab-hosting-info",
                   "innerText":"Hosting Info:"
                 }
@@ -2602,15 +2623,15 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Edit Institute
 
 #+NAME: edit_institute_spec
 #+BEGIN_SRC 
- var divisions_spec = [
+
     {
       "typeofdiv":"div",
       "id":"update-institute-container",
@@ -2648,6 +2669,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-institute-assets",
                   "innerText":"Assets:"
                 }
@@ -2683,15 +2705,15 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Edit Discipline
 
 #+NAME: edit_discipline_spec
 #+BEGIN_SRC 
- var divisions_spec = [
+
     {
       "typeofdiv":"div",
       "id":"update-discipline-container",
@@ -2729,6 +2751,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-disicipline-assets",
                   "innerText":"Assets:"
                 }
@@ -2764,15 +2787,15 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Edit Experiment
 
 #+NAME: edit_experiment_spec
 #+BEGIN_SRC 
- var divisions_spec = [
+
     {
       "typeofdiv":"div",
       "id":"update-experiment-container",
@@ -2837,6 +2860,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-experiment-institute",
                   "innerText":"Institute:"
                 }
@@ -2847,6 +2871,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-experiment-discipline",
                   "innerText":"Discipline:"
                 }
@@ -2857,6 +2882,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-experiment-developers",
                   "innerText":"Developer:"
                 }
@@ -2867,6 +2893,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-experiment-sections",
                   "innerText":"Sections:"
                 }
@@ -2878,6 +2905,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-experiment-assets",
                   "innerText":"Assets:"
                 }
@@ -2889,6 +2917,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"edit-experiment-hosting-info",
                   "innerText":"Hosting Info:"
                 }
@@ -2926,8 +2955,8 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Delete Lab
@@ -2951,6 +2980,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"delete-user-email",
                   "innerText":"Role:"
                 }
@@ -3005,6 +3035,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"select",
+                  "multiple":"multiple",
                   "id":"delete-user-role",
                   "innerText":"Role:"
                 }
