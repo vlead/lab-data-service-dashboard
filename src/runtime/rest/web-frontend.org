@@ -1312,7 +1312,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
               "class":"error hidden"
             }
           ]
-        }
+        },
       
 #+END_SRC
 
@@ -2963,7 +2963,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+NAME: edit_hosting_info_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
- var divisions_spec = [
+ 
     {
       "typeofdiv":"div",
       "id":"update-hosting-info-container",
@@ -3044,15 +3044,15 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+
 
 #+END_SRC
 *** Edit Developer
 
 #+NAME: edit_developer_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
- var divisions_spec = [
+ 
     {
       "typeofdiv":"div",
       "id":"update-developer-container",
@@ -3115,8 +3115,8 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
- ];
+    },
+ 
 
 #+END_SRC
 *** Delete Lab
@@ -3377,6 +3377,7 @@ generate HTML to do the CRUD operations on LDS database.
 * Tangle                                                        :boilerplate:
   
 ** sources
+*** JS
 #+BEGIN_SRC js :tangle app/static/js/main.js :eval no :noweb yes
 <<auth_api>>
 <<index_handler>>
@@ -3410,10 +3411,12 @@ generate HTML to do the CRUD operations on LDS database.
 <<update_role_drop>>
 <<hash_home>>
 <<onload>>
-<<guest_spec_file>>
 #+END_SRC
    
-
+*** JSON
+#+BEGIN_SRC js :tangle app/static/js/main.json :eval no :noweb yes
+<<guest_spec_file>>
+#+END_SRC
 
    
 
