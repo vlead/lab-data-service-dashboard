@@ -44,20 +44,20 @@ and logout pages with implementation and deployment.
 |      | with log in and logout  |        |          |        |        |          |
 |      | API's                   |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   6. | Data Model for Lab      | [[https://github.com/vlead/lab-data-service-dashboard/issues/6][#6]]     |          |        | Done   | Madhavi  |
+|   6. | Data Model for Lab      | [[https://github.com/vlead/lab-data-service-dashboard/issues/6][#6]]     | 32 hrs   | 24 hrs | Done   | Madhavi  |
 |      | Data Service Dashboard  |        |          |        |        | Puliraju |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   7. | Documention to run      | [[https://github.com/vlead/lab-data-service-dashboard/issues/7][#7]]     |          |        | Done   | Madhavi  |
+|   7. | Documention to run      | [[https://github.com/vlead/lab-data-service-dashboard/issues/7][#7]]     | 32 hrs   | 12 hrs | Done   | Madhavi  |
 |      | the lds dashboard in    |        |          |        |        | Puliraju |
 |      | development environment |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   8. | Auto Deployment         | [[https://github.com/vlead/lab-data-service-dashboard/issues/11][#11]]    |          |        | Done   | Madhavi  |
+|   8. | Auto Deployment         | [[https://github.com/vlead/lab-data-service-dashboard/issues/11][#11]]    | 32 hrs   | 32 hrs | Done   | Madhavi  |
 |      | of LDS Dashboard        |        |          |        |        | Puliraju |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   9. | first level Model       | [[https://github.com/vlead/lab-data-service-dashboard/issues/12][#12]]    |          |        | Done   | Madhavi  |
+|   9. | first level Model       | [[https://github.com/vlead/lab-data-service-dashboard/issues/12][#12]]    | 12 hrs   | 6 hrs  | Done   | Madhavi  |
 |      | Review for milestone1   |        |          |        |        | Puliraju |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|  10. | First Review            | [[https://github.com/vlead/lab-data-service-dashboard/issues/13][#13]]    |          |        | Done   | Madhavi  |
+|  10. | First Review            | [[https://github.com/vlead/lab-data-service-dashboard/issues/13][#13]]    | 12 hrs   | 4 hrs  | Done   | Madhavi  |
 |      | Comments [09-06-2017]   |        |          |        |        | Puliraju |
 |------+-------------------------+--------+----------+--------+--------+----------|
 
@@ -72,33 +72,64 @@ and logout pages with implementation and deployment.
   Implementation of Front End with Login, Logout, Admin and Guest Dashboards as
   Single Page Applications (SPA). This Implementation does not use any
   framework. Implementation will be done using pure java script.
-|------+------------------------+--------+----------+--------+-------------+----------|
-| S.NO | Tasks                  | Github | Expected | Actual | Status      | Assignee |
-|      |                        | Issues | Effort   | Effort |             |          |
-|------+------------------------+--------+----------+--------+-------------+----------|
-|   1. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/9][#9]]     |          |        | In Progress | Yahnit,  |
-|      | of Admin Dashboard     |        |          |        |             | Utkarsh  |
-|------+------------------------+--------+----------+--------+-------------+----------|
-|   2. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/10][#10]]    |          |        | In Progress | Yahnit,  |
-|      | of 'Guest' Dashboard   |        |          |        |             | Utkarsh  |
-|------+------------------------+--------+----------+--------+-------------+----------|
-|   3. | Re-Implementation      | [[https://github.com/vlead/lab-data-service-dashboard/issues/14][#14]]    |          |        | In Progress | Utkarsh  |
-|      | of Log in and Log out  |        |          |        |             |          |
-|      | using Single Page      |        |          |        |             |          |
-|      | Application (SPA)      |        |          |        |             |          |
-|------+------------------------+--------+----------+--------+-------------+----------|
-|   4. | Read Json elements     | [[https://github.com/vlead/lab-data-service-dashboard/issues/15][#15]]    |          |        | Done        | Yahnit   |
-|      | and generate html code |        |          |        |             |          |
-|------+------------------------+--------+----------+--------+-------------+----------|
-|   5. | Implement Event        | [[https://github.com/vlead/lab-data-service-dashboard/issues/16][#16]]    |          |        | In Progress | Yahnit   |
-|      | handlers for all       |        |          |        |             |          |
-|      | CRUD operations        |        |          |        |             |          |
-|      | in front end           |        |          |        |             |          |
-|------+------------------------+--------+----------+--------+-------------+----------|
+|------+------------------------+--------+----------+--------+--------+----------|
+| S.NO | Tasks                  | Github | Expected | Actual | Status | Assignee |
+|      |                        | Issues | Effort   | Effort |        |          |
+|------+------------------------+--------+----------+--------+--------+----------|
+|   1. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/9][#9]]     |          |        | Done   | Yahnit,  |
+|      | of Admin Dashboard     |        |          |        |        | Utkarsh  |
+|------+------------------------+--------+----------+--------+--------+----------|
+|   2. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/10][#10]]    |          |        | Done   | Yahnit,  |
+|      | of 'Guest' Dashboard   |        |          |        |        | Utkarsh  |
+|------+------------------------+--------+----------+--------+--------+----------|
+|   3. | Re-Implementation      | [[https://github.com/vlead/lab-data-service-dashboard/issues/14][#14]]    |          |        | Done   | Utkarsh  |
+|      | of Log in and Log out  |        |          |        |        |          |
+|      | using Single Page      |        |          |        |        |          |
+|      | Application (SPA)      |        |          |        |        |          |
+|------+------------------------+--------+----------+--------+--------+----------|
+|   4. | Read Json elements     | [[https://github.com/vlead/lab-data-service-dashboard/issues/15][#15]]    |          |        | Done   | Yahnit   |
+|      | and generate html code |        |          |        |        |          |
+|------+------------------------+--------+----------+--------+--------+----------|
+|   5. | Implement Event        | [[https://github.com/vlead/lab-data-service-dashboard/issues/16][#16]]    |          |        | Done   | Yahnit   |
+|      | handlers for all       |        |          |        |        |          |
+|      | CRUD operations        |        |          |        |        |          |
+|      | in front end           |        |          |        |        |          |
+|------+------------------------+--------+----------+--------+--------+----------|
+|   6. | Auto Deployment of     | [[https://github.com/vlead/lab-data-service-dashboard/issues/19][#19]]    | 24 hrs   | 16 hrs | Done   | Madhavi  |
+|      | LDS Dashboard using    |        |          |        |        | Puliraju |
+|      | ubuntu 14.04 template  |        |          |        |        |          |
+|------+------------------------+--------+----------+--------+--------+----------|
+|      |                        |        |          |        |        |          |
 
   *Note*: Expected and Actual Efforts are calculated in person hours. 
 
 
+* Plan ([[https://github.com/vlead/lab-data-service/milestone/3][Milestone 3]])
+  :PROPERTIES:
+  :CUSTOM_ID: plan-for-milestone3
+  :END: 
+  Implementation of Front End Dashboard for LDS as Single Page Application
+(SPA). This Implementation does not use any framework. Implementation will be
+done using pure javascript. With the help of LDS Dashboard one will be able to
+do all the CRUD operations on Labs info based on the given role and a user.
+|------+----------------------+--------+----------+--------+-------------+----------|
+| S.NO | Tasks                | Github | Expected | Actual | Status      | Assignee |
+|      |                      | Issues | Effort   | Effort |             |          |
+|------+----------------------+--------+----------+--------+-------------+----------|
+|   1. | Creation of JSON     | [[https://github.com/vlead/lab-data-service-dashboard/issues/18][#18]]    |          |        | In Progress | Madhavi  |
+|      | specifications to    |        |          |        |             | Puliraju |
+|      | define the HTML      |        |          |        |             |          |
+|      | Structure for        |        |          |        |             |          |
+|      | generation of all    |        |          |        |             |          |
+|      | the entities defined |        |          |        |             |          |
+|      | in LDS               |        |          |        |             |          |
+|------+----------------------+--------+----------+--------+-------------+----------|
+|      |                      |        |          |        |             |          |
+|------+----------------------+--------+----------+--------+-------------+----------|
+
+  *Note*: Expected and Actual Efforts are calculated in person hours. 
+
+  
 * Realization 
     :PROPERTIES:
     :CUSTOM_ID: cc_realization
