@@ -1316,115 +1316,6 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
       
 #+END_SRC
 
-#+NAME : guest_spec_file
-#+BEGIN_SRC json
-
-  "guest_nav":[
-    {
-      "typeofdiv":"div",
-      "id":"side-nav-container",
-      "class":"sidenav hidden",
-      "elements":[
-        {
-          "typeofdiv":"div",
-          "class":"list-group table-of-contents",
-          "elements":[
-            {
-              "typeofdiv":"button",
-              "id":"home-btn-update-profile",
-              "class":"list-group-item",
-              "innerHTML":" Update Profile "
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "guest_dash": [
-  {
-    "typeofdiv":"div",
-    "id":"main",
-    "elements":[
-          {
-            "typeofdiv":"div",
-            "id":"update-profile-container",
-            "class":"hidden",
-            "elements":[
-              {
-                "typeofdiv":"p",
-                "innerHTML":"Edit User"
-              },
-              {
-                "typeofdiv":"ul",
-                "id":"edit-profile",
-                "elements":[
-                  {
-                    "typeofdiv":"li",
-                    "elements":[
-                      {
-                        "typeofdiv":"label",
-                        "id":"new-name-own-label",
-                        "innerText":"New Name:"
-                      },
-                      {
-                        "typeofdiv":"input",
-                        "id":"edit-new-name-own",
-                        "type":"text"
-                      }
-                    ]
-                  },
-                  {
-                    "typeofdiv":"li",
-                    "elements":[
-                      {
-                        "typeofdiv":"label",
-                        "id":"new-email-own-label",
-                        "innerText":"New Email:"
-                      },
-                      {
-                        "typeofdiv":"input",
-                        "id":"edit-new-email-own",
-                        "type":"text"
-                      }
-                    ]
-                  },
-                  {
-                    "typeofdiv":"li",
-                    "elements":[
-                      {
-                        "typeofdiv":"input",
-                        "id":"update-profile-sbt",
-                        "type":"button",
-                        "class":"btn btn-primary update-btn",
-                        "value":"Done",
-                        "onclick":""
-                      },
-                      {
-                        "typeofdiv":"input",
-                        "id":"cancel",
-                        "type":"button",
-                        "class":"btn btn-primary",
-                        "value":"Cancel",
-                        "onclick":""
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "typeofdiv":"label",
-                "id":"error-box",
-                "value":"Error",
-                "class":"error hidden"
-              }
-            ]
-          }    
-        ]
-      }
-    ]
-  }
-#+END_SRC
-
 ** LDS Specifications
    This is a JSON file in which the necessary specifications are given to
 generate HTML to do the CRUD operations on LDS database.
@@ -1611,7 +1502,10 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    },
+    }
+  ],
+
+
 
 
 #+END_SRC
@@ -3368,7 +3262,9 @@ generate HTML to do the CRUD operations on LDS database.
         }
       ]
     }
-  ],
+  ]
+ }
+],
 
 
 #+END_SRC
