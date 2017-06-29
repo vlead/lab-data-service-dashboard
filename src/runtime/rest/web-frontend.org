@@ -1430,7 +1430,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 generate HTML to do the CRUD operations on LDS database.
 *** Add Asset
 #+NAME: add_asset_spec
-#+BEGIN_SRC  
+#+BEGIN_SRC json :tangle ./app/static/js/main.json  
    {
       "typeofdiv":"div",
       "id":"add-asset-container",
@@ -1511,7 +1511,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 *** Add Institute
 #+NAME: add_institute_spec
-#+BEGIN_SRC  
+#+BEGIN_SRC json :tangle ./app/static/js/main.json  
 
    {
       "typeofdiv":"div",
@@ -1617,7 +1617,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Add Discipline
 #+NAME: add_discipline_spec
-#+BEGIN_SRC  
+#+BEGIN_SRC json :tangle ./app/static/js/main.json  
 
    {
       "typeofdiv":"div",
@@ -1723,7 +1723,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Add Section
 #+NAME: add_section_spec
-#+BEGIN_SRC  
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
 
    {
       "typeofdiv":"div",
@@ -1790,7 +1790,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 *** Add Experiment
 #+NAME: add_experiment_spec
-#+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json
 
     {
       "typeofdiv":"div",
@@ -2038,7 +2038,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Add Lab
 #+NAME: add_lab_spec
-#+BEGIN_SRC json :tangle ./app/static/js/add-lab-spec.json 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
 
     {
       "typeofdiv":"div",
@@ -2284,7 +2284,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Add Hosting Info
 #+NAME: add_hosting_info_spec
-#+BEGIN_SRC  
+#+BEGIN_SRC json :tangle ./app/static/js/main.json  
 
    {
       "typeofdiv":"div",
@@ -2380,7 +2380,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Add Developer
 #+NAME: add_developer_spec
-#+BEGIN_SRC  
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
 
    {
       "typeofdiv":"div",
@@ -2463,7 +2463,7 @@ generate HTML to do the CRUD operations on LDS database.
 *** Edit Lab
 
 #+NAME: edit_lab_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
 
     {
       "typeofdiv":"div",
@@ -2630,7 +2630,7 @@ generate HTML to do the CRUD operations on LDS database.
 *** Edit Institute
 
 #+NAME: edit_institute_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json
 
     {
       "typeofdiv":"div",
@@ -2712,7 +2712,7 @@ generate HTML to do the CRUD operations on LDS database.
 *** Edit Discipline
 
 #+NAME: edit_discipline_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json
 
     {
       "typeofdiv":"div",
@@ -2794,7 +2794,7 @@ generate HTML to do the CRUD operations on LDS database.
 *** Edit Experiment
 
 #+NAME: edit_experiment_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json
 
     {
       "typeofdiv":"div",
@@ -2962,7 +2962,7 @@ generate HTML to do the CRUD operations on LDS database.
 *** Edit Hosting Info
 
 #+NAME: edit_hosting_info_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
  var divisions_spec = [
     {
       "typeofdiv":"div",
@@ -3051,7 +3051,7 @@ generate HTML to do the CRUD operations on LDS database.
 *** Edit Developer
 
 #+NAME: edit_developer_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
  var divisions_spec = [
     {
       "typeofdiv":"div",
@@ -3121,7 +3121,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Delete Lab
 #+NAME: delete_lab_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
     {
       "typeofdiv":"div",
       "id":"remove-user-container",
@@ -3237,7 +3237,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Show Labs
 #+NAME: show_labs_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
     { 
       "typeofdiv":"div",
       "id":"show-users-container",
@@ -3313,7 +3313,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 *** Show Experiments
 #+NAME: show_experiments_spec
-#+BEGIN_SRC 
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
     {
       "typeofdiv":"div",
       "id":"show-roles-container",
@@ -3368,8 +3368,8 @@ generate HTML to do the CRUD operations on LDS database.
         }
       ]
     }
-  ]
-}
+  ],
+
 
 #+END_SRC
 
@@ -3410,7 +3410,7 @@ generate HTML to do the CRUD operations on LDS database.
 <<update_role_drop>>
 <<hash_home>>
 <<onload>>
-
+<<guest_spec_file>>
 #+END_SRC
    
 
