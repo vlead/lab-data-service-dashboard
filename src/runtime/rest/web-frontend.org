@@ -2814,7 +2814,7 @@ generate HTML to do the CRUD operations on LDS database.
               "elements":[
                 {
                   "typeofdiv":"label",
-                  "id":"new-name-experiment-label",
+                  "id":"new-experiment-name-label",
                   "innerText":"New Experiment Name:"
                 },
                 {
@@ -2957,6 +2957,166 @@ generate HTML to do the CRUD operations on LDS database.
       ]
     },
 
+
+#+END_SRC
+*** Edit Hosting Info
+
+#+NAME: edit_hosting_info_spec
+#+BEGIN_SRC 
+ var divisions_spec = [
+    {
+      "typeofdiv":"div",
+      "id":"update-hosting-info-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Edit Hosting Info"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"edit-hosting-info",
+          "elements":[
+             {
+              "typeofdiv":"li",
+              "elements":[
+              {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-hosting-status-label",
+                  "innerText":"New Hosting Status:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-hosting-status",
+                  "type":"text"
+                }
+              ]
+            },
+             {
+              "typeofdiv":"li",
+              "elements":[
+              {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-hosted-on-label",
+                  "innerText":"New Hosted on:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-hosted-on",
+                  "type":"text"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"update-hosting-status-sbt",
+                  "type":"button",
+                  "class":"btn btn-primary update-btn",
+                  "value":"Done",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
+
+#+END_SRC
+*** Edit Developer
+
+#+NAME: edit_developer_spec
+#+BEGIN_SRC 
+ var divisions_spec = [
+    {
+      "typeofdiv":"div",
+      "id":"update-developer-container",
+      "class":"hidden",
+      "elements":[
+        {
+          "typeofdiv":"p",
+          "innerHTML":"Edit Developer"
+        },
+        {
+          "typeofdiv":"ul",
+          "id":"edit-developer",
+          "elements":[
+             {
+              "typeofdiv":"li",
+              "elements":[
+              {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"label",
+                  "id":"new-developer-name-label",
+                  "innerText":"New Developer Name:"
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"edit-new-developer-name",
+                  "type":"text"
+                }
+              ]
+            },
+
+            {
+              "typeofdiv":"li",
+              "elements":[
+                {
+                  "typeofdiv":"input",
+                  "id":"update-developer-sbt",
+                  "type":"button",
+                  "class":"btn btn-primary update-btn",
+                  "value":"Done",
+                  "onclick":""
+                },
+                {
+                  "typeofdiv":"input",
+                  "id":"cancel",
+                  "type":"button",
+                  "class":"btn btn-primary",
+                  "value":"Cancel",
+                  "onclick":""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typeofdiv":"label",
+          "id":"error-box",
+          "value":"Error",
+          "class":"error hidden"
+        }
+      ]
+    }
+ ];
 
 #+END_SRC
 *** Delete Lab

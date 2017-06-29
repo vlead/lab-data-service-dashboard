@@ -626,6 +626,7 @@ implementation is given below.
 #+BEGIN_SRC python 
 @api.route('/users', methods=['GET'])
 @login_required
+@disable_access_on_hash
 def show_users():
 	users = User.query.all()
 	allusers = []
@@ -758,7 +759,8 @@ Implementation of =show role= API is given below
 #+NAME: show_roles
 #+BEGIN_SRC python
 @api.route('/roles', methods=['GET'])
-@login_required	
+@login_required
+@disable_access_on_hash	
 def show_roles():
     roles = Roles.query.all()
     allroles = []
@@ -1642,7 +1644,7 @@ from flask_login import login_required, login_user, \
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 from runtime.config.goauth_config import Auth
-from runtime.rest.app import app, db, requires_guest_auth, requires_admin_auth
+from runtime.rest.app import app, db, requires_guest_auth, requires_admin_auth, disable_access_on_hash
 from runtime.rest.app.users.db import User, Roles
 import os
 import json

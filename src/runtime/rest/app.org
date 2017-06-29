@@ -108,6 +108,27 @@ def requires_guest_auth(f):
 #+END_SRC
 
 
+* Routes acess via Only AJAX
+We wanted to restrict entry to some routes through AJAX calls only, this would be
+helping us to not worry about users getting to know about server implemented route
+and their access to it. 
+
+#+NAME: only_ajax
+#+BEGIN_SRC python
+#3. Check wether the request has been made by an AJAX call or not
+def disable_access_on_hash(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if app.config['TESTING'] and app.config['LOGIN_DISABLED']:
+            return f(*args, **kwargs)
+        if request.is_xhr:
+            return f(*args, **kwargs)
+        else:
+            return jsonify(message="Unauthorized", success=False), 401
+    return decorated
+#+END_SRC
+
+
 * Login Managar
 
 #+NAME: login_manager
@@ -191,6 +212,7 @@ from functools import wraps
 <<configure>>
 <<admin_auth>>
 <<guest_auth>>
+<<only_ajax>>
 <<error_handling>>
 <<login_manager>>
 <<blueprints>>
