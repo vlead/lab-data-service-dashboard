@@ -1502,11 +1502,7 @@ generate HTML to do the CRUD operations on LDS database.
           "class":"error hidden"
         }
       ]
-    }
-  ],
-
-
-
+    },
 
 #+END_SRC
 *** Add Discipline
