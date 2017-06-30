@@ -26,21 +26,21 @@ and logout pages with implementation and deployment.
 |      | Gathering               |        |          |        |        | Puliraju |
 |------+-------------------------+--------+----------+--------+--------+----------|
 |   2. | Implement Log in        | [[https://github.com/vlead/lab-data-service-dashboard/issues/2][#2]]     |          |        | Done   | Utkarsh  |
-|      | and logout feature      |        |          |        |        |          |
+|      | and logout feature      |        |  40 hrs  | 40 hrs |        |          |
 |      | with Google             |        |          |        |        |          |
 |      | authentication          |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   3. | Implement API's         | [[https://github.com/vlead/lab-data-service-dashboard/issues/3][#3]],    |          |        | Done   | Yahnit   |
+|   3. | Implement API's         | [[https://github.com/vlead/lab-data-service-dashboard/issues/3][#3]],    | 45 hrs   | 45hrs  | Done   | Yahnit   |
 |      | for log in and log out, |        |          |        |        |          |
 |      | users and roles         |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
 |   4. | Implement the           | [[https://github.com/vlead/lab-data-service-dashboard/issues/4][#4]]     |          |        | Done   | Yahnit   |
-|      | unit test cases         |        |          |        |        |          |
+|      | unit test cases         |        |  12 hrs  | 13 hrs |        |          |
 |      | for log in, log out,    |        |          |        |        |          |
 |      | users and roles         |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
 |   5. | Integration of          | [[https://github.com/vlead/lab-data-service-dashboard/issues/5][#5]]     |          |        | Done   | Utkarsh  |
-|      | google authentication   |        |          |        |        |          |
+|      | google authentication   |        |  14 hrs  | 14 hrs  |        |          |
 |      | with log in and logout  |        |          |        |        |          |
 |      | API's                   |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
