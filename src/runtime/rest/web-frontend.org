@@ -3003,7 +3003,7 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"select",
   
                       "id":"delete-lab-id",
-                      "innerText":"Role:"
+                      "innerText":"Delete:"
                     }
                   ]
                 },
@@ -3038,7 +3038,435 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         },
+
 #+END_SRC
+*** Delete Experiment
+#+NAME: delete_experiment_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-experiment-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Experiment"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-lab",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-experiment-id",
+                      "innerText":"Experiment:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
+*** Delete Institute
+#+NAME: delete_institute_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-institute-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Institute"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-institute",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-institute-id",
+                      "innerText":"Institute:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
+*** Delete Discipline
+#+NAME: delete_discipline_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-discipline-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Discipline"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-discipline",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-discipline-id",
+                      "innerText":"Discipline:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
+*** Delete Section
+#+NAME: delete_section_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-section-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Section"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-section",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-section-id",
+                      "innerText":"Section:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
+*** Delete Asset
+#+NAME: delete_asset_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-asset-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Asset"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-asset",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-asset-id",
+                      "innerText":"Asset:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
+*** Delete Hosting Info
+#+NAME: delete_hosting_info_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-hosting-info-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Hosting Info"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-hosting-info",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-hosting-info-url",
+                      "innerText":"Hosting Info:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
+*** Delete Developer
+#+NAME: delete_developer_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"remove-developer-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Delete Developer"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"delete-developer",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"select",
+                      "multiple":"multiple",
+                      "id":"delete-developer-email",
+                      "innerText":"Developer:"
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"input",
+                      "id":"delete",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Delete",
+                      "onclick":""
+                    },
+                    {
+                      "typeofdiv":"input",
+                      "id":"cancel",
+                      "type":"button",
+                      "class":"btn btn-primary",
+                      "value":"Cancel",
+                      "onclick":""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        },
+
+#+END_SRC
+
 *** Show Labs
 #+NAME: show_labs_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
