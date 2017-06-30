@@ -68,6 +68,8 @@ setup(
 #+END_SRC
 
 * Program to set up the database
+  The default role =Admin= and a =User= with admin role will be configured in
+  the database.
 #+BEGIN_SRC python :tangle db_setup.py :eval no
 from flask import Flask
 from runtime.rest.app import db
