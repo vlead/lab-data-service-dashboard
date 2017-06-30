@@ -9,7 +9,7 @@
 * Introduction
   This "Literate Document" is an illustration of building the client side frontend for our LDS app. This represents our
   approach for the attempt to create a LDS dashboard as a "Single Page Application", which actually means that along with 
-  Decorative JS residing and HTML rendering which happens traditionally; Business Logic JS residing and HTML generation 
+  Decorative JS residing and HTML rendering which happens traditionally, Business Logic JS residing and HTML generation 
   will also take place at the client side. This helps us achieve a lot of tasks which wouldn't have been possible with a 
   simple website. Some of them just being
   1. Redrawing only that part of the page that is needed and not whole of the page; thus there's a rapid rendering and
@@ -115,7 +115,7 @@ var is_logged_in = function() {
 
 ** Get JSON
    After working on the DOM elements that were supposed to stay constant throught the user session to it is time to  define function that 
-   could will help us to get HTML data to populate for the current user session from the local JSON file. We define two functions to get
+   could will help us to get HTML data to populate for the current user session from the local JSON file. We defines two functions to get
    Dashboard and Side Navigation Bar seperately as of now which might change towards our final draft. This data is planned to be fed to 
    functions that would genrate elements for us and finally appends them to the body.
 #+NAME: get_json_dash
@@ -308,9 +308,13 @@ var register_onhashchange_handlers = function(hash_to_handlers_map) {
 #+END_SRC
 
 ** Show and Hide containers.
-   We can either show or hide the containers depending on our requirements. For
-example,if we want to Add a User,we can hide all the containers and display
-only the Add User container.
+   Since we have stuck to SPA, we should be hiding and displaying stuff dynamically.
+ If the whole content is shown everytime, it will surely be a mess.So based on the
+hash, certain containers are hidden and certain containers are displayed.Below
+code shows to Show containers, Show only one container and Hide all containers.   
+We Basically extract the =id's= of the containers by the prefix or suffix and 
+add or remove a class called =hidden=. We have defined this class hidden in the
+CSS file whose =display= attribute is set to =none=. 
 
 #+NAME: show_all_container
 #+BEGIN_SRC js 
@@ -340,7 +344,11 @@ var hide_all_containers = function() {
 #+END_SRC
 
 ** Get Users
-   AJAX call is made to the backend server to get the users availed to LDS.
+Since this is a user directory, the admin should be able to view all the users who
+are registered for LDS. So, we send a synchronous AJAX call to the backend server
+and get the list of users. As of now, we have given this rights only to admin.
+Later on we can give access to other people based on our requirements.   
+
 #+NAME: get_users
 #+BEGIN_SRC js
 var get_users = function() {
@@ -360,7 +368,12 @@ var get_users = function() {
 
 #+END_SRC
 ** Get Roles
-   AJAX call is made to the backend server to get the roles availed to LDS.
+   Since this is a user directory, the admin should also be able to view all the 
+different types of roles registered to LDS. So, we send a synchronous AJAX call 
+to the backend server and get the list of roles available in the database. 
+As of now, we have given this rights only to admin. Later on we can give access 
+to other people based on our requirements.   
+
 #+NAME: get_roles
 #+BEGIN_SRC js
 var get_roles = function() {
@@ -381,10 +394,15 @@ var get_roles = function() {
 #+END_SRC
 
 ** Add User
-Event handler is added to the =add-user= button which takes the 
-data from the input boxes and makes an AJAX call to the backend
-server. Bases on the responce it shows the success or error 
-message.
+We now land on the Add operations. An =admin= has the access to add
+a user to LDS services. Again as of now,we have given this access
+only to admin. Later on, we can give access to other people also
+based on our requirements. We have stuck to only 2 roles =admin=
+and =guest= as of now.To Add a user, his =name=, =email= and =role=
+are required. If he gives an invalid input, an error is thrown. 
+Event handler is attached to the =add-user= button which takes the 
+data from the input boxes and makes a synchronous AJAX call to the backend
+server. Based on the responce it shows the success or error message.
 
 #+NAME: add_user
 #+BEGIN_SRC js
@@ -411,10 +429,18 @@ $(document).on('click', '#add-user-sbt', function(clickEvent) {
 
 #+END_SRC
 ** Add Role
-Event handler is added to the =add-role= button which takes the 
-data from the input boxes and makes an AJAX call to the backend
-server. Bases on the responce it shows the success or error 
-message.
+Moving on the Add operations, an =admin= has the access to add
+a role to LDS services. As of now, we have stuck to only 2 roles
+=admin= and =guest=. Later on, we can add a new =role= and assign
+the necessary restrictions to access based on our requirements. 
+To Add a role, =role_name= is required and we have not implemented
+giving access rights to the role.Probably as we move on ,we will 
+assign restrictions to the new role. If he gives an invalid input, 
+an error is thrown. 
+Event handler is attached to the =add-role= button which takes the 
+data from the input boxes and makes a synchronous AJAX call to the backend
+server. Based on the responce it shows the success or error message.
+
 
 #+NAME: add_role
 #+BEGIN_SRC js
@@ -438,8 +464,12 @@ $(document).on('click', '#add-role-sbt', function(clickEvent) {
 });
 #+END_SRC
 ** User Tables
-All the users are populated. Each row contains the =name=, =email=
-and =role= of the user. Also contains an =Edit= button and a =Delete= 
+As we are developing LDS dashboard,we ought to keep things as fancy 
+as possible.So everytime a page is rereshed, we dynamically update the
+user tables. We create necessary rows in the table, display appropriate
+data and attach the necessary event handlers.Below code shows how the  
+ users are being populated. Each row contains the =name=, =email=
+and =role= of the user. It Also contains an =Edit= button and a =Delete= 
 button to edit and delete a user respectively.
 
 #+NAME: update_user_table
@@ -529,8 +559,13 @@ $('#'+button.id).on('click', function(clickEvent) {
 }
 #+END_SRC
 ** Update Role Tables
-All the roles are populated. Each row contains the =name= of the role.
-It  Also contains a =Delete= button to delete the respective role.
+Again to make the dashboard fancy, we update the tables dynamically
+each and every time the browser is refreshed. We create necessary rows
+and populate them with appropriate data and also attach a button
+to a row to be able to delete the role.Only admin can delete a role.
+Later on, we can give this access to other roles also. Below code 
+shows how the roles are being populated. Each row contains the =name= 
+of the role.It  Also contains a =Delete= button to delete the respective role.
 
 #+NAME: update_role_table
 #+BEGIN_SRC js
