@@ -381,6 +381,11 @@ var get_roles = function() {
 #+END_SRC
 
 ** Add User
+Event handler is added to the =add-user= button which takes the 
+data from the input boxes and makes an AJAX call to the backend
+server. Bases on the responce it shows the success or error 
+message.
+
 #+NAME: add_user
 #+BEGIN_SRC js
 $(document).on('click', '#add-user-sbt', function(clickEvent) {
@@ -406,6 +411,11 @@ $(document).on('click', '#add-user-sbt', function(clickEvent) {
 
 #+END_SRC
 ** Add Role
+Event handler is added to the =add-role= button which takes the 
+data from the input boxes and makes an AJAX call to the backend
+server. Bases on the responce it shows the success or error 
+message.
+
 #+NAME: add_role
 #+BEGIN_SRC js
 $(document).on('click', '#add-role-sbt', function(clickEvent) {
@@ -427,7 +437,11 @@ $(document).on('click', '#add-role-sbt', function(clickEvent) {
   });
 });
 #+END_SRC
-** Update User Tables
+** User Tables
+All the users are populated. Each row contains the =name=, =email=
+and =role= of the user. Also contains an =Edit= button and a =Delete= 
+button to edit and delete a user respectively.
+
 #+NAME: update_user_table
 #+BEGIN_SRC js
 var populate_tables_user = function() {
@@ -468,6 +482,10 @@ var populate_tables_user = function() {
 };
 #+END_SRC
 ** Update User Helper on Admin Dash
+Event handlers are added to all the =update= and =remove= buttons.
+Based on the =id's= the buttons are extracted and each button
+is attached to an event handler.
+
 #+NAME: updateUserHelperFunction
 #+BEGIN_SRC js
 var updateHelperFunction = function() {
@@ -481,49 +499,10 @@ var updateHelperFunction = function() {
   });
 }
 #+END_SRC
-** Update Users
-#+NAME: update_users
-#+BEGIN_SRC js
-var update_users = function(button) {
-	email = $('#'+button.id).attr('email');
-  name = $('#'+button.id).attr('name');
-  role = $('#'+button.id).attr('role');
-
-  $('#'+button.id).on('click', function(clickEvent){
-    hashNotClicked=true;
-    $('#update-user-sbt').attr('email',email);
-    $('#edit-new-name').val(name);
-    $('#edit-new-email').val(email);
-    $('#edit-user-role').val(role);
-		navigate('update-user');
-	});
-};
-
-$(document).on('click', '#update-user-sbt', function(clickEvent) {
-  var data = JSON.stringify({
-    email: $('#update-user-sbt').attr('email'),
-    new_name: $('#edit-new-name').val(),
-    new_email: $('#edit-new-email').val(),
-    new_role: $('#edit-user-role').val()
-  });
-  $.ajax({
-    url: 'update_user',
-    data: data,
-    type: 'PUT',
-    contentType: 'application/json;charset=utf-8',
-    async: false,
-    success: function (response) {
-      window.alert ('User was updated');
-    },
-    error: function (response) {
-      window.alert ('There was an error updating the user, please check the information you provided.');
-    }
-  });
-  $('#update-user-sbt').removeAttr('email');
-});
-#+END_SRC
 ** Remove User
    AJAX call is made to the backend server to delete a user availed to LDS.
+   It takes data from the input boxes and sends a POST request to the
+   backend server.
 #+NAME: delete_user
 #+BEGIN_SRC js
 var remove_users = function (button) {
@@ -550,6 +529,9 @@ $('#'+button.id).on('click', function(clickEvent) {
 }
 #+END_SRC
 ** Update Role Tables
+All the roles are populated. Each row contains the =name= of the role.
+It  Also contains a =Delete= button to delete the respective role.
+
 #+NAME: update_role_table
 #+BEGIN_SRC js
 var populate_tables_role = function() {
@@ -574,6 +556,10 @@ var populate_tables_role = function() {
 
 #+END_SRC
 ** Update Role Helper on Admin Dash
+All the =remove_role= buttons are extracted using the id's and
+an event handler is attached to each of the buttons so that 
+on clicking the button, the role is deleted.
+
 #+NAME: updateRoleHelperFunction
 #+BEGIN_SRC js
 var removeHelperFunction = function() {
@@ -584,6 +570,9 @@ var removeHelperFunction = function() {
 };
 #+END_SRC
 ** Remove Role
+AJAX call is made to the backend server to delete a role availed to LDS.
+   It takes data from the input boxes and sends a POST request to the
+   backend server.
 #+NAME: delete_role
 #+BEGIN_SRC js
 var remove_roles = function (button) {  
@@ -610,6 +599,9 @@ $('#'+button.id).on('click', function(clickEvent) {
 }
 #+END_SRC
 ** Update Profile
+A user who is logged in can update his profile. New details are taken
+from the input boxes and a POST request is sent to the backend server.
+Based on the response, an error message or success message is shown.
 #+NAME: update_own_click
 #+BEGIN_SRC js
 $(document).on('click', '#update-profile-sbt', function(clickEvent) {
@@ -644,6 +636,9 @@ $(document).on('click', '#update-profile-sbt', function(clickEvent) {
 
 #+END_SRC
 ** OnClick Event Handlers
+These are the event handlers for all the buttons present on the
+home page. When a button is clicked, bases on that certain 
+containers are hidden and  certain containers are displayed. 
 #+NAME: onClick_event_handle
 #+BEGIN_SRC js
 var onClickFunctions = function() {
@@ -690,6 +685,10 @@ var onClickFunctions = function() {
 };
 #+END_SRC
 ** Update User and Roles Dropdown
+When adding or updating a user , a dropdown for the available roles
+and emails is shown so that the user can send a valid request.
+The dropdowns are populated by extracting the buttons and 
+attaching the options to it.
 #+NAME: update_role_drop
 #+BEGIN_SRC js
 var load_role_users = function() {
@@ -714,6 +713,8 @@ var load_role_users = function() {
 };
 #+END_SRC
 ** On hash change
+Whenever =hash= is changed,hash change is detected and based on that
+certain containers are displayed and certain containers are hidden.
 #+NAME: hash_home
 #+BEGIN_SRC js
 $(window).on('hashchange', function(e) {
@@ -1455,15 +1456,7 @@ generate HTML to do the CRUD operations on LDS database.
                       "multiple":"multiple",
                       "id":"add-asset-id",
                       "innerText":"Asset:"
-                    },
-                    {
-                      "typeofdiv":"input",
-                      "id":"ok-sbt",
-                      "type":"button",
-                      "class":"btn btn-primary",
-                      "value":"OK",
-                      "onclick":""
-                    }
+                    }                  
                   ]
                 },
                 {
@@ -1557,15 +1550,8 @@ generate HTML to do the CRUD operations on LDS database.
                       "multiple":"multiple",
                       "id":"add-asset-id",
                       "innerText":"Asset:"
-                    },
-                    {
-                      "typeofdiv":"input",
-                      "id":"ok-sbt",
-                      "type":"button",
-                      "class":"btn btn-primary",
-                      "value":"OK",
-                      "onclick":""
                     }
+                   
                   ]
                 },
                 {
@@ -3230,6 +3216,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 
 ** Guest
+This is the JSON specification for the guest dashboard.
 #+NAME: guest_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
   "guest_dash":[
