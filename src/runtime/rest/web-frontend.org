@@ -934,6 +934,11 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                   "typeofdiv":"li",
                   "elements":[
                     {
+                      "typeofdiv":"label",
+                      "id":"role_label",
+                      "innerText":"Role:"
+                    },
+                    {
                       "typeofdiv":"select",
                       "id":"add-user-role",
                       "innerText":"Role:"
@@ -1076,6 +1081,11 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"new-role-label",
+                      "innerText":"New Role:"
+                    },
                     {
                       "typeofdiv":"select",
                       "id":"edit-user-role",
@@ -2303,8 +2313,12 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"select",
-          
+                      "typeofdiv":"label",
+                      "id":"new-institute",
+                      "innerText":"Institute:"
+                    },
+                    {
+                      "typeofdiv":"select",         
                       "id":"edit-lab-institute",
                       "innerText":"Institute:"
                     }
@@ -2314,8 +2328,12 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"select",
-          
+                      "typeofdiv":"label",
+                      "id":"new-discipline",
+                      "innerText":"Discipline:"
+                    },
+                    {
+                      "typeofdiv":"select",          
                       "id":"edit-lab-discipline",
                       "innerText":"Discipline:"
                     }
@@ -2325,8 +2343,12 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"select",
-          
+                      "typeofdiv":"label",
+                      "id":"new-developers",
+                      "innerText":"Developer:"
+                    },
+                    {
+                      "typeofdiv":"select",          
                       "id":"edit-lab-developers",
                       "innerText":"Developer:"
                     }
@@ -2335,6 +2357,12 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                    {
+                      "typeofdiv":"label",
+                      "id":"new-sections",
+                      "innerText":"Section:"
+                    },
+
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
@@ -2347,8 +2375,12 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"select",
-          
+                      "typeofdiv":"label",
+                      "id":"new-assets",
+                      "innerText":"Asset:"
+                    },
+                    {
+                      "typeofdiv":"select",          
                       "id":"edit-lab-assets",
                       "innerText":"Assets:"
                     }
@@ -2358,8 +2390,12 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
+                      "typeofdiv":"label",
+                      "id":"new-hosting-info",
+                      "innerText":"Hosting Info:"
+                    },
+                    {
                       "typeofdiv":"select",
-          
                       "id":"edit-lab-hosting-info",
                       "innerText":"Hosting Info:"
                     }
@@ -2422,7 +2458,7 @@ generate HTML to do the CRUD operations on LDS database.
                       "elements":[
                         {
                           "typeofdiv":"label",
-                          "id":"new-name-institute-label",
+                          "id":"new-institute-name-label",
                           "innerText":"New Institute Name:"
                         },
                         {
@@ -2436,10 +2472,14 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"li",
                       "elements":[
                         {
+                          "typeofdiv":"label",
+                          "id":"institute-id-label",
+                          "innerText":"Institute Id:"
+                        },
+                        {
                           "typeofdiv":"select",
-         
-                          "id":"edit-institute-assets",
-                          "innerText":"Assets:"
+                          "id":"institute-id",
+                          "innerText":"Institute:"
                         }
                       ]
                     },
@@ -2502,7 +2542,7 @@ generate HTML to do the CRUD operations on LDS database.
                       "elements":[
                         {
                           "typeofdiv":"label",
-                          "id":"new-name-discipline-label",
+                          "id":"new-discipline-name-label",
                           "innerText":"New Discipline Name:"
                         },
                         {
@@ -2516,10 +2556,14 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"li",
                       "elements":[
                         {
+                          "typeofdiv":"label",
+                          "id":"new-discipline-id-label",
+                          "innerText":"Discipline Id:"
+                        },
+                        {
                           "typeofdiv":"select",
-         
-                          "id":"edit-disicipline-assets",
-                          "innerText":"Assets:"
+                          "id":"edit-disicipline",
+                          "innerText":"Discipline:"
                         }
                       ]
                     },
@@ -2607,24 +2651,30 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
-                    {
-                      "typeofdiv":"label",
-                      "id":"new-experiment-integration-level",
-                      "innerText":"Integration Level:"
-                    },
-                    {
-                      "typeofdiv":"input",
-                      "id":"edit-new-experiment-integration-level",
-                      "type":"integer"
-                    }
-                  ]
+                  {
+                  "typeofdiv":"label",
+                  "id":"integration_level_label",
+                  "innerText":"New Integration Level:"
+                  },
+                  {
+                  "typeofdiv":"input",
+                  "type":"number",
+                  "min":"0",
+                  "max":"6",
+                  "id":"edit-new-experiment-integration-level"
+                  }
+                ]
                 },
                 {
                   "typeofdiv":"li",
                   "elements":[
-                    {
+                  {
+                  "typeofdiv":"label",
+                  "id":"new_exp_institute_label",
+                  "innerText":"New Institute:"
+                  },
+                  {
                       "typeofdiv":"select",
-         
                       "id":"edit-experiment-institute",
                       "innerText":"Institute:"
                     }
@@ -2633,6 +2683,11 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                  {
+                  "typeofdiv":"label",
+                  "id":"new_exp_discipline_label",
+                  "innerText":"New Discipline:"
+                  },
                     {
                       "typeofdiv":"select",
          
@@ -2644,9 +2699,13 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                  {
+                  "typeofdiv":"label",
+                  "id":"new_exp_developers_label",
+                  "innerText":"New Developer:"
+                  },
                     {
                       "typeofdiv":"select",
-         
                       "id":"edit-experiment-developers",
                       "innerText":"Developer:"
                     }
@@ -2655,9 +2714,14 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                  {
+                  "typeofdiv":"label",
+                  "id":"new_exp_sections_label",
+                  "innerText":"New Section:"
+                  },
+
                     {
                       "typeofdiv":"select",
-         
                       "id":"edit-experiment-sections",
                       "innerText":"Sections:"
                     }
@@ -2666,9 +2730,13 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                  {
+                  "typeofdiv":"label",
+                  "id":"new_exp_assets_label",
+                  "innerText":"New Asset:"
+                  },
                     {
                       "typeofdiv":"select",
-         
                       "id":"edit-experiment-assets",
                       "innerText":"Assets:"
                     }
@@ -2677,9 +2745,14 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                  {
+                  "typeofdiv":"label",
+                  "id":"new_exp_hosting_info_label",
+                  "innerText":"New Hosting Info :"
+                  },
+
                     {
                       "typeofdiv":"select",
-         
                       "id":"edit-experiment-hosting-info",
                       "innerText":"Hosting Info:"
                     }
@@ -2956,7 +3029,7 @@ generate HTML to do the CRUD operations on LDS database.
             {
               "typeofdiv":"p",
               "innerHTML":"Delete Lab"
-            },
+              },
             {
               "typeofdiv":"ul",
               "id":"delete-lab",
@@ -2965,8 +3038,13 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
+                      "typeofdiv":"label",
+                      "id":"id-label",
+                      "innerText":"Id:"
+                    },
+
+                    {
                       "typeofdiv":"select",
-  
                       "id":"delete-lab-id",
                       "innerText":"Delete:"
                     }
