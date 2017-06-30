@@ -2948,6 +2948,75 @@ generate HTML to do the CRUD operations on LDS database.
           ]
         },
 #+END_SRC
+*** Edit Asset
+
+#+NAME: edit_asset_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"update-asset-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Edit Asset"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"edit-asset",
+              "elements":[
+                {
+                  "typeofdiv":"li",
+                  "elements":[
+                    {
+                      "typeofdiv":"li",
+                      "elements":[
+                        {
+                          "typeofdiv":"label",
+                          "id":"new-asset-type-label",
+                          "innerText":"New Asset Type:"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"edit-new-asset-type",
+                          "type":"text"
+                        }
+                      ]
+                    },
+                    {
+                      "typeofdiv":"li",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "id":"update-asset-sbt",
+                          "type":"button",
+                          "class":"btn btn-primary update-btn",
+                          "value":"Done",
+                          "onclick":""
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"cancel",
+                          "type":"button",
+                          "class":"btn btn-primary",
+                          "value":"Cancel",
+                          "onclick":""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"label",
+                  "id":"error-box",
+                  "value":"Error",
+                  "class":"error hidden"
+                }
+              ]
+            }
+          ]
+        },
+#+END_SRC
 *** Delete Lab
 #+NAME: delete_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
