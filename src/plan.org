@@ -26,21 +26,21 @@ and logout pages with implementation and deployment.
 |      | Gathering               |        |          |        |        | Puliraju |
 |------+-------------------------+--------+----------+--------+--------+----------|
 |   2. | Implement Log in        | [[https://github.com/vlead/lab-data-service-dashboard/issues/2][#2]]     |          |        | Done   | Utkarsh  |
-|      | and logout feature      |        |          |        |        |          |
+|      | and logout feature      |        | 40 hrs   | 40 hrs |        |          |
 |      | with Google             |        |          |        |        |          |
 |      | authentication          |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   3. | Implement API's         | [[https://github.com/vlead/lab-data-service-dashboard/issues/3][#3]],    |          |        | Done   | Yahnit   |
+|   3. | Implement API's         | [[https://github.com/vlead/lab-data-service-dashboard/issues/3][#3]],    | 45 hrs   | 45hrs  | Done   | Yahnit   |
 |      | for log in and log out, |        |          |        |        |          |
 |      | users and roles         |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
-|   4. | Implement the           | [[https://github.com/vlead/lab-data-service-dashboard/issues/4][#4]]     |          |        | Done   | Yahnit   |
-|      | unit test cases         |        |          |        |        |          |
+|   4. | Implement the           | [[https://github.com/vlead/lab-data-service-dashboard/issues/4][#4]]     |          |        | Done   | Yahnit,  |
+|      | unit test cases         |        | 12 hrs   | 13 hrs |        | Utkarsh  |
 |      | for log in, log out,    |        |          |        |        |          |
 |      | users and roles         |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
 |   5. | Integration of          | [[https://github.com/vlead/lab-data-service-dashboard/issues/5][#5]]     |          |        | Done   | Utkarsh  |
-|      | google authentication   |        |          |        |        |          |
+|      | google authentication   |        | 14 hrs   | 14 hrs |        |          |
 |      | with log in and logout  |        |          |        |        |          |
 |      | API's                   |        |          |        |        |          |
 |------+-------------------------+--------+----------+--------+--------+----------|
@@ -76,22 +76,22 @@ and logout pages with implementation and deployment.
 | S.NO | Tasks                  | Github | Expected | Actual | Status | Assignee |
 |      |                        | Issues | Effort   | Effort |        |          |
 |------+------------------------+--------+----------+--------+--------+----------|
-|   1. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/9][#9]]     |          |        | Done   | Yahnit,  |
+|   1. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/9][#9]]     | 40 hrs   | 45 hrs | Done   | Yahnit,  |
 |      | of Admin Dashboard     |        |          |        |        | Utkarsh  |
 |------+------------------------+--------+----------+--------+--------+----------|
-|   2. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/10][#10]]    |          |        | Done   | Yahnit,  |
+|   2. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/10][#10]]    | 40 hrs   | 10 hrs | Done   | Yahnit,  |
 |      | of 'Guest' Dashboard   |        |          |        |        | Utkarsh  |
 |------+------------------------+--------+----------+--------+--------+----------|
-|   3. | Re-Implementation      | [[https://github.com/vlead/lab-data-service-dashboard/issues/14][#14]]    |          |        | Done   | Utkarsh  |
+|   3. | Re-Implementation      | [[https://github.com/vlead/lab-data-service-dashboard/issues/14][#14]]    | 4 hrs    | 2 hrs  | Done   | Utkarsh  |
 |      | of Log in and Log out  |        |          |        |        |          |
 |      | using Single Page      |        |          |        |        |          |
 |      | Application (SPA)      |        |          |        |        |          |
 |------+------------------------+--------+----------+--------+--------+----------|
-|   4. | Read Json elements     | [[https://github.com/vlead/lab-data-service-dashboard/issues/15][#15]]    |          |        | Done   | Yahnit   |
+|   4. | Read Json elements     | [[https://github.com/vlead/lab-data-service-dashboard/issues/15][#15]]    | 6 hrs    | 6 hrs  | Done   | Yahnit   |
 |      | and generate html code |        |          |        |        |          |
 |------+------------------------+--------+----------+--------+--------+----------|
-|   5. | Implement Event        | [[https://github.com/vlead/lab-data-service-dashboard/issues/16][#16]]    |          |        | Done   | Yahnit   |
-|      | handlers for all       |        |          |        |        |          |
+|   5. | Implement Event        | [[https://github.com/vlead/lab-data-service-dashboard/issues/16][#16]]    | 38 hrs   | 44 hrs | Done   | Yahnit,  |
+|      | handlers for all       |        |          |        |        | Utkarsh  |
 |      | CRUD operations        |        |          |        |        |          |
 |      | in front end           |        |          |        |        |          |
 |------+------------------------+--------+----------+--------+--------+----------|
@@ -102,7 +102,7 @@ and logout pages with implementation and deployment.
 |      |                        |        |          |        |        |          |
 
   *Note*: Expected and Actual Efforts are calculated in person hours. 
-
+  
 
 * Plan ([[https://github.com/vlead/lab-data-service/milestone/3][Milestone 3]])
   :PROPERTIES:
