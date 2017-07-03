@@ -2562,9 +2562,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
                           "typeofdiv":"label",
                           "id":"new-institute-name-label",
                           "innerText":"New Institute Name:"
@@ -2646,9 +2643,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
                           "typeofdiv":"label",
                           "id":"new-discipline-name-label",
                           "innerText":"New Discipline Name:"
@@ -2919,9 +2913,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "typeofdiv":"li",
                   "elements":[
                     {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
                           "typeofdiv":"label",
                           "id":"new-hosting-status-label",
                           "innerText":"New Hosting Status:"
@@ -2937,9 +2928,6 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"li",
                       "elements":[
                         {
-                          "typeofdiv":"li",
-                          "elements":[
-                            {
                               "typeofdiv":"label",
                               "id":"new-hosted-on-label",
                               "innerText":"New Hosted on:"
@@ -3006,11 +2994,8 @@ generate HTML to do the CRUD operations on LDS database.
               "id":"edit-developer",
               "elements":[
                 {
-                  "typeofdiv":"li",
-                  "elements":[
-                    {
-                      "typeofdiv":"li",
-                      "elements":[
+                "typeofdiv":"li",
+                "elements":[
                         {
                           "typeofdiv":"label",
                           "id":"new-developer-name-label",
@@ -3075,27 +3060,24 @@ generate HTML to do the CRUD operations on LDS database.
               "id":"edit-asset",
               "elements":[
                 {
-                  "typeofdiv":"li",
-                  "elements":[
-                    {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
-                          "typeofdiv":"label",
-                          "id":"new-asset-type-label",
-                          "innerText":"New Asset Type:"
-                        },
-                        {
-                          "typeofdiv":"input",
-                          "id":"edit-new-asset-type",
-                          "type":"text"
-                        }
-                      ]
-                    },
-                    {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
+                "typeofdiv":"li",
+                "elements":[
+                {
+                "typeofdiv":"label",
+                "id":"new-asset-type-label",
+                "innerText":"New Asset Type:"
+                },
+                {
+                "typeofdiv":"input",
+                "id":"edit-new-asset-type",
+                "type":"text"
+                }
+                ]
+                },
+                {
+                "typeofdiv":"li",
+                "elements":[
+                {
                           "typeofdiv":"input",
                           "id":"update-asset-sbt",
                           "type":"button",
@@ -3147,10 +3129,9 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"id-label",
-                      "innerText":"Id:"
+                      "id":"lab-id-label",
+                      "innerText":"Lab Id:"
                     },
-
                     {
                       "typeofdiv":"select",
                       "id":"delete-lab-id",
@@ -3210,6 +3191,11 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-experiment-id-label",
+                   "innerText":"Experiment Id:"
+                    },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
@@ -3271,6 +3257,11 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-institute-id-label",
+                   "innerText":"Institute Id:"
+                    },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
@@ -3332,6 +3323,11 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-discipline-label",
+                   "innerText":"Discipline Id:"
+                    },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
@@ -3393,10 +3389,15 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-section-label",
+                   "innerText":"Section Name:"
+                    },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"delete-section-id",
+                      "id":"delete-section-name",
                       "innerText":"Section:"
                     }
                   ]
@@ -3454,10 +3455,15 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-asset-label",
+                   "innerText":"Asset URL:"
+                    },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"delete-asset-id",
+                      "id":"delete-asset-url",
                       "innerText":"Asset:"
                     }
                   ]
@@ -3515,6 +3521,11 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-hosting-info-label",
+                   "innerText":"Hosted URL:"
+                    },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
@@ -3576,6 +3587,12 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                   "typeofdiv":"li",
                   "elements":[
+                   {
+                   "typeofdiv":"label",
+                   "id":"delete-developer-label",
+                   "innerText":"Developer Email:"
+                    },
+
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
