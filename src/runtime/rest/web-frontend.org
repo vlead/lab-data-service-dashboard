@@ -812,10 +812,17 @@ of the user logged in is extracted from the session and populated on the
 update profile page.
 
 ** Update User and Roles Dropdown
-When adding or updating a user , a dropdown for the available roles
-and emails is shown so that the user can send a valid request.
-The dropdowns are populated by extracting the buttons and 
-attaching the options to it.
+There is an interesting problem. We will take you through the journey
+of how we solved this problem.
+So when the admin is adding a user to LDS, he needs to give the details
+=name= , =email= and =role=. The role which he will assign to the new user
+needs to be there in the database. So there is one ipute box and admin needs
+to give the =role_name= with 100% accuracy which is not really a convincing way
+to deal with things. So, we thought of having dropdowns so that he can assign a 
+role which is there in the list.This makes things easier and more convincing.
+Same goes with providing the list of emails in the database.
+
+
 #+NAME: update_role_drop
 #+BEGIN_SRC js
 var load_role_users = function() {
@@ -839,9 +846,18 @@ var load_role_users = function() {
   });
 };
 #+END_SRC
+We first extract all the =options= of the =dropdown= by using the prefix
+=-user-role= and =-user-email= respectively.Then we delete all these options
+by the function =remove()=. Then, we create new options with the respective
+=role_name= or =email= and append to the respective dropdowns.
+
 ** On hash change
-Whenever =hash= is changed,hash change is detected and based on that
-certain containers are displayed and certain containers are hidden.
+In a SPA, We have to dynamically display and hide containers based on our requirement.
+To show home, we wrote a function manually to take care of the case when the hash is 
+changed to home. This is beacause, for other hashes we have automated things and dynamically
+displayed a container based on the input received. The input received was sliced from the =id's=
+of buttons on the home page. 
+
 #+NAME: hash_home
 #+BEGIN_SRC js
 $(window).on('hashchange', function(e) {
@@ -851,6 +867,8 @@ $(window).on('hashchange', function(e) {
   }
 })
 #+END_SRC
+So whenever the hash is changed to =home=, we hide all the container and show onnly
+the side navigation bar.
 ** On load
    Whenever the page refreshes or loads again, the following functions are
 called. Appropriate HTML is generated based on the hash.
