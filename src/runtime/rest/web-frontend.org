@@ -754,7 +754,7 @@ The actual process of attaching event handlers happen now. Whenever
 a specific button is clicked, we hide all the container and only show 
 the navigation bar and the respective container.
 Then, we change the hash in the URL.
-#+NAME: onClick_event_handler
+#+NAME: onClick_event_handler1
 #+BEGIN_SRC  
   var select = document.querySelectorAll('[id^="home-btn-"]');
   [].forEach.call(select, function (button) {
@@ -770,17 +770,32 @@ Then, we change the hash in the URL.
   });  
 #+END_SRC
 
-#+NAME: onClick_event_handler
+When the =home-btn-show-users= button is clicked, =populate_tables_user=
+is called which gets the lsit of =users= list through an AJAX call and populates
+the =show-users= page.
+#+NAME: onClick_event_handler2
 #+BEGIN_SRC
 
   $(document).on('click', '#home-btn-show-users', function(clickEvent) {
     populate_tables_user(); 
   });
   
+#+END_SRC
+
+When the =home-btn-show-roles= button is clicked, =populate_tables_role=
+is called which gets the list of =roles= list through an AJAX call and 
+populates the =show-roles= page.
+#+NAME: onClick_event_handler3
+#+BEGIN_SRC
   $(document).on('click', '#home-btn-show-roles', function(clickEvent) {
     populate_tables_role();
   });
-  
+#+END_SRC  
+
+When the =home-btn-update-user= button is clicked, =updateHelperFunction=
+is called which attaches event handlers to all the update buttons.
+#+NAME: onClick_event_handler4
+#+BEGIN_SRC
   $(document).on('click', '#home-btn-update-user', function(clickEvent) {
     updateHelperFunction();
   });
@@ -792,6 +807,10 @@ Then, we change the hash in the URL.
 
 };
 #+END_SRC
+When the =home-btn-update-profile= button is clicked, the name and email
+of the user logged in is extracted from the session and populated on the 
+update profile page.
+
 ** Update User and Roles Dropdown
 When adding or updating a user , a dropdown for the available roles
 and emails is shown so that the user can send a valid request.
@@ -3912,6 +3931,10 @@ This is the JSON specification for the guest dashboard.
 <<delete_role>>
 <<update_own_click>>
 <<onClick_event_handler>>
+<<onClick_event_handler1>>
+<<onClick_event_handler2>>
+<<onClick_event_handler3>>
+<<onClick_event_handler4>>
 <<update_role_drop>>
 <<hash_home>>
 <<onload>>
