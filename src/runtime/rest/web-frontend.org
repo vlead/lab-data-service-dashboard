@@ -515,7 +515,8 @@ var populate_tables_user = function() {
  Simply adding a button against the operation does not suffice.
  We ought to feed the button of what it is supposed to do when 
  it is clicked. Since the button is not a human being,it just 
- cant assume things and move on. 
+ cant assume things and move on. It solely is our duty to 
+ explain it each and every thing. 
  All the Update buttons and the Remove buttons are extracted
 by their prefix =update-user-pre-sbt= and =remove-user-pre-sbt=
 respectively. The last part of the =id= is unique which actually
@@ -610,10 +611,17 @@ var populate_tables_role = function() {
 };
 
 #+END_SRC
-** Update Role Helper on Admin Dash
-All the =remove_role= buttons are extracted using the id's and
-an event handler is attached to each of the buttons so that 
-on clicking the button, the role is deleted.
+** Remove Role Helper on Admin Dash
+
+We have feeded the update and delete user buttons. It is now
+the remove roles button's turn. We need to attach event
+handlers to the buttons so that it can actually do its work.
+These buttons are really nice and faithfull, they do what 
+has been said to them and the best part is they never try to 
+act oversmart. 
+All the =remove_role= buttons are extracted using the prefix 
+=remove-role-pre-sbt= and an event handler is attached to each 
+of them  so that on clicking the button, the role is deleted.
 
 #+NAME: updateRoleHelperFunction
 #+BEGIN_SRC js
@@ -625,9 +633,14 @@ var removeHelperFunction = function() {
 };
 #+END_SRC
 ** Remove Role
-AJAX call is made to the backend server to delete a role availed to LDS.
-   It takes data from the input boxes and sends a POST request to the
-   backend server.
+   In the previous slide, we observed that the =delete role= buttons were attached
+   to an event listener. As already been said, we are using AJAX calls to 
+   send a request to the backend server. We extract the =id= of the selected
+   button, get the data of the input box associated with this button.
+   After extracting the name of the role, a request is sent through a synchronous 
+   AJAX call. Based on the responce from the backend server, appropriate
+   success or error message is displayed.
+
 #+NAME: delete_role
 #+BEGIN_SRC js
 var remove_roles = function (button) {  
@@ -653,10 +666,19 @@ $('#'+button.id).on('click', function(clickEvent) {
 });
 }
 #+END_SRC
+Now when a role is deleted, this role is no longer availed to LDS. So, it should'nt
+be there in the show roles page. So, everytime a role is deleted or added,
+we call the =populate_tables_role= functions so that a new request is again
+sent to the backend server and we get back the updated list of roles.
+
 ** Update Profile
-A user who is logged in can update his profile. New details are taken
-from the input boxes and a POST request is sent to the backend server.
-Based on the response, an error message or success message is shown.
+A user who is logged should be able to update his profile.Session's details
+are extracted and now the user logged in can edit his name or email.
+He need give his present email as the details are taken from the session.
+A user cannot update is role. If he is given this authority, every user
+would change thier role to admin and mess up things. 
+New details are taken from the input boxes and a POST request is sent to 
+the backend server.Based on the response, an error message or success message is shown.
 #+NAME: update_own_click
 #+BEGIN_SRC js
 $(document).on('click', '#update-profile-sbt', function(clickEvent) {
@@ -690,11 +712,22 @@ $(document).on('click', '#update-profile-sbt', function(clickEvent) {
 });
 
 #+END_SRC
+After the user updates his profile, he is logged out of LDS dashboard.
 ** OnClick Event Handlers
-These are the event handlers for all the buttons present on the
-home page. When a button is clicked, bases on that certain 
-containers are hidden and  certain containers are displayed. 
-#+NAME: onClick_event_handle
+The web application needs to be dynamic. For that, we have to take
+care of a lot of issues and ensure that they are being addressed in
+a proper and efficient way. 
+
+We need not update the =users= and =roles= table each and everytime
+the application is refreshed. We can make it efficient by updating
+the user and roles tables only when a change is detected.
+So whenever a user or role is added or deleted, we populate the
+=users= and =roles= table dynamically.
+
+For that, we have defined a class =update-btn= which updates the
+tables whenever an Add or Remove or Update operation is performed.
+
+#+NAME: onClick_event_handler
 #+BEGIN_SRC js
 var onClickFunctions = function() {
 
@@ -706,7 +739,23 @@ var onClickFunctions = function() {
       load_role_users();
     });  
   }); 
-  
+#+END_SRC 
+
+It is essential that event handlers are attached to the buttons
+in the home navigation bar.
+Firstly, all the home buttons are extracted using the prefix
+=home-btn-= . Now, for each button in the list we extract the 
+second half of the button which actually specifies the operation.
+For Example : When we perform =button.id.slice(9)= operation to the
+button =home-btn-add-user= we get back =add-user=.
+This is an inbuilt Javascript function which made things easy for us.
+
+The actual process of attaching event handlers happen now. Whenever
+a specific button is clicked, we hide all the container and only show 
+the navigation bar and the respective container.
+Then, we change the hash in the URL.
+#+NAME: onClick_event_handler
+#+BEGIN_SRC  
   var select = document.querySelectorAll('[id^="home-btn-"]');
   [].forEach.call(select, function (button) {
     var oid = button.id.slice(9);
@@ -719,6 +768,10 @@ var onClickFunctions = function() {
       navigate(oid);
     });
   });  
+#+END_SRC
+
+#+NAME: onClick_event_handler
+#+BEGIN_SRC
 
   $(document).on('click', '#home-btn-show-users', function(clickEvent) {
     populate_tables_user(); 
@@ -3841,7 +3894,7 @@ This is the JSON specification for the guest dashboard.
 <<updateRoleHelperFunction>>
 <<delete_role>>
 <<update_own_click>>
-<<onClick_event_handle>>
+<<onClick_event_handler>>
 <<update_role_drop>>
 <<hash_home>>
 <<onload>>
