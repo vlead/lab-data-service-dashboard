@@ -4077,6 +4077,140 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+END_SRC
 
+*** Show Hosting Info
+#+NAME: show_hosting_info_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"show-hosting-info-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Hosting Info"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"section-table",
+              "elements":[
+                {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                    {
+                      "typeofdiv":"tr",
+                      "elements":[
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Hosted on"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Hosted URL"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Hosting Status"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+                }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-sections",
+              "elements":[
+
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        }  
+  ],
+
+#+END_SRC
+
+*** Show Developers
+#+NAME: show_developers_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"show-developers-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Developers"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"developer-table",
+              "elements":[
+                {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                    {
+                      "typeofdiv":"tr",
+                      "elements":[
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Name"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Email"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+                }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-developers",
+              "elements":[
+
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        }  
+  ],
+
+#+END_SRC
+
 ** Guest
 This is the JSON specification for the guest dashboard.
 #+NAME: guest_spec_file
