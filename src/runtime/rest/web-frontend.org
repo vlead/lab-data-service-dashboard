@@ -2646,8 +2646,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "class":"error hidden"
                 }
               ]
-            }
-          ]
         },
 #+END_SRC
 *** Edit Experiment
@@ -2916,10 +2914,6 @@ generate HTML to do the CRUD operations on LDS database.
                       "class":"error hidden"
                     }
                   ]
-                }
-              ]
-            }
-          ]
         },
 
 #+END_SRC
@@ -2985,8 +2979,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "class":"error hidden"
                 }
               ]
-            }
-          ]
         },
 #+END_SRC
 *** Edit Asset
@@ -3051,8 +3043,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "class":"error hidden"
                 }
               ]
-            }
-          ]
         },
 #+END_SRC
 *** Delete Lab
@@ -3728,9 +3718,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }
-      ]
-    }
+        }  
   ],
 
 #+END_SRC
