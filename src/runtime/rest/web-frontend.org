@@ -3674,23 +3674,27 @@ generate HTML to do the CRUD operations on LDS database.
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":"Name"
+                          "innerHTML":"Lab Id"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":"Email"
+                          "innerHTML":"Lab Name"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":"Role"
+                          "innerHTML":"Overview"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":""
+                          "innerHTML":"Discipline"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":""
+                          "innerHTML":"Institute"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Integration Status"
                         }
                       ]
                     }
@@ -3704,7 +3708,7 @@ generate HTML to do the CRUD operations on LDS database.
             },
             {
               "typeofdiv":"ul",
-              "id":"show-users",
+              "id":"show-labs",
               "elements":[
 
               ]
@@ -3748,23 +3752,27 @@ generate HTML to do the CRUD operations on LDS database.
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":"Name"
+                          "innerHTML":"Experiment Id"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":"Email"
+                          "innerHTML":"Experiment Name"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":"Role"
+                          "innerHTML":"Overview"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":""
+                          "innerHTML":"Discipline"
                         },
                         {
                           "typeofdiv":"th",
-                          "innerHTML":""
+                          "innerHTML":"Institute"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Integration Status"
                         }
                       ]
                     }
