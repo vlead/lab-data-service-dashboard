@@ -429,7 +429,7 @@ $(document).on('click', '#add-user-sbt', function(clickEvent) {
 
 #+END_SRC
 ** Add Role
-Moving on the Add operations, an =admin= has the access to add
+Moving on in the Add operations, an =admin= has the access to add
 a role to LDS services. As of now, we have stuck to only 2 roles
 =admin= and =guest=. Later on, we can add a new =role= and assign
 the necessary restrictions to access based on our requirements. 
@@ -511,10 +511,15 @@ var populate_tables_user = function() {
   updateHelperFunction();
 };
 #+END_SRC
-** Update User Helper on Admin Dash
-Event handlers are added to all the =update= and =remove= buttons.
-Based on the =id's= the buttons are extracted and each button
-is attached to an event handler.
+** Update And Remove User Helper on Admin Dash
+ Simply adding a button against the operation does not suffice.
+ We ought to feed the button of what it is supposed to do when 
+ it is clicked. Since the button is not a human being,it just 
+ cant assume things and move on. 
+ All the Update buttons and the Remove buttons are extracted
+by their prefix =update-user-pre-sbt= and =remove-user-pre-sbt=
+respectively. The last part of the =id= is unique which actually
+helps us in identifying the button.
 
 #+NAME: updateUserHelperFunction
 #+BEGIN_SRC js
@@ -529,10 +534,20 @@ var updateHelperFunction = function() {
   });
 }
 #+END_SRC
+
+So, Event handlers are added to all the =update= and =remove= buttons.
+Based on the =id's= the buttons are extracted and each button
+is attached to an event handler.
+
 ** Remove User
-   AJAX call is made to the backend server to delete a user availed to LDS.
-   It takes data from the input boxes and sends a POST request to the
-   backend server.
+   In the previous slide, we observed that the =delete= buttons were attached
+   to an event listener.As already been said, we are using AJAX calls to 
+   send a request to the backend server. We extract the =id= of the selected
+   button, get the data of the input box associated with this button.
+   After extracting the email, a request is sent through a synchronous 
+   AJAX call. Based on the responce from backend server, appropriate
+   success or error message is displayed.
+  
 #+NAME: delete_user
 #+BEGIN_SRC js
 var remove_users = function (button) {
@@ -558,6 +573,11 @@ $('#'+button.id).on('click', function(clickEvent) {
 });
 }
 #+END_SRC
+Now when a user is deleted, he is no longer availed to LDS. So, he should'nt
+be there in the show users page. So, everytime a user is deleted or added,
+we call the =populate_tables_user= functions so that a new request is again
+sent to the backend server and we get back the updated list of users.
+
 ** Update Role Tables
 Again to make the dashboard fancy, we update the tables dynamically
 each and every time the browser is refreshed. We create necessary rows
