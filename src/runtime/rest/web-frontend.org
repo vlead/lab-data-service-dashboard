@@ -3804,7 +3804,263 @@ generate HTML to do the CRUD operations on LDS database.
             },
             {
               "typeofdiv":"ul",
-              "id":"show-users",
+              "id":"show-experiments",
+              "elements":[
+
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        }  
+  ],
+
+#+END_SRC
+
+*** Show Assets
+#+NAME: show_assets_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"show-asset-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Assets"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"asset-table",
+              "elements":[
+                {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                    {
+                      "typeofdiv":"tr",
+                      "elements":[
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Asset Type"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Asset Path"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+                }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-assets",
+              "elements":[
+
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        }  
+  ],
+
+#+END_SRC
+
+*** Show Institutes
+#+NAME: show_institutes_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"show-institutes-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Institutes"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"institute-table",
+              "elements":[
+                {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                    {
+                      "typeofdiv":"tr",
+                      "elements":[
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Institute Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Institute Name"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+                }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-institutes",
+              "elements":[
+
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        }  
+  ],
+
+#+END_SRC
+
+*** Show Disciplines
+#+NAME: show_disciplines_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"show-disciplines-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Disciplines"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"discipline-table",
+              "elements":[
+                {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                    {
+                      "typeofdiv":"tr",
+                      "elements":[
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Discipline Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Discipline Name"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+                }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-disciplines",
+              "elements":[
+
+              ]
+            },
+            {
+              "typeofdiv":"label",
+              "id":"error-box",
+              "value":"Error",
+              "class":"error hidden"
+            }
+          ]
+        }  
+  ],
+
+#+END_SRC
+
+*** Show Sections
+#+NAME: show_sections_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"show-sections-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Show Sections"
+            },
+            {
+              "typeofdiv":"table",
+              "class":"table table-striped",
+              "id":"section-table",
+              "elements":[
+                {
+                  "typeofdiv":"thead",
+                  "class":"thead",
+                  "elements":[
+                    {
+                      "typeofdiv":"tr",
+                      "elements":[
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Section Name"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"tbody",
+                  "class":"tbody  "
+                }
+              ]
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"show-sections",
               "elements":[
 
               ]
