@@ -2655,8 +2655,6 @@ generate HTML to do the CRUD operations on LDS database.
                   "class":"error hidden"
                 }
               ]
-            }
-          ]
         },
 #+END_SRC
 *** Edit Discipline
@@ -3816,8 +3814,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }  
-  ],
+        },
 
 #+END_SRC
 
@@ -3881,8 +3878,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }  
-  ],
+        },
 
 #+END_SRC
 
@@ -3946,8 +3942,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }  
-  ],
+        },
 
 #+END_SRC
 
@@ -4011,8 +4006,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }  
-  ],
+        },
 
 #+END_SRC
 
@@ -4072,8 +4066,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }  
-  ],
+        },
 
 #+END_SRC
 
@@ -4141,8 +4134,7 @@ generate HTML to do the CRUD operations on LDS database.
               "class":"error hidden"
             }
           ]
-        }  
-  ],
+        },
 
 #+END_SRC
 
@@ -4207,6 +4199,8 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         }  
+      ]
+    }
   ],
 
 #+END_SRC
