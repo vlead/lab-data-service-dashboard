@@ -25,6 +25,7 @@ Further an OAuth for our app is initialized that can be used for Google OAuth lo
 app = Flask(__name__)
 app.config.from_object("runtime.config.flask_app_config")
 app.config['TRAP_HTTP_EXCEPTIONS']=True
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 db = SQLAlchemy(app)
 
@@ -47,11 +48,13 @@ route is tried to be accessed using a method which is not allowed.
 #+BEGIN_SRC python
 @app.errorhandler(404)
 def handle_404(e):
-    return render_template('404.html'), 404
+    print '404 error occurerd'
+    return
 
 @app.errorhandler(405)
 def handle_404(e):
-    return render_template('405.html'), 405
+    print 'Wrong method used'
+    return
 #+END_SRC
 
 

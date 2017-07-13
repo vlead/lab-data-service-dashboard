@@ -1223,7 +1223,7 @@ def update_user():
 
     if user_toupdate is None:
         return jsonify(success=False, message="This email doesn't exists"), 400
-    elif user_checkupdate is not None:
+    elif user_checkupdate is not None and user_checkupdate != user_toupdate:
         return jsonify(success=False, message="Email is already registered in our database."), 400
 
     check_role = Roles.query.filter(Roles.role_name == new_role).first()
@@ -1455,7 +1455,7 @@ def update_own():
 
     if user_toupdate is None:
         return jsonify(success=False, message="This email doesn't exists."), 400
-    elif user_checkupdate is not None:
+    elif user_checkupdate is not None and user_toupdate != user_checkupdate:
         return jsonify(success=False, message="Email is already registered in our database."), 400
 
     user_toupdate.name = new_name
@@ -1627,6 +1627,467 @@ if __name__ == '__main__':
     unittest.main()
 
 #+END_SRC
+** LDS Request APIs
+*** Get Requests
+**** API Design
+   - URL :: /logged_in
+   - Method :: GET
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+**** Implementation
+#+NAME: lds_get
+#+BEGIN_SRC python
+@api.route('/lds_auth_get', methods=['GET'])
+@login_required
+def lds_connect1():
+    try:
+        payload = request.args.get('call')
+    except:
+        return jsonify(success=False, message="Arguments were broken"), 400
+
+    try:
+        http_proxy = os.environ['http_proxy']
+        https_proxy = os.environ['https_proxy']
+    except:
+        http_proxy = https_proxy = ''
+        os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+
+    os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+    r = requests.get('https://localhost:1307/'+payload, verify = False)
+    os.environ['http_proxy'] = http_proxy
+    os.environ['https_proxy'] = https_proxy
+    return jsonify(success=True, data=r.json()), 200
+#+END_SRC
+**** Test Cases
+#+NAME:
+#+BEGIN_SRC python
+
+# -*- coding: utf-8 -*-
+import unittest
+import os
+import sys
+from flask import Flask, Blueprint, json, render_template, request, session, jsonify        
+from flask_testing import TestCase
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
+import datetime
+from flask_login import LoginManager
+from runtime.rest.app.users.db import User, Roles
+import re
+
+from runtime.rest.app import app, db
+import client
+
+class TestLdsGet(TestCase):
+	TESTING = True
+	def create_app(self):
+		app = Flask(__name__)
+		app.register_blueprint(api, url_prefix=None)
+		app.config.from_object("runtime.config.flask_app_config")
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
+                app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+                app.config['DATABASE_CONNECT_OPTIONS'] = {}
+		login_manager = LoginManager(app)
+		login_manager.login_view = "users.login"
+		self.app = app.test_client()
+		db.init_app(app)
+		return app
+
+	def setUp(self):
+		app.config['TESTING'] = True
+		app.config['LOGIN_DISABLED'] = True
+		db.create_all()
+
+	def test_lds_get_1(self):
+		print "test_lds_get_1"
+		headers = {'Content-Type': 'application/json'}
+		
+		payload = {
+					"path": "vlabs.ac.in/images/static/logo.png",
+					"asset_type": "Image",
+					"key": "defaultkey"
+		}
+		
+		response = self.client.post("/http://10.2.58.182:5000/assets", data=json.dumps(payload), headers=headers)
+		
+		response = self.client.get("/lds_auth_get?call=assets", headers=headers)
+		
+		self.assertEqual(response.status_code, 200)
+
+
+	def test_lds_get_2(self):
+		print "test_lds_get_2"
+		response = self.client.get("/lds_auth_get?call=asets")
+		
+		self.assertEqual(response.status_code, 404)
+
+if __name__ == '__main__':
+    unittest.main()
+#+END_SRC
+*** Post Requests
+**** API Design
+   - URL :: /logged_in
+   - Method :: GET
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+**** Implementation
+#+NAME: lds_post
+#+BEGIN_SRC python
+@api.route('/lds_auth_post', methods=['POST'])
+@login_required
+def lds_connect2():
+    try:
+        payload = request.data
+    except:
+        try:
+            payload = json.dumps(request.args)
+             
+        except:
+            return jsonify(success=False, message="Arguments were broken"), 400
+
+    payment = json.loads(payload)['data']
+    print payment 
+    payment['key'] = 'defaultkey'
+    call = json.loads(payload)['call']+'s'
+    data = json.dumps(payment)
+    
+    try:
+        http_proxy = os.environ['http_proxy']
+        https_proxy = os.environ['https_proxy']
+    except:
+        http_proxy = https_proxy = ''
+        os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+
+    os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+    headers = {'content-type': 'application/json'}
+    r = requests.post('https://localhost:1307/'+call,data=data ,verify = False, headers=headers)
+    os.environ['http_proxy'] = http_proxy
+    os.environ['https_proxy'] = https_proxy
+
+    return jsonify(success=True, message="Life is broken"), 200
+
+#+END_SRC
+**** Test Cases
+#+NAME:
+#+BEGIN_SRC python
+
+# -*- coding: utf-8 -*-
+import unittest
+import os
+import sys
+from flask import Flask, Blueprint, json, render_template, request, session,\
+     jsonify    
+from flask_testing import TestCase
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
+import datetime
+from flask_login import LoginManager
+from runtime.rest.app.users.db import User, Roles
+import re
+
+from runtime.rest.app import app, db
+import client
+
+class TestLdsPost(TestCase):
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(api, url_prefix=None)
+        app.config.from_object("runtime.config.flask_app_config")
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
+
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        db.create_all()
+
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_lds_post_1(self):
+		print "test_add_post_1"
+		payload = {
+			'call': 'assets',
+			'data': {
+				'path': 'vlabs.ac.in/images/static/logo.png',
+				'asset_type': 'Image'
+			}
+		}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/lds_auth_post", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 200)
+
+
+    def test_lds_post_2(self):
+		print "test_add_post_2"
+		payload = {
+			'call': 'asset',
+			'data': {
+				'path': 'vlabs.ac.in/images/static/logo.png',
+				'asset_type': 'Image'
+			}
+		}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/lds_auth_post", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 404)
+
+
+    def test_lds_post_3(self):
+		print "test_add_post_3"
+		payload = {
+			'call': 'assets',
+			'data': {
+				'asset_type': 'Image'
+			}
+		}
+		headers = {'Content-Type': 'application/json'}
+		
+		response = self.client.post("/lds_auth_post", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 500)
+
+if __name__ == '__main__':
+    unittest.main()
+#+END_SRC
+*** Put Requests
+**** API Design
+   - URL :: /logged_in
+   - Method :: GET
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+**** Implementation
+#+NAME: lds_put
+#+BEGIN_SRC python
+@api.route('/lds_auth_put', methods=['PUT'])
+@login_required
+def lds_connect3():
+    try:
+        payload = request.data
+    except:
+        try:
+            print 'loveroflife'
+            payload = json.dumps(request.args)
+        except:
+            print 'nyancat'
+            return jsonify(success=False, message="Arguments were broken"), 400
+    
+    payment = json.loads(payload)['data'] 
+    payment['key'] = 'defaultkey'
+    call = json.loads(payload)['call']+'s'
+    data = json.dumps(payment)    
+
+    try:
+        http_proxy = os.environ['http_proxy']
+        https_proxy = os.environ['https_proxy']
+    except:
+        http_proxy = https_proxy = ''
+        os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+
+    os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+    headers = {'content-type': 'application/json'}
+    r = requests.put('https://localhost:1307/'+call, data=data, headers=headers, verify = False)
+    os.environ['http_proxy'] = http_proxy
+    os.environ['https_proxy'] = https_proxy
+
+    return jsonify(success=True, message="Life is broken"), 200
+#+END_SRC
+**** Test Cases
+#+NAME: logged_in
+#+BEGIN_SRC python
+@api.route('/logged_in', methods=['GET'])
+def loggedin():
+    if 'google_token' in session:
+        return jsonify(success=True, session=session['data']), 200
+    else:
+        return jsonify(success=False), 300
+#+END_SRC
+*** Delete Requests
+**** API Design
+   - URL :: /logged_in
+   - Method :: GET
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+**** Implementation
+#+NAME: lds_delete
+#+BEGIN_SRC python
+@api.route('/lds_auth_delete', methods=['DELETE'])
+@login_required
+def lds_connect4():
+    try:
+        payload = request.data
+    except:
+        try:
+            payload = json.dumps(request.args)
+        except:
+            return jsonify(success=False, message="Arguments were broken"), 400
+
+    payment = json.loads(payload)['data']['id']
+    key = 'key=defaultkey'
+    call = json.loads(payload)['call']+'s'
+    data = json.dumps(payment) 
+
+    try:
+        http_proxy = os.environ['http_proxy']
+        https_proxy = os.environ['https_proxy']
+    except:
+        http_proxy = https_proxy = ''
+        os.environ['http_proxy'] = os.environ['https_proxy'] = ''
+
+    os.environ['http_proxy'] = ''
+    os.environ['https_proxy'] = ''
+    r = requests.delete('https://localhost:1307/'+call+'?'+payment+'&'+key, verify = False)
+    os.environ['http_proxy'] = http_proxy
+    os.environ['https_proxy'] = https_proxy
+
+    return jsonify(success=True, message="Life is broken"), 200
+#+END_SRC
+**** Test Cases
+#+NAME: 
+#+BEGIN_SRC python
+
+# -*- coding: utf-8 -*-
+import unittest
+import os
+import sys
+from flask import Flask, Blueprint, json, render_template, request, session,\
+     jsonify    
+from flask_testing import TestCase
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from runtime.rest.app.users.api import api
+import datetime
+from flask_login import LoginManager
+from runtime.rest.app.users.db import User, Roles
+import re
+
+from runtime.rest.app import app, db
+import client
+
+class TestLdsPost(TestCase):
+    TESTING = True
+    def create_app(self):
+        app = Flask(__name__)
+        app.register_blueprint(api, url_prefix=None)
+        app.config.from_object("runtime.config.flask_app_config")
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['DATABASE_CONNECT_OPTIONS'] = {}
+        login_manager = LoginManager(app)
+        login_manager.login_view = "users.login"
+        self.app = app.test_client()
+        db.init_app(app)
+        return app
+
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['LOGIN_DISABLED'] = True
+        db.create_all()
+
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_lds_put_1(self):
+		print "test_lds_put_1"
+	
+		headers = {'Content-Type': 'application/json'}
+		payload = {
+		       'path': 'vlabs.ac.in/images/static/logo.png',
+			   'asset_type' : 'Image',
+			   'key' : 'defaultkey'
+		}
+
+		response = self.client.post("/http://10.2.58.182:5000/assets", data=json.dumps(payload), headers=headers)
+	
+		payload = {
+			'call': 'assets?path=vlabs.ac.in/images/static/logo.png',
+			'data': {
+				'asset_type': 'Video'
+			}
+		}
+		
+		response = self.client.put("/lds_auth_put", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 200)
+
+
+    def test_lds_put_2(self):
+		print "test_lds_put_2"
+
+		headers = {'Content-Type': 'application/json'}
+		payload = {
+		       'path': 'vlabs.ac.in/images/static/logo.png',
+			   'asset_type' : 'Image',
+			   'key' : 'defaultkey'
+		}
+
+		response = self.client.post("/http://10.2.58.182:5000/assets", data=json.dumps(payload), headers=headers)
+		
+		payload = {
+			'call': 'asset?path=vlabs.ac.in/images/static/logo.png',
+			'data': {
+				'asset_type': 'Video'
+			}
+		}
+		
+		response = self.client.put("/lds_auth_put", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 404)
+
+    def test_lds_put_3(self):
+		print "test_lds_put_3"
+	
+		headers = {'Content-Type': 'application/json'}
+		payload = {
+		       'path': 'vlabs.ac.in/images/static/logo.png',
+			   'asset_type' : 'Image',
+			   'key' : 'defaultkey'
+		}
+
+		response = self.client.post("/http://10.2.58.182:5000/assets", data=json.dumps(payload), headers=headers)
+		
+		payload = {
+			'call': 'assets?path=vlabs.ac.in/images/static/logo.png',
+			'data': {
+				'asset': 'Video'
+			}
+		}
+		
+		response = self.client.put("/lds_auth_put", data=json.dumps(payload), headers=headers)
+
+		self.assertEqual(response.status_code, 500)
+
+
+if __name__ == '__main__':
+    unittest.main()
+#+END_SRC
 * Infra                                                         :boilerplate:
 
   
@@ -1683,6 +2144,10 @@ api = Blueprint('users', __name__)
 <<delete_role>>
 <<update_user>>
 <<update_profile>>
+<<lds_get>>
+<<lds_post>>
+<<lds_put>>
+<<lds_delete>>
 #+END_SRC
    
 

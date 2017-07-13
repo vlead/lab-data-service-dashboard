@@ -273,11 +273,13 @@ var navigate = function (path) {
 #+NAME: register_on_hash_change
 #+BEGIN_SRC js
 var register_onhashchange_handlers = function(hash_to_handlers_map) {
+  var updateHashCheck = /^update-*/;
+
   $(window).on('hashchange', function(e) {
     hash_path = get_window_hash_path();
     if (hash_to_handlers_map.hasOwnProperty(hash_path)) {
       if (hashNotClicked) {
-        if (hash_path=='update-user') {  
+        if (updateHashCheck.test(hash_path)) {  
           hide_all_containers();
           show_one_container('side-nav-container');
           show_one_container(hash_path+'-container');
@@ -285,7 +287,7 @@ var register_onhashchange_handlers = function(hash_to_handlers_map) {
         }
       }
       else if (!hashNotClicked) {
-        if (hash_path=='update-user') {
+        if (updateHashCheck.test(hash_path)) {
           window.alert('You are trying to access the page using wrong way!');
           hide_all_containers();
           show_one_container('side-nav-container');
@@ -540,6 +542,47 @@ So, Event handlers are added to all the =update= and =remove= buttons.
 Based on the =id's= the buttons are extracted and each button
 is attached to an event handler.
 
+** Update User
+#+NAME: update_users
+#+BEGIN_SRC js
+var update_users = function(button) {
+	email = $('#'+button.id).attr('email');
+  name = $('#'+button.id).attr('name');
+  role = $('#'+button.id).attr('role');
+
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-user-sbt').attr('email',email);
+    $('#edit-new-name').val(name);
+    $('#edit-new-email').val(email);
+    $('#edit-user-role').val(role);
+		navigate('update-user');
+	});
+};
+
+$(document).on('click', '#update-user-sbt', function(clickEvent) {
+  var data = JSON.stringify({
+    email: $('#update-user-sbt').attr('email'),
+    new_name: $('#edit-new-name').val(),
+    new_email: $('#edit-new-email').val(),
+    new_role: $('#edit-user-role').val()
+  });
+  $.ajax({
+    url: 'update_user',
+    data: data,
+    type: 'PUT',
+    contentType: 'application/json;charset=utf-8',
+    async: false,
+    success: function (response) {
+      window.alert ('User was updated');
+    },
+    error: function (response) {
+      window.alert ('There was an error updating the user, please check the information you provided.');
+    }
+  });
+  $('#update-user-sbt').removeAttr('email');
+});
+#+END_SRC
 ** Remove User
    In the previous slide, we observed that the =delete= buttons were attached
    to an event listener.As already been said, we are using AJAX calls to 
@@ -811,6 +854,132 @@ When the =home-btn-update-profile= button is clicked, the name and email
 of the user logged in is extracted from the session and populated on the 
 update profile page.
 
+#+NAME: onClick_event_handler5
+#+BEGIN_SRC js
+  var select = document.querySelectorAll('[class^="lds-show-asset"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+        console.log(button.id.split('-').pop(-1));
+        call = button.id.split('-').pop(-1);
+        populate_asset_tables_call(call,check_function(call));
+    });  
+  }); 
+#+END_SRC
+
+#+NAME: onClick_event_handler6
+#+BEGIN_SRC js
+  var select = document.querySelectorAll('[class^="lds-show-over"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+        console.log(button.id.split('-').pop(-1));
+        call = button.id.split('-').pop(-1);
+        populate_over_tables_call(call,check_function(call));
+    });  
+  }); 
+#+END_SRC
+
+#+NAME: onClick_event_handler7
+#+BEGIN_SRC js
+ $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
+    populate_tables_dev(check_function('developers'));
+  });
+#+END_SRC
+
+#+NAME: onClick_event_handler8
+#+BEGIN_SRC js
+var select = document.querySelectorAll('[class$="lab-exp"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+       	var developer = [];
+	      var hostings_info = [];
+	      var asset = [];
+        id = button.id.split('-')[1];
+        ed = id.substr(0,3);
+        console.log(button.id);
+        console.log(id);
+	institute_id_box = $('#add-'+id+'-institute-id-select');
+    institute_id = institute_id_box[0].selectedOptions[0].value;
+
+	discipline_id_box = $('#add-'+id+'-discipline-id-select');
+    discipline_id = discipline_id_box[0].selectedOptions[0].value;
+
+    integration_level_box = $('#add-'+id+'-integration-level-box');
+	integration_level = parseInt(integration_level_box[0].value);
+
+    $('#add-'+id+'-developer-id-select :selected').each(function(){
+      developer.push($(this).val());
+    });  
+
+	 $('#add-'+id+'-container #add-developer-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_dev={};
+			  new_dev.name = input[0].value ;
+			  new_dev.email = input[1].value;
+			  if(new_dev.name && new_dev.email)
+			  developer.push(new_dev);
+			});
+
+	 $('#add-'+id+'-container #new-hosting-'+ed+'-div').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_hos={};
+			  new_hos.hosted_on = input[2].value ;
+			  new_hos.hosted_url = input[0].value;
+			  new_hos.hosting_status = input[1].value;
+			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
+			  hostings_info.push(new_hos);
+			});
+   
+
+
+  $('#add-'+id+'-asset-id-select :selected').each(function(){
+     asset.push($(this).val());
+  });  
+  
+
+	 $('#add-'+id+'-container #new-asset-'+ed+'-div').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_ass={};
+			  new_ass.path = input[0].value ;
+			  new_ass.asset_type = input[1].value;
+			  if(new_ass.path && new_ass.asset_type)
+			  asset.push(new_ass);
+			});
+
+	var section = [];
+
+  $('#add-'+id+'-section-id-select :selected').each(function(){
+     section.push($(this).val());
+  }); 
+
+	 $('#add-'+id+'-container #add-section-new-'+ed+'-id').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_sec={};
+			  name = input[0].value ;
+			  if(name)
+				 section.push(name);
+			});
+
+    var p = {}
+    var alive_data = {
+      id: $('#add-'+id+'-id-box').val(),
+      overview: $('#add-'+id+'-overview-box').val(),
+      name: $('#add-'+id+'-name-box').val(),
+      discipline_id: discipline_id,
+      institute_id: institute_id,
+	    assets:asset,
+	    hosting_info:hostings_info,
+	    developers:developer,
+      integration_level: integration_level,
+	    sections:section
+    };
+    p[id] = alive_data
+		var data = JSON.stringify(p);
+
+      check_function2(id,JSON.parse(data));
+    });  
+  }); 
+#+END_SRC
+
 ** Update User and Roles Dropdown
 There is an interesting problem. We will take you through the journey
 of how we solved this problem.
@@ -869,26 +1038,476 @@ $(window).on('hashchange', function(e) {
 #+END_SRC
 So whenever the hash is changed to =home=, we hide all the container and show onnly
 the side navigation bar.
+** LDS Request
+*** Get Requests
+#+NAME: lds_get
+#+BEGIN_SRC js
+var check_function = function(call) {
+  $.ajax({
+    url: 'https://localhost:5000/lds_auth_get',
+    type: 'GET',
+    data: {call:call},
+    contentType: 'json/application,charset=UTF-8',
+    async: false,
+    success: function (response) {
+      table_data = response.data
+      console.log(response);     
+    },
+    error: function (response) {
+      table_data = response.data
+      console.log(response);
+    }
+  });
+  return table_data
+};
+
+#+END_SRC
+*** Post Requests
+#+NAME: lds_post
+#+BEGIN_SRC js
+var check_function2 = function(call, data) {
+  $.ajax({
+    url: 'https://localhost:5000/lds_auth_post',
+    type: 'POST',
+    dataType: 'json',
+    data:   JSON.stringify({
+      data: data,
+      call: call
+    }),
+    contentType: 'json/application,charset=UTF-8',
+    async: false,
+    success: function (response) {
+      var a = response;
+    },
+    error: function (response) {
+      var a = response;
+    }
+  });
+};
+#+END_SRC
+*** Put Requests
+#+NAME: lds_put
+#+BEGIN_SRC js
+var check_function3 = function(call, data) {
+    $.ajax({
+    url: 'https://localhost:5000/lds_auth_put',
+    type: 'PUT',
+    dataType: 'json',
+    data:   JSON.stringify({
+      data: data,
+      call: call
+    }),
+    contentType: 'json/application,charset=UTF-8',
+    async: false,
+    success: function (response) {
+      console.log(response);     
+    },
+    error: function (response) {
+      console.log(response);
+    }
+  });
+};
+#+END_SRC
+*** Delete Requests
+#+NAME: lds_delete
+#+BEGIN_SRC js
+var check_function4 = function(call, data) {
+    $.ajax({
+    url: 'https://localhost:5000/lds_auth_delete',
+    type: 'DELETE',
+    dataType: 'json',
+    data:   JSON.stringify({
+      data: data,
+      call: call
+    }),
+    contentType: 'json/application,charset=UTF-8',
+    async: false,
+    success: function (response) {
+      console.log(response);     
+    },
+    error: function (response) {
+      console.log(response);
+    }
+  });
+};
+
+#+END_SRC
+
+** Update for LDS entities
+#+BEGIN_SRC js
+var updateLdsFunction = function(button, call) {
+
+  $('#'+button.id).on('click', function(clickEvent){
+      hashNotClicked=true;
+      var updater = button.id.split('-pre-')[0]
+	  	navigate(updater);
+	});
+};
+#+END_SRC
+
+** Remove for LDS entities
+#+BEGIN_SRC js
+var removeLdsFunction = function(button, call) {
+
+  $('#'+button.id).on('click', function(clickEvent){
+    //hashNotClicked=true;
+      console.log(button.id);
+	//	navigate('updater');
+    var btt = button.id.split('-')[1];
+    switch(btt) {
+      case 'lab': check_function4(btt,JSON.parse(JSON.stringify({ id:'lab_id='+$(button).attr('ids')}))); break;
+      case 'experiment': check_function4(btt,JSON.parse(JSON.stringify({id:'exp_id='+$(button).attr('ids')}))); break;
+      case 'developer': check_function4(btt,JSON.parse(JSON.stringify({id:'email_id='+$(button).attr('email')}))); break;
+      case 'institute': check_function4(btt,JSON.parse(JSON.stringify({id:'institute_id='+$(button).attr('ids')}))); break;
+      case 'discipline': check_function4(btt,JSON.parse(JSON.stringify({id:'discipline_id='+$(button).attr('ids')}))); break;
+    };
+	});
+};
+#+END_SRC
+
+
+
+** Update Helper for LDS
+#+BEGIN_SRC js
+var updateLdsHelperFunction = function(entity) {
+  var buttons = document.querySelectorAll('[id^="update-'+entity+'-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       updateLdsFunction(button);
+  });
+  var buttons = document.querySelectorAll('[id^="remove-'+entity+'-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       removeLdsFunction(button);
+  });
+}
+
+#+END_SRC
+
+
+
+
+
+
+** Developer Table Populate
+#+BEGIN_SRC js
+var populate_tables_dev = function(data) {
+  $('#developer-table').find('tr:not(:first)').remove();
+  var tableRef = document.getElementById('developer-table').getElementsByTagName('tbody')[0];
+  for (var i in data) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(data[i].name.name));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(data[i].email.email));
+
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-developer-pre-sbt-'+i);
+      updateButton.setAttribute('email',data[i].email.email);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+
+      var newCell = newRow.insertCell(-1);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-developer-pre-sbt-'+i);
+      removeButton.setAttribute('email',data[i].email.email);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+  }
+   updateLdsHelperFunction('developer');
+};
+
+#+END_SRC
+
+** Institute and Discipline Table Populate
+#+BEGIN_SRC js
+var populate_asset_tables_call = function(entity, data) {
+  $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
+
+  var tableRef = document.getElementById(entity.slice(0,-1) +'-table').getElementsByTagName('tbody')[0];
+  for (var i in data) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].asset));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,-1)+'_id']));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,-1)+'_name']));
+      
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-'+entity.slice(0,-1)+'-pre-sbt-'+i);
+      updateButton.setAttribute('ids',data[i][entity.slice(0,-1)+'_id']);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+
+      var newCell = newRow.insertCell(-1);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-'+entity.slice(0,-1)+'-pre-sbt-'+i);
+      removeButton.setAttribute('ids',data[i][entity.slice(0,-1)+'_id']);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+  }
+   updateLdsHelperFunction(entity.slice(0,-1));
+};
+
+#+END_SRC
+
+
+** Lab and Experiment Table Populate
+#+BEGIN_SRC js
+var populate_over_tables_call = function(entity, data) {
+  $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
+  var tableRef = document.getElementById(entity.slice(0,-1) +'-table').getElementsByTagName('tbody')[0];
+  for (var i in data) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,3)+'_id']));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,3)+'_name']));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].overview));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].institute));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].developers));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].sections));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].assets));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].discipline));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(data[i].hosting_info));
+      
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-'+entity.slice(0,-1)+'-pre-sbt-'+i);      
+      updateButton.setAttribute('ids',data[i][entity.slice(0,3)+'_id']);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+
+      var newCell = newRow.insertCell(-1);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-'+entity.slice(0,-1)+'-pre-sbt-'+i);
+      removeButton.setAttribute('ids', data[i][entity.slice(0,3)+'_id']);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+  }
+  updateLdsHelperFunction(entity.slice(0,-1));
+};
+
+#+END_SRC
+
+** Checkbox - Dropdown Checker for New LDS entities
+ #+BEGIN_SRC js
+ var checkbox = function () {
+  $("input[type='checkbox']").each(function() {
+    $(this).change( function() {
+      id = $(this).attr('id').split('-');
+      $('#add-more-'+id[2]+'-'+id[3]+'-sbt').prop('disabled',!this.checked); //enable input
+      $('#remove-more-'+id[2]+'-'+id[3]+'-sbt').prop('disabled',!this.checked);
+    });
+  });
+};
+ #+END_SRC
+** Data for New LDS entity helper
+#+BEGIN_SRC js
+/* Worthy are those who use switch case to make it short. Alas, I am not one of them. */
+var new_add_data = {
+  developer: function() {
+    var list = document.createElement("li");
+    var input1 = document.createElement("input");
+    $(input1).attr('type','text');
+    $(input1).attr('placeholder','Name');
+    $(list).append(input1);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input1);
+    itemLabel.innerHTML = "Name: ";
+    list.insertBefore(itemLabel, input1);
+    var input2 = document.createElement('input');
+    $(input2).attr('type','text');
+    $(input2).attr('placeholder','abc@def.ghi');
+    $(list).append(input2);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input2);
+    itemLabel.innerHTML = "Email: ";
+    list.insertBefore(itemLabel, input2);
+    return list;
+  },
+  hosting: function() {
+    var list = document.createElement('li');
+    var input1 = document.createElement("input");
+    $(input1).attr('type','text');
+    $(input1).attr('placeholder','Hosted URL');
+    $(list).append(input1);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input1);
+    itemLabel.innerHTML = "Hosted URL: ";
+    list.insertBefore(itemLabel, input1);
+    var input2 = document.createElement("input");
+    $(input2).attr('type','text');
+    $(input2).attr('placeholder','Hosting Status');
+    $(list).append(input2);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input2);
+    itemLabel.innerHTML = "Hosting Status: ";
+    list.insertBefore(itemLabel, input2); 
+    var input3 = document.createElement("input");
+    $(input3).attr('type','text');
+    $(input3).attr('placeholder','Hosted On');
+    $(list).append(input3);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input3);
+    itemLabel.innerHTML = "Hosted On: ";
+    list.insertBefore(itemLabel, input3);         
+    return list;  
+  },
+  asset: function() {
+    var list = document.createElement("li");
+    var input1 = document.createElement("input");
+    $(input1).attr('type','text');
+    $(input1).attr('placeholder','Path');
+    $(list).append(input1);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input1);
+    itemLabel.innerHTML = "Path: ";
+    list.insertBefore(itemLabel, input1);
+    var input2 = document.createElement('input');
+    $(input2).attr('type','text');
+    $(input2).attr('placeholder','Type');
+    $(list).append(input2);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input2);
+    itemLabel.innerHTML = "Type: ";
+    list.insertBefore(itemLabel, input2);
+    return list;
+  },
+  section: function() {
+    var list = document.createElement("li");
+    var input1 = document.createElement("input");
+    $(input1).attr('type','text');
+    $(input1).attr('placeholder','Name');
+    $(list).append(input1);
+    var itemLabel = document.createElement("Label");
+    $(itemLabel).attr("for", input1);
+    itemLabel.innerHTML = "Name: ";
+    list.insertBefore(itemLabel, input1);
+    return list;
+  }
+};
+#+END_SRC
+
+
+
+** Add new LDS entity button
+#+BEGIN_SRC js
+var adding_data_test = function (){
+  var select = document.querySelectorAll('[id^="add-more-"]');  
+  [].forEach.call(select, function (button) {
+    var id = button.id.split('-');
+    $('#'+button.id).on('click', function(){
+      var li = new_add_data[id[2]]();
+      var div = $('#add-'+id[2]+'-new-'+id[3]+'-id');
+      $(div).append(li);
+    });
+  });
+}
+
+#+END_SRC
+** Remove new LDS entity button 
+#+BEGIN_SRC js
+var remove_data_test = function (){
+  var select = document.querySelectorAll('[id^="remove-more-"]');  
+  [].forEach.call(select, function (button) {
+    var id = button.id.split('-');
+    $('#'+button.id).on('click', function(){
+      var li = new_add_data[id[2]]();
+      var main_id = '#add-'+id[2]+'-new-'+id[3]+'-id'
+      var rcheck = $(main_id+' li');
+      if (rcheck.length) {
+        rcheck.get(-1).remove();
+      }
+    });
+  });
+};
+
+#+END_SRC
+
+** Dropdown populate for LDS Add
+#+BEGIN_SRC js
+var dropdown_fillup = function() {
+
+  var select = document.querySelectorAll('[id$="-id-select"]');
+  [].forEach.call(select, function (dropdown) {
+    console.log(dropdown)
+    console.log(dropdown.id.split('-')[2])
+    var newOptions = check_function(dropdown.id.split('-')[2]+'s');
+    $('option',dropdown).remove();
+      $.each(newOptions, function(text, val) { 
+        
+        console.log(val);
+
+        switch(dropdown.id.split('-')[2]) {
+          case 'developer': var option = new Option(val.email.email, val.email.email); break;
+          case 'asset': var option = new Option(val.path, val.path); break;
+          case 'institute': var option = new Option(val.institute_id , val.institute_id); break;
+          case 'discipline': var option =  new Option(val.discipline_id, val.discipline_id); break;
+          case 'section': var option = new Option(val.name,val.name); break;
+        }
+        
+        dropdown.append(option); 
+      });
+  });
+};
+#+END_SRC
+
+
+
 ** On load
    Whenever the page refreshes or loads again, the following functions are
 called. Appropriate HTML is generated based on the hash.
 #+NAME: onload
 #+BEGIN_SRC js
+
 window.onload = function () {
   hashNotClicked=false;
   logged = is_logged_in();
-  index_handler();  
+  index_handler();
   if (logged){
   navigate('home');
   createDivisions();
   hide_all_containers();
   index_handler();  
   get_window_hash_path();
+  adding_data_test();
+  remove_data_test();
+  //get_all_data();
+  dropdown_fillup();
+  checkbox();
   onClickFunctions();
   handlers_map();
   register_onhashchange_handlers(hash_to_handlers_map); 
   }
 };  
+
 #+END_SRC  
 
 
@@ -975,6 +1594,7 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
 
 #+NAME: admin_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
+
 {
   "beflogin_dash":[
 
@@ -1021,6 +1641,48 @@ generate the HTML to do CRUD operation on entities 'Role' and 'User'.
               "id":"home-btn-show-roles",
               "class":"list-group-item",
               "innerHTML":" Show Roles "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-add-experiment",
+              "class":"list-group-item",
+              "innerHTML":" Add Experiment "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-add-lab",
+              "class":"list-group-item",
+              "innerHTML":" Add Lab "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-labs",
+              "class":"lds-show-over-lab list-group-item",
+              "innerHTML":" Show Labs "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-experiments",
+              "class":"lds-show-over-exp list-group-item",
+              "innerHTML":" Show Experiments "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-developers",
+              "class":"lds-show-dev list-group-item",
+              "innerHTML":" Show Developer "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-institutes",
+              "class":"lds-show-asset-inst list-group-item",
+              "innerHTML":" Show Institute "
+            },
+            {
+              "typeofdiv":"button",
+              "id":"home-btn-show-disciplines",
+              "class":"lds-show-asset-disc list-group-item",
+              "innerHTML":" Show Discipline "
             }
           ]
         }
@@ -1826,7 +2488,7 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"id_label",
+                      "id":"id-label",
                       "innerText":"Id:"
                     },
                     {
@@ -1841,7 +2503,7 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"name_label",
+                      "id":"name-label",
                       "innerText":"Name:"
                     },
                     {
@@ -1856,7 +2518,7 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"overview_label",
+                      "id":"experiment-overview-label",
                       "innerText":"Overview:"
                     },
                     {
@@ -1871,12 +2533,12 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"discipline_label",
+                      "id":"discipline-label",
                       "innerText":"Discipline:"
                     },
                     {
                       "typeofdiv":"select",
-                      "id":"add-experiment-discipline-id-box",
+                      "id":"add-experiment-discipline-id-select",
                       "innerText":"Discipline:"
                     }
                   ]
@@ -1891,7 +2553,7 @@ generate HTML to do the CRUD operations on LDS database.
                     },
                     {
                       "typeofdiv":"select",
-                      "id":"add-experiment-institute-id-box",
+                      "id":"add-experiment-institute-id-select",
                       "innerText":"Institute:"
                     }
                   ]
@@ -1901,16 +2563,52 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"developer_label",
+                      "id":"developer-label",
                       "innerText":"Developer:"
                     },
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"add-developer-id",
+                      "id":"add-experiment-developer-id-select",
                       "innerText":"Developer:"
+                    },
+                    {
+                      "typeofdiv":"div",
+                      "id":"new-developer-experiment-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "type":"checkbox",
+                          "id":"select-check-developer-exp-id",
+                          "innerText":"Add new developers"
+                        },
+                        {
+                          "typeofdiv":"label",
+                          "for":"select-check-developert-exp-id",
+                          "innerHTML":"Add new developers?"
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-developer-new-exp-id"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-developer-exp-sbt",
+                          "type":"button",
+                          "disabled":"true",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-developer-exp-sbt",
+                          "type":"button",
+                          "disabled":"true",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
                     }
-                   
                   ]
                 },
                 {
@@ -1918,15 +2616,75 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"hosting_info_label",
+                      "id":"hosting-info-experiment-label",
                       "innerText":"Hosting Info:"
                     },
                     {
-                      "typeofdiv":"select",
-                      "multiple":"multiple",
-                      "id":"add-hosting-info-id",
-                      "innerText":"Hosting Info:"
-                    }                    
+                      "typeofdiv":"div",
+                      "id":"add-new-hosting-exp-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"li",
+                          "elements":[
+                            {
+                              "typeofdiv":"label",
+                              "for":"hosted_info",
+                              "innerHTML":"  Hosted URL:  "
+                            },                        
+                            {
+                              "typeofdiv":"input",
+                              "type":"text",
+                              "id":"hosted_info"
+                            },
+                            {
+                              "typeofdiv":"label",
+                              "for":"hosted_info_status",
+                              "innerHTML":"  Hosting Status:  "
+                            },                        
+                            {
+                              "typeofdiv":"input",
+                              "type":"text",
+                              "id":"hosted_info_status"
+                            },
+                            {
+                              "typeofdiv":"label",
+                              "for":"hosted_info_on",
+                              "innerHTML":"  Hosted On:  " 
+                            },                        
+                            {
+                              "typeofdiv":"input",
+                              "type":"text",
+                              "id":"hosted_info_on",
+                              "name":" "
+                            },
+                            {
+                              "typeofdiv":"br"  
+                            }
+                          ]
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-hosting-new-exp-id"
+                        },
+                        {
+                          "typeofdiv":"br"  
+                        },                        
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-hosting-exp-sbt",
+                          "type":"button",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-hosting-exp-sbt",
+                          "type":"button",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
+                    }               
                   ]
                 },
                 {
@@ -1957,10 +2715,49 @@ generate HTML to do the CRUD operations on LDS database.
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"add-asset-id",
+                      "id":"add-experiment-asset-id-select",
                       "innerText":"Asset:"
-                    }
-                   
+                    },
+                    {
+                      "typeofdiv":"div",
+                      "id":"new-asset-exp-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "type":"checkbox",
+                          "id":"select-check-asset-exp-id",
+                          "innerText":"Add assets"
+                        },
+                        {
+                          "typeofdiv":"label",
+                          "for":"select-check-asset-exp-id",
+                          "innerHTML":"Add new assets?"
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-asset-new-exp-id"
+                        },
+                        {
+                          "typeofdiv":"br"  
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-asset-exp-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-asset-exp-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
+                    }                   
                   ]
                 },
                 {
@@ -1974,10 +2771,49 @@ generate HTML to do the CRUD operations on LDS database.
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"add-section-id",
+                      "id":"add-experiment-section-id-select",
                       "innerText":"Section:"
-                    }
-                   
+                    },
+                    {
+                      "typeofdiv":"div",
+                      "id":"new-section-exp-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "type":"checkbox",
+                          "id":"select-check-section-exp-id",
+                          "innerText":"Add sections"
+                        },
+                        {
+                          "typeofdiv":"label",
+                          "for":"select-check-section-exp-id",
+                          "innerHTML":"Add new sections?"
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-section-new-exp-id"
+                        },
+                        {
+                          "typeofdiv":"br"  
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-section-exp-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-section-exp-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
+                    }                   
                   ]
                 },
                 {
@@ -1987,7 +2823,7 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"input",
                       "id":"add-experiment-sbt",
                       "type":"button",
-                      "class":"btn btn-primary",
+                      "class":"btn btn-primary lab-exp",
                       "value":"Add",
                       "onclick":""
                     },
@@ -2011,6 +2847,7 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         },
+
 #+END_SRC
 *** Add Lab
 #+NAME: add_lab_spec
@@ -2038,7 +2875,7 @@ generate HTML to do the CRUD operations on LDS database.
                     },
                     {
                       "typeofdiv":"input",
-                      "id":"id-box",
+                      "id":"add-lab-id-box",
                       "type":"text"
                     }
                   ]
@@ -2053,7 +2890,7 @@ generate HTML to do the CRUD operations on LDS database.
                     },
                     {
                       "typeofdiv":"input",
-                      "id":"name-box",
+                      "id":"add-experiment-name-box",
                       "type":"text"
                     }
                   ]
@@ -2068,7 +2905,8 @@ generate HTML to do the CRUD operations on LDS database.
                     },
                     {
                       "typeofdiv":"input",
-                      "type":"text"
+                      "type":"text",
+                      "id":"add-experiment-overview-box"
                     }
                   ]
                 },
@@ -2082,8 +2920,7 @@ generate HTML to do the CRUD operations on LDS database.
                     },
                     {
                       "typeofdiv":"select",
-          
-                      "id":"add-discipline-id",
+                      "id":"add-lab-discipline-id-select",
                       "innerText":"Discipline:"
                     }
                   ]
@@ -2098,8 +2935,7 @@ generate HTML to do the CRUD operations on LDS database.
                     },
                     {
                       "typeofdiv":"select",
-          
-                      "id":"add-institute-id",
+                      "id":"add-lab-institute-id-select",
                       "innerText":"Institute:"
                     }
                   ]
@@ -2115,8 +2951,45 @@ generate HTML to do the CRUD operations on LDS database.
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"add-developer-id",
+                      "id":"add-lab-developer-id-select",
                       "innerText":"Developer:"
+                    },
+                    {
+                      "typeofdiv":"div",
+                      "id":"new-developer-lab-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "type":"checkbox",
+                          "id":"select-check-developer-lab-id",
+                          "innerText":"Add new developers"
+                        },
+                        {
+                          "typeofdiv":"label",
+                          "for":"select-check-developert-lab-id",
+                          "innerHTML":"Add new developers?"
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-developer-new-lab-id"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-developer-lab-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-developer-lab-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
                     }
                    
                   ]
@@ -2126,16 +2999,75 @@ generate HTML to do the CRUD operations on LDS database.
                   "elements":[
                     {
                       "typeofdiv":"label",
-                      "id":"hosting-info-label",
+                      "id":"hosting-info-lab-label",
                       "innerText":"Hosting Info:"
                     },
                     {
-                      "typeofdiv":"select",
-                      "multiple":"multiple",
-                      "id":"add-hosting-info-id",
-                      "innerText":"Hosting Info:"
-                    }
-                    
+                      "typeofdiv":"div",
+                      "id":"add-new-hosting-lab-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"li",
+                          "elements":[
+                            {
+                              "typeofdiv":"label",
+                              "for":"hosted_info",
+                              "innerHTML":"  Hosted URL:  "
+                            },                        
+                            {
+                              "typeofdiv":"input",
+                              "type":"text",
+                              "id":"hosted-info"
+                            },
+                            {
+                              "typeofdiv":"label",
+                              "for":"hosted-info-status",
+                              "innerHTML":"  Hosting Status:  "
+                            },                        
+                            {
+                              "typeofdiv":"input",
+                              "type":"text",
+                              "id":"hosted-info-status"
+                            },
+                            {
+                              "typeofdiv":"label",
+                              "for":"hosted-info-on",
+                              "innerHTML":"  Hosted On:  " 
+                            },                        
+                            {
+                              "typeofdiv":"input",
+                              "type":"text",
+                              "id":"hosted-info-on",
+                              "name":" "
+                            },
+                            {
+                              "typeofdiv":"br"  
+                            }
+                          ]
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-hosting-new-lab-id"
+                        },
+                        {
+                          "typeofdiv":"br"  
+                        },                        
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-hosting-lab-sbt",
+                          "type":"button",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-hosting-lab-sbt",
+                          "type":"button",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
+                    }               
                   ]
                 },
                 {
@@ -2150,7 +3082,8 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"input",
                       "type":"number",
                       "min":"0",
-                      "max":"6"
+                      "max":"6",
+                      "id":"add-lab-integration-level-box"
                     }
                   ]
                 },
@@ -2165,10 +3098,48 @@ generate HTML to do the CRUD operations on LDS database.
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"add-asset-id",
+                      "id":"add-lab-asset-id-select",
                       "innerText":"Asset:"
-                    }
-                    
+                    },
+                    {
+                      "typeofdiv":"div",
+                      "id":"new-asset-lab-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "type":"checkbox",
+                          "id":"select-check-asset-lab-id"
+                        },
+                        {
+                          "typeofdiv":"label",
+                          "for":"select-check-asset-lab-id",
+                          "innerHTML":"Add new assets?"
+                        },
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-asset-new-lab-id"
+                        },
+                        {
+                          "typeofdiv":"br"  
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-asset-lab-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-asset-lab-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
+                    }                    
                   ]
                 },
                 {
@@ -2182,10 +3153,46 @@ generate HTML to do the CRUD operations on LDS database.
                     {
                       "typeofdiv":"select",
                       "multiple":"multiple",
-                      "id":"add-section-id",
+                      "id":"add-lab-section-id-select",
                       "innerText":"Section:"
-                    }
-                   
+                    },
+                    {
+                      "typeofdiv":"div",
+                      "id":"new-section-lab-div",
+                      "elements":[
+                        {
+                          "typeofdiv":"input",
+                          "type":"checkbox",
+                          "id":"select-check-section-lab-id",
+                          "innerText":"Add new Sections"
+                        },
+                        {
+                          "typeofdiv":"label",
+                          "for":"select-check-section-lab-id",
+                          "innerHTML":"Add new sections?"
+                        },                        
+                        {
+                          "typeofdiv":"div",
+                          "id":"add-section-new-lab-id"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"add-more-section-lab-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"+"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"remove-more-section-lab-sbt",
+                          "type":"button",
+                          "disabled":"disabled",
+                          "class":"btn",
+                          "value":"-"
+                        }                                      
+                      ]
+                    }       
                   ]
                 },
                 {
@@ -2195,7 +3202,7 @@ generate HTML to do the CRUD operations on LDS database.
                       "typeofdiv":"input",
                       "id":"add-lab-sbt",
                       "type":"button",
-                      "class":"btn btn-primary",
+                      "class":"btn btn-primary lab-exp",
                       "value":"Add",
                       "onclick":""
                     },
@@ -3743,7 +4750,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
         {
           "typeofdiv":"div",
-          "id":"show-experiment-container",
+          "id":"show-experiments-container",
           "class":"hidden",
           "elements":[
             {
@@ -3815,7 +4822,6 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         },
-
 #+END_SRC
 
 *** Show Assets
@@ -3823,7 +4829,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
         {
           "typeofdiv":"div",
-          "id":"show-asset-container",
+          "id":"show-assets-container",
           "class":"hidden",
           "elements":[
             {
@@ -3912,6 +4918,10 @@ generate HTML to do the CRUD operations on LDS database.
                         },
                         {
                           "typeofdiv":"th",
+                          "innerHTML":"Asset"
+                        },
+                        {
+                          "typeofdiv":"th",
                           "innerHTML":"Institute Id"
                         },
                         {
@@ -3943,7 +4953,6 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         },
-
 #+END_SRC
 
 *** Show Disciplines
@@ -3973,6 +4982,10 @@ generate HTML to do the CRUD operations on LDS database.
                         {
                           "typeofdiv":"th",
                           "innerHTML":"Id"
+                        },
+                        {
+                          "typeofdiv":"th",
+                          "innerHTML":"Asset"
                         },
                         {
                           "typeofdiv":"th",
@@ -4007,13 +5020,12 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         },
-
 #+END_SRC
 
 *** Show Sections
 #+NAME: show_sections_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
-        {
+       {
           "typeofdiv":"div",
           "id":"show-sections-container",
           "class":"hidden",
@@ -4067,7 +5079,6 @@ generate HTML to do the CRUD operations on LDS database.
             }
           ]
         },
-
 #+END_SRC
 
 *** Show Hosting Info
@@ -4333,6 +5344,10 @@ This is the JSON specification for the guest dashboard.
 <<onClick_event_handler2>>
 <<onClick_event_handler3>>
 <<onClick_event_handler4>>
+<<onClick_event_handler5>>
+<<onClick_event_handler6>>
+<<onClick_event_handler7>>
+<<onClick_event_handler8>>
 <<update_role_drop>>
 <<hash_home>>
 <<onload>>
