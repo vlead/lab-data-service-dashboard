@@ -1179,7 +1179,7 @@ var updateLdsFunction = function(button, call) {
 #+END_SRC
 
 ** Remove for LDS entities
-Let us throw light on how the delete operations in the entities are being made.
+Let us throw light on how the delete operations of the entities are being made.
 Event handlers are added to all the delete buttons of the LDS dashboard. All
 the buttons of dashboard have specific id's which also indicate the entity
 they are pointing to.
@@ -1420,6 +1420,13 @@ Bases on whether the checkbox is disabled or enabled, ablity to add data changes
 Accordingly, the properties of the checkboxes are updated.
 
 ** Data for New LDS entity helper
+When the user want to add new developers or assets or sections etc while adding a lab
+or experiment, as discussed in the previous slide, he has to click the checkbox.
+When the checkbox is clicked , he should be provided with input boxes with appropriate
+labels. 
+Below code shows the implementation of creating new blocks in the form while adding new
+developers or assets or sections or hosting info. 
+The created block is returned back.
 #+BEGIN_SRC js
 /* Worthy are those who use switch case to make it short. Alas, I am not one of them. */
 var new_add_data = {
@@ -1509,6 +1516,12 @@ var new_add_data = {
 
 
 ** Add new LDS entity button
+Referring to the previous slide, the new input block is created and returned back to us.
+Below the checkbox there is a =+= and a =-= button to add a new data or remove data.
+Event handler is added to all the =+= buttons in the user interface.
+All the buttons are extracted using their id's and event handlers are attached
+to each of them. Whenever a '+' button is clicked, new input block is created
+and appended to the particualar =div=.
 #+BEGIN_SRC js
 var adding_data_test = function (){
   var select = document.querySelectorAll('[id^="add-more-"]');  
@@ -1524,6 +1537,14 @@ var adding_data_test = function (){
 
 #+END_SRC
 ** Remove new LDS entity button 
+If a user clicks the =+= button and now he does'nt want to add data,
+he can click the =-= button and delete that block.
+All the =-= buttons are extracted using the id's and event handlers
+are attached to all the buttons.
+So, whenever the '-' button is pressed, it first checks if there is 
+atleast 1 block in the div. If yes, it removes the last block from the
+div. If there is no block, there is no point of removing blocks, so
+it does not do anything in that case.
 #+BEGIN_SRC js
 var remove_data_test = function (){
   var select = document.querySelectorAll('[id^="remove-more-"]');  
@@ -1543,6 +1564,17 @@ var remove_data_test = function (){
 #+END_SRC
 
 ** Dropdown populate for LDS Add
+As said earlier, while adding a lab or an experiment, the user can choose
+entities like assets, developers, sections etc either from the dropdowns
+or can add new data. So the dropdown needs to be populated with the data
+available in the database.The Below code extracts data from the database
+and accordingly populates the dropdowns.
+
+The function =check_function()= is called which internally makes
+an AJAX call to the LDS dashboard and extracts the data.
+The Data is taken and the dropdowns are populated accordingly.
+
+Switch statements are used to make the code compact and elegant.
 #+BEGIN_SRC js
 var dropdown_fillup = function() {
 
