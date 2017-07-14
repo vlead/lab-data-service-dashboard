@@ -1237,6 +1237,12 @@ var updateLdsHelperFunction = function(entity) {
 
 
 ** Developer Table Populate
+When a User wants to see the list of developers, we ought to attract
+the user and keep the page as fancy as possible and very easy for him
+to read the data.
+Tables are created to populate the developers table. Whenever we call the function
+=populate_tables_dev= , the table is cleared and is freshly populated.
+It takes the updated data and populates the table accordingly.
 
 #+BEGIN_SRC js
 var populate_tables_dev = function(data) {
@@ -1269,8 +1275,20 @@ var populate_tables_dev = function(data) {
 };
 
 #+END_SRC
+Also, in each row, an =update= and a =delete= button is added so as
+to update or delete the developer. The buttons are assigned specific
+id's based on their =id= in the database.
 
-** Institute and Discipline Table Populate
+** Discipine and Institute Table Populate
+When a user wants to have a look at the institutes or disciplines of LDS, he just have to click
+the view button and all the institutes or disciplines are populated.
+Things are kept as fancy as possible. 
+We slice the =entity= which is an argument to the function to know whether
+to populate disciplines or institutes.
+The institutes or disciplines are shown in a table
+with appropriate columns. Also an =update= and =delete= button is added
+against it so as to add or delete that particular entity.
+The Buttons are assigned specific id's based on its =id= in the database.  
 #+BEGIN_SRC js
 var populate_asset_tables_call = function(entity, data) {
   $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
@@ -1311,6 +1329,16 @@ var populate_asset_tables_call = function(entity, data) {
 
 
 ** Lab and Experiment Table Populate
+Below code populates the labs or experiments table based on our requirement.
+When the function is called, =entity= is sent in the arguments which tells
+us whether to popuate labs or experiments. We slice the entity and accordingly
+populate the tables.
+The tables have quite a lot of columns. Everytime the function is called, the table
+is cleared and is freshly populated based on the data given to us. We dynamically
+create new rows,columns and buttons to the table.
+
+Also, an =update= and a =delete= button is added in every row to perform that operation
+on the respective entity.
 #+BEGIN_SRC js
 var populate_over_tables_call = function(entity, data) {
   $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
@@ -1367,7 +1395,17 @@ var populate_over_tables_call = function(entity, data) {
 #+END_SRC
 
 ** Checkbox - Dropdown Checker for New LDS entities
- #+BEGIN_SRC js
+While adding a lab or experiment to LDS, we need to add assets, developers
+sections and hosting info. It is not necessary that they already exist in the
+database. We can add new assets,developers, sections etc while adding a lab too.
+
+So a dropdown is given with the available data in the database. If the User wants 
+to add new assets ,developers etc , he can surely do.
+
+A checkbox is given, if it is selected the user will be able to add new data.
+Extra input boxes are given so as to add new data.
+ 
+#+BEGIN_SRC js
  var checkbox = function () {
   $("input[type='checkbox']").each(function() {
     $(this).change( function() {
@@ -1378,6 +1416,9 @@ var populate_over_tables_call = function(entity, data) {
   });
 };
  #+END_SRC
+Bases on whether the checkbox is disabled or enabled, ablity to add data changes.
+Accordingly, the properties of the checkboxes are updated.
+
 ** Data for New LDS entity helper
 #+BEGIN_SRC js
 /* Worthy are those who use switch case to make it short. Alas, I am not one of them. */
