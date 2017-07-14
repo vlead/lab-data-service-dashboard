@@ -1040,6 +1040,11 @@ So whenever the hash is changed to =home=, we hide all the container and show on
 the side navigation bar.
 ** LDS Request
 *** Get Requests
+Let us now recall the design of the LDS dashboard.The User makes a request
+to the LDS dashboard and then the dashboard sends an appropriate request
+to the actual LDS. Bases on the input, LDS sends back response to LDS
+dashboard and then user is shown the details he requested.
+
 #+NAME: lds_get
 #+BEGIN_SRC js
 var check_function = function(call) {
@@ -1062,7 +1067,20 @@ var check_function = function(call) {
 };
 
 #+END_SRC
+When a user wants to view the data of LDS, we take the input =entity=
+from the user and based on that we make a call to the LDS.We
+call the check_function with the argument =call= so that we
+send a request to LDS to extract appropriate data.
+
 *** Post Requests
+Again throwing light on the design we chose, User first send a request to 
+LDS dashboard and then the dashboard sends request to LDS.
+TO send POST request , the function =check_function2= is used.
+Whenever we post data such as adding an entity, the user gives
+his input in the forms. When he sumbits the form, an AJAX call
+is made to the LDS dashboard in which the input data is sent.
+Also =call= is sent in the request which indicates, to which
+entity changes are being made.
 #+NAME: lds_post
 #+BEGIN_SRC js
 var check_function2 = function(call, data) {
@@ -1085,7 +1103,14 @@ var check_function2 = function(call, data) {
   });
 };
 #+END_SRC
+
 *** Put Requests
+Landing on the update operations, the function =check_function3= is used
+to process sending requests.Whenever a user updates any entity and sumbits,
+an AJAX call is sent to the LDS Dashboard. We extract the input data given
+by the user and send the =data= along with =call= which indicates the call
+to be made to LDS server.
+
 #+NAME: lds_put
 #+BEGIN_SRC js
 var check_function3 = function(call, data) {
@@ -1109,6 +1134,13 @@ var check_function3 = function(call, data) {
 };
 #+END_SRC
 *** Delete Requests
+Now let us deal with the delete requests. Whenever a user wants
+to delete any entity , the user interface send an AJAX call
+to the LDS dashboard which internally send a request to LDS.
+We take the input from the user in the form of =data=. We 
+also send =call= in the request, which indicates the call to be
+made to LDS server.
+
 #+NAME: lds_delete
 #+BEGIN_SRC js
 var check_function4 = function(call, data) {
@@ -1134,6 +1166,7 @@ var check_function4 = function(call, data) {
 #+END_SRC
 
 ** Update for LDS entities
+
 #+BEGIN_SRC js
 var updateLdsFunction = function(button, call) {
 
@@ -1146,6 +1179,11 @@ var updateLdsFunction = function(button, call) {
 #+END_SRC
 
 ** Remove for LDS entities
+Let us throw light on how the delete operations in the entities are being made.
+Event handlers are added to all the delete buttons of the LDS dashboard. All
+the buttons of dashboard have specific id's which also indicate the entity
+they are pointing to.
+
 #+BEGIN_SRC js
 var removeLdsFunction = function(button, call) {
 
@@ -1164,10 +1202,21 @@ var removeLdsFunction = function(button, call) {
 	});
 };
 #+END_SRC
-
+In the above code,event handlers are being attached to all the delete buttons.
+The =id= is split so as to get the entity which is to be deleted. After splitting,
+it can either be =lab=, =experiment=, =developer=, =institute= or =discipline=.
+Now switch statement is used to call the appropriate function to send request
+to the LDS dashboard. Based on the entity, the entity =name= and =id= is sent
+in the arguments while calling =check_function4=.
 
 
 ** Update Helper for LDS
+All the =update= and =delete= buttons of LDS entities should be populated
+with event handlers.
+All the respective buttons are extracted using the prefix update and remove
+respectively. After extracting the buttons, a loop is made to attach event
+handlers to all the buttons which either delete or update entities.
+
 #+BEGIN_SRC js
 var updateLdsHelperFunction = function(entity) {
   var buttons = document.querySelectorAll('[id^="update-'+entity+'-pre-sbt-"]');
@@ -1188,6 +1237,7 @@ var updateLdsHelperFunction = function(entity) {
 
 
 ** Developer Table Populate
+
 #+BEGIN_SRC js
 var populate_tables_dev = function(data) {
   $('#developer-table').find('tr:not(:first)').remove();
