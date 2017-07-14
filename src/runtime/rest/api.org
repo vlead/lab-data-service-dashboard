@@ -1637,6 +1637,14 @@ if __name__ == '__main__':
    - Error Response ::
     + Code: 400 
 **** Implementation
+According to the design, the user interface sends a request to the LDS dashboard
+and then the dashboard internally sends a request to the actual LDS server.
+
+We get data from the user interface which contains =call=. It indicates
+which entity's data you want to access. A request is sent to LDS
+along with =call= and data is returned by LDS. Accordingly we 
+display the data to the user. 
+
 #+NAME: lds_get
 #+BEGIN_SRC python
 @api.route('/lds_auth_get', methods=['GET'])
@@ -1737,6 +1745,16 @@ if __name__ == '__main__':
    - Error Response ::
     + Code: 400 
 **** Implementation
+As we have discussed earlier, user interface sends a request to LDS dashboard and
+then the dashboard sends a request to LDS. Instead of writing seperate functions
+for each entity , we have written a generic function which can be used to send
+all types of POST requests.
+
+We get =data= and =call= from the user interface. =data= stores the input given
+by the user while adding an entity. While sending a request to LDS, we also send
+a key indicating the user is authorized.
+=call= indicates the entity to be accessed so that it is added to the url and an 
+ appropriate request is sent to LDS.
 #+NAME: lds_post
 #+BEGIN_SRC python
 @api.route('/lds_auth_post', methods=['POST'])
@@ -1879,6 +1897,12 @@ if __name__ == '__main__':
    - Error Response ::
     + Code: 400 
 **** Implementation
+As already been said in the previous slides, even for the PUT methods
+to update entities, we take input from the user and send the data
+to the LDS dashboard through an AJAX call.
+Then the dashboard makes an AJAX request to LDS with the data.
+It also adds a key to the data indicating that the user is authorized and
+the action can be performed.
 #+NAME: lds_put
 #+BEGIN_SRC python
 @api.route('/lds_auth_put', methods=['PUT'])
@@ -1888,10 +1912,8 @@ def lds_connect3():
         payload = request.data
     except:
         try:
-            print 'loveroflife'
             payload = json.dumps(request.args)
         except:
-            print 'nyancat'
             return jsonify(success=False, message="Arguments were broken"), 400
     
     payment = json.loads(payload)['data'] 
