@@ -550,6 +550,18 @@ var update_users = function(button) {
   name = $('#'+button.id).attr('name');
   role = $('#'+button.id).attr('role');
 
+  var present_user = is_logged_in().email;
+  if(present_user==email)
+  {
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-profile-sbt').attr('email',email);
+    $('#edit-new-name-own').val(name);
+    $('#edit-new-email-own').val(email);
+		navigate('update-profile');
+  }
+  else
+  {
   $('#'+button.id).on('click', function(clickEvent){
     hashNotClicked=true;
     $('#update-user-sbt').attr('email',email);
@@ -558,6 +570,7 @@ var update_users = function(button) {
     $('#edit-user-role').val(role);
 		navigate('update-user');
 	});
+  }
 };
 
 $(document).on('click', '#update-user-sbt', function(clickEvent) {
