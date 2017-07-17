@@ -1630,7 +1630,7 @@ if __name__ == '__main__':
 ** LDS Request APIs
 *** Get Requests
 **** API Design
-   - URL :: /logged_in
+   - URL :: /lds_auth_get
    - Method :: GET
    - Success Response ::
     + Code: 200
@@ -1738,8 +1738,8 @@ if __name__ == '__main__':
 #+END_SRC
 *** Post Requests
 **** API Design
-   - URL :: /logged_in
-   - Method :: GET
+   - URL :: /lds_auth_post
+   - Method :: POST
    - Success Response ::
     + Code: 200
    - Error Response ::
@@ -1890,8 +1890,8 @@ if __name__ == '__main__':
 #+END_SRC
 *** Put Requests
 **** API Design
-   - URL :: /logged_in
-   - Method :: GET
+   - URL :: /lds_auth_put
+   - Method :: PUT
    - Success Response ::
     + Code: 200
    - Error Response ::
@@ -1903,6 +1903,9 @@ to the LDS dashboard through an AJAX call.
 Then the dashboard makes an AJAX request to LDS with the data.
 It also adds a key to the data indicating that the user is authorized and
 the action can be performed.
+The dashboard adds =call= to the url indicating which entity is being
+updated.
+
 #+NAME: lds_put
 #+BEGIN_SRC python
 @api.route('/lds_auth_put', methods=['PUT'])
@@ -1948,13 +1951,20 @@ def loggedin():
 #+END_SRC
 *** Delete Requests
 **** API Design
-   - URL :: /logged_in
-   - Method :: GET
+   - URL :: /lds_auth_delete
+   - Method :: DELETE
    - Success Response ::
     + Code: 200
    - Error Response ::
     + Code: 400 
 **** Implementation
+Similar to GET, POST and PUT requests, even the DELETE request is dealt
+in the same way. When the user wants to delete some data of a particular
+entity, he sends a request to the LDS dashboard.
+The dashboard then adds a key if the user is authorised and sends 
+a request to LDS. It adds =call= to the url indicating which
+entity is to be accessed.
+
 #+NAME: lds_delete
 #+BEGIN_SRC python
 @api.route('/lds_auth_delete', methods=['DELETE'])
