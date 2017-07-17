@@ -4276,6 +4276,70 @@ generate HTML to do the CRUD operations on LDS database.
               ]
         },
 #+END_SRC
+*** Edit Section
+
+#+NAME: edit_section_spec
+#+BEGIN_SRC json :tangle ./app/static/js/main.json 
+        {
+          "typeofdiv":"div",
+          "id":"update-section-container",
+          "class":"hidden",
+          "elements":[
+            {
+              "typeofdiv":"p",
+              "innerHTML":"Edit Section"
+            },
+            {
+              "typeofdiv":"ul",
+              "id":"edit-section",
+              "elements":[
+                {
+                "typeofdiv":"li",
+                "elements":[
+                {
+                "typeofdiv":"label",
+                "id":"new-section-name-label",
+                "innerText":"New Name:"
+                },
+                {
+                "typeofdiv":"input",
+                "id":"edit-new-section-name",
+                "type":"text"
+                }
+                ]
+                },
+                {
+                "typeofdiv":"li",
+                "elements":[
+                {
+                          "typeofdiv":"input",
+                          "id":"update-section-sbt",
+                          "type":"button",
+                          "class":"btn btn-primary update-btn",
+                          "value":"Done",
+                          "onclick":""
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"cancel",
+                          "type":"button",
+                          "class":"btn btn-primary",
+                          "value":"Cancel",
+                          "onclick":""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typeofdiv":"label",
+                  "id":"error-box",
+                  "value":"Error",
+                  "class":"error hidden"
+                }
+              ]
+        },
+#+END_SRC
 *** Delete Lab
 #+NAME: delete_lab_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
