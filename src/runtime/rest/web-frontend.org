@@ -870,6 +870,7 @@ When the =home-btn-update-profile= button is clicked, the name and email
 of the user logged in is extracted from the session and populated on the 
 update profile page.
 
+
 #+NAME: onClick_event_handler5
 #+BEGIN_SRC  js
 var select = document.querySelectorAll('[class^="lds-show-asset"]');
@@ -897,25 +898,30 @@ var select = document.querySelectorAll('[class^="lds-show-asset"]');
 
 #+END_SRC
 
+Event handler is being added to the button =show-developers= in th home navigation bar.
+Whenever this button is clicked, the developers table is populated. 
+Here =check_function('developers')= returns the list of developers.
 #+NAME: onClick_event_handler7
 #+BEGIN_SRC  js
  $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
     populate_tables_dev(check_function('developers'));
   });
 
-
 #+END_SRC
 
+Event handler is being added to the button =show-sections= in th home navigation bar.
+Whenever this button is clicked, the sections table is populated. 
+Here =check_function('sections')= returns the list of sections.
 #+NAME: onClick_event_handler8
 #+BEGIN_SRC  js
   $(document).on('click', '#home-btn-show-sections', function(clickEvent) {
     populate_tables_section(check_function('sections'));
   });
 
-
 #+END_SRC
 
 ** Update Lab and Experiment
+
 #+NAME: update_lab_experiment
 #+BEGIN_SRC js
  var select = document.querySelectorAll('[class$="update-lab-exp"]');
@@ -1030,6 +1036,12 @@ var select = document.querySelectorAll('[class^="lds-show-asset"]');
 #+END_SRC
 
 ** Add Institute and Discipline
+Adding a discipline and Institute is almost similar because they have same attributes
+=name=, =id=, and =assets=. So, instead of writing two seperate functions, we have made
+things simpler by writing a common function for both the entities.
+
+We extract the data from the User Interface and make a call to the =check_function2=
+which takes the data and internally makes an AJAX call to the LDS dashboard.
 #+NAME: add_institute
 #+BEGIN_SRC js
   var select = document.querySelectorAll('[class$="inst-disc"]');
@@ -1050,6 +1062,10 @@ var select = document.querySelectorAll('[class^="lds-show-asset"]');
 #+END_SRC
 
 ** Add Section
+When the uer wants to add a section to LDS, he is given a form to be filled.
+When he submits, the data is extracted and =check_function2= is called along
+with the input data. This function internally send a request to LDS dashboard.
+
 #+NAME: add_section
 #+BEGIN_SRC js
  $('#add-section-sbt').on('click', function() {
@@ -1364,6 +1380,7 @@ var check_function4 = function(call, data) {
 #+END_SRC
 
 ** Update for LDS entities
+   
 #+NAME: updateLdsFunction
 #+BEGIN_SRC js
 var updateLdsFunction = function(button, call) {
@@ -1386,9 +1403,9 @@ they are pointing to.
 var removeLdsFunction = function(button, call) {
 
   $('#'+button.id).on('click', function(clickEvent){
-    //hashNotClicked=true;
+   
       console.log(button.id);
-	//	navigate('updater');
+
     var btt = button.id.split('-')[1];
     switch(btt) {
       case 'lab': check_function4(btt,JSON.parse(JSON.stringify({ id:'lab_id='+$(button).attr('ids')}))); break;
@@ -1477,6 +1494,14 @@ to update or delete the developer. The buttons are assigned specific
 id's based on their =id= in the database.
 
 ** Sections Table Populate
+The below code populates the sections table whenever the user requests.
+Everytime the user requests, the table is freshly populated. All the
+rows except the first row are deleted.
+The table has 2 columns =id= and =name=. Also each row contains
+2 buttons =update= and =delete= to edit and delete the section
+respectively. Accordingly, event handlers are added to the buttons.
+
+
 #+NAME: populate_tables_section
 #+BEGIN_SRC js
 var populate_tables_section = function(data) {
@@ -1658,6 +1683,17 @@ Bases on whether the checkbox is disabled or enabled, ablity to add data changes
 Accordingly, the properties of the checkboxes are updated.
 
 ** Update Developer
+Admin can also edit the developer's details. All the developers are listed
+in the show-developers page. Againt each developer, there is an 
+=update= and a =delete= button. 
+
+Event handlers are being added to all the update buttons in the code 
+given below. First, all the update buttons are extracted using the =id=
+and then =update_developers= function is called for each button which 
+attaches event handlers to those buttons.
+
+When the button is clicked, we pre-populate the details of the developer
+we want to edit and then navigate to update-developer page.
 
 #+NAME: update_developers
 #+BEGIN_SRC js
@@ -1682,6 +1718,17 @@ var update_developers = function(button) {
 #+END_SRC
 
 ** Update Assets
+Admin can also edit the assets details. All the assets are listed
+in the show-assets page. Againt each asset, there is an 
+=update= and a =delete= button. 
+
+Event handlers are being added to all the update buttons in the code 
+given below. First, all the update buttons are extracted using the =id=
+and then =update_assets= function is called for each button which 
+attaches event handlers to those buttons.
+
+When the button is clicked, we pre-populate the details of the asset
+we want to edit and then navigate to update-asset page.
 
 #+NAME: update_assets
 #+BEGIN_SRC js
@@ -1705,6 +1752,17 @@ var update_assets = function(button) {
 
 #+END_SRC
 ** Update Hosting Info
+Admin can also edit the Hosting Information . All the Hosting Info are listed
+in the show-hosting-info page. Againt each hosted url, there is an 
+=update= and a =delete= button. 
+
+Event handlers are being added to all the update buttons in the code 
+given below. First, all the update buttons are extracted using the =id=
+and then =update_hosting_info= function is called for each button which 
+attaches event handlers to those buttons.
+
+When the button is clicked, we pre-populate the Hosting information 
+we want to edit and then navigate to update-hosting-info page.
 
 #+NAME: update_hosting_info
 #+BEGIN_SRC js
@@ -1731,6 +1789,17 @@ var update_hosting_info = function(button) {
 #+END_SRC
 
 ** Update Sections
+Admin can also edit the details of a section. All the sections are listed
+in the show-sections page. Againt each developer, there is an 
+=update= and a =delete= button. 
+
+Event handlers are being added to all the update buttons in the code 
+given below. First, all the update buttons are extracted using the =id=
+and then =update_sections= function is called for each button which 
+attaches event handlers to those buttons.
+
+When the button is clicked, we pre-populate the details of the section
+we want to edit and then navigate to update-section page.
 
 #+NAME: update_sections
 #+BEGIN_SRC js
