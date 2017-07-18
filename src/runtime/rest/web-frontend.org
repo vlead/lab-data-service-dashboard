@@ -465,54 +465,7 @@ $(document).on('click', '#add-role-sbt', function(clickEvent) {
   });
 });
 #+END_SRC
-** User Tables
-As we are developing LDS dashboard,we ought to keep things as fancy 
-as possible.So everytime a page is rereshed, we dynamically update the
-user tables. We create necessary rows in the table, display appropriate
-data and attach the necessary event handlers.Below code shows how the  
- users are being populated. Each row contains the =name=, =email=
-and =role= of the user. It Also contains an =Edit= button and a =Delete= 
-button to edit and delete a user respectively.
 
-#+NAME: update_user_table
-#+BEGIN_SRC js
-var populate_tables_user = function() {
-  $('#user-table').find('tr:not(:first)').remove();
-  var tableRef = document.getElementById('user-table').getElementsByTagName('tbody')[0];
-  for (var i in users_List) {
-      var newRow = tableRef.insertRow(-1);
-      var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(Number(i)+1));
-      var newCell = newRow.insertCell(-1);
-      newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(users_List[i].name));
-      var newCell = newRow.insertCell(-1);
-      newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(users_List[i].email));
-      var newCell = newRow.insertCell(-1);
-      newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(users_List[i].role));
-      
-      var newCell = newRow.insertCell(-1);
-      var updateButton = document.createElement('button');
-      updateButton.setAttribute('id','update-user-pre-sbt-'+i);
-      updateButton.setAttribute('email', users_List[i].email);
-      updateButton.setAttribute('name', users_List[i].name);
-      updateButton.setAttribute('role', users_List[i].role);
-      updateButton.appendChild(document.createTextNode('Update'));
-      newCell.appendChild(updateButton);
-
-      var newCell = newRow.insertCell(-1);
-      var removeButton = document.createElement('button');
-      removeButton.setAttribute('id','remove-user-pre-sbt-'+i);
-      removeButton.setAttribute('email', users_List[i].email);
-      removeButton.appendChild(document.createTextNode('Delete'));
-      newCell.appendChild(removeButton);
-
-  }
-  updateHelperFunction();
-};
-#+END_SRC
 ** Update And Remove User Helper on Admin Dash
  Simply adding a button against the operation does not suffice.
  We ought to feed the button of what it is supposed to do when 
@@ -596,6 +549,7 @@ $(document).on('click', '#update-user-sbt', function(clickEvent) {
   $('#update-user-sbt').removeAttr('email');
 });
 #+END_SRC
+
 ** Remove User
    In the previous slide, we observed that the =delete= buttons were attached
    to an event listener.As already been said, we are using AJAX calls to 
@@ -635,7 +589,55 @@ be there in the show users page. So, everytime a user is deleted or added,
 we call the =populate_tables_user= functions so that a new request is again
 sent to the backend server and we get back the updated list of users.
 
-** Update Role Tables
+** User Tables
+As we are developing LDS dashboard,we ought to keep things as fancy 
+as possible.So everytime a page is rereshed, we dynamically update the
+user tables. We create necessary rows in the table, display appropriate
+data and attach the necessary event handlers.Below code shows how the  
+ users are being populated. Each row contains the =name=, =email=
+and =role= of the user. It Also contains an =Edit= button and a =Delete= 
+button to edit and delete a user respectively.
+
+#+NAME: update_user_table
+#+BEGIN_SRC js
+var populate_tables_user = function() {
+  $('#user-table').find('tr:not(:first)').remove();
+  var tableRef = document.getElementById('user-table').getElementsByTagName('tbody')[0];
+  for (var i in users_List) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(users_List[i].name));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(users_List[i].email));
+      var newCell = newRow.insertCell(-1);
+      newCell.setAttribute('contenteditable',false);
+      newCell.appendChild(document.createTextNode(users_List[i].role));
+      
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-user-pre-sbt-'+i);
+      updateButton.setAttribute('email', users_List[i].email);
+      updateButton.setAttribute('name', users_List[i].name);
+      updateButton.setAttribute('role', users_List[i].role);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+
+      var newCell = newRow.insertCell(-1);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-user-pre-sbt-'+i);
+      removeButton.setAttribute('email', users_List[i].email);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+
+  }
+  updateHelperFunction();
+};
+#+END_SRC
+** Role Tables
 Again to make the dashboard fancy, we update the tables dynamically
 each and every time the browser is refreshed. We create necessary rows
 and populate them with appropriate data and also attach a button
@@ -867,40 +869,11 @@ When the =home-btn-update-profile= button is clicked, the name and email
 of the user logged in is extracted from the session and populated on the 
 update profile page.
 
-#+NAME: onClick_event_handler5
-#+BEGIN_SRC js
-  var select = document.querySelectorAll('[class^="lds-show-asset"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-        console.log(button.id.split('-').pop(-1));
-        call = button.id.split('-').pop(-1);
-        populate_asset_tables_call(call,check_function(call));
-    });  
-  }); 
-#+END_SRC
 
-#+NAME: onClick_event_handler6
+** Update Lab and Experiment
+#+NAME: update_lab_experiment
 #+BEGIN_SRC js
-  var select = document.querySelectorAll('[class^="lds-show-over"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-        console.log(button.id.split('-').pop(-1));
-        call = button.id.split('-').pop(-1);
-        populate_over_tables_call(call,check_function(call));
-    });  
-  }); 
-#+END_SRC
-
-#+NAME: onClick_event_handler7
-#+BEGIN_SRC js
- $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
-    populate_tables_dev(check_function('developers'));
-  });
-#+END_SRC
-
-#+NAME: onClick_event_handler8
-#+BEGIN_SRC js
-var select = document.querySelectorAll('[class$="lab-exp"]');
+ var select = document.querySelectorAll('[class$="update-lab-exp"]');
   [].forEach.call(select, function (button) {
     $('#'+button.id).on('click', function(clickEvent) {
        	var developer = [];
@@ -908,8 +881,151 @@ var select = document.querySelectorAll('[class$="lab-exp"]');
 	      var asset = [];
         id = button.id.split('-')[1];
         ed = id.substr(0,3);
-        console.log(button.id);
-        console.log(id);
+
+	institute_id_box = $('#update-'+id+'-institute-id-select');
+    institute_id = institute_id_box[0].selectedOptions[0].value;
+
+	discipline_id_box = $('#update-'+id+'-discipline-id-select');
+    discipline_id = discipline_id_box[0].selectedOptions[0].value;
+
+    integration_level_box = $('#update-'+id+'-integration-level-box');
+	integration_level = parseInt(integration_level_box[0].value);
+
+    $('#update-'+id+'-developer-id-select :selected').each(function(){
+      var new_dev={};
+      new_dev.name = $(this).attr('name');
+      new_dev.email = $(this).val();
+      developer.push(new_dev);
+    });  
+
+	 $('#update-'+id+'-container #update-developer-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_dev={};
+			  new_dev.name = input[0].value ;
+			  new_dev.email = input[1].value;
+			  if(new_dev.name && new_dev.email)
+			  developer.push(new_dev);
+			});
+
+	 $('#update-new-hosting-'+ed+'-div').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_hos={};
+			  new_hos.hosted_on = input[2].value ;
+			  new_hos.hosted_url = input[0].value;
+			  new_hos.hosting_status = input[1].value;
+			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
+			  hostings_info.push(new_hos);
+			});
+   
+
+
+  $('#update-'+id+'-asset-id-select :selected').each(function(){
+    var new_ass={};
+		  new_ass.path = $(this).val() ;
+			new_ass.asset_type = $(this).attr('asset_type');
+      asset.push(new_ass);
+  });  
+  
+
+	 $('#update-'+id+'-container #update-asset-new'+ed+'-id').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_ass={};
+			  new_ass.path = input[0].value ;
+			  new_ass.asset_type = input[1].value;
+			  if(new_ass.path && new_ass.asset_type)
+			  asset.push(new_ass);
+			});
+
+	var section1 = [];
+  var section2 = [];  
+  $('#update-'+id+'-section-id-select :selected').each(function(){
+      name = $(this).val();
+      var new_sec = {};
+      new_sec.name = name;
+      section1.push(name);
+      section2.push(new_sec);
+  });
+
+	 $('#update-'+id+'-container #update-section-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_sec={};
+        name = input[0].value ;
+        new_sec.name = name;
+			  if(name) {
+         section1.push(name);
+         section2.push(new_sec);
+        }
+			});
+
+  switch(id) {
+    case 'lab' : section = section2; break;
+    case 'experiment' : section = section1; break;
+  }
+
+    var p = {}
+    var alive_data = {
+      id: $('#update-'+id+'-id-box').val(),
+      overview: $('#update-'+id+'-overview-box').val(),
+      name: $('#update-'+id+'-name-box').val(),
+      discipline_id: discipline_id,
+      institute_id: institute_id,
+	    assets:asset,
+	    hosting_info:hostings_info,
+	    developers:developer,
+      integration_level: integration_level,
+	    sections:section
+    };
+    p[id] = alive_data
+		var data = JSON.stringify(p);
+      call = id+'s?'+ed+'_id='+$(this).attr('ids');
+      check_function3(call,JSON.parse(data));
+    });  
+  }); 
+
+#+END_SRC
+
+** Add Institute and Discipline
+#+NAME: add_institute
+#+BEGIN_SRC js
+  var select = document.querySelectorAll('[class$="inst-disc"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+      id = button.id.split('-')[1];
+      var new_ent={};
+      new_ent[id+'_name'] = $('#add-'+id+'-name-box').val();
+      new_ent[id+'_id'] = $('#add-'+id+'-id-box').val();
+      new_ent.assets = [];
+      $('#add-'+id+'-asset-id-select :selected').each(function(){
+		      new_ent.assets.push($(this).val()) ;
+      });  
+       check_function2(id,JSON.parse(JSON.stringify(new_ent)));
+    });
+  });
+
+#+END_SRC
+
+** Add Section
+#+NAME: add_section
+#+BEGIN_SRC js
+ $('#add-section-sbt').on('click', function() {
+    var new_ent = {};
+    new_ent.name = $('#add-section-name-box').val();
+    check_function2('section',JSON.parse(JSON.stringify(new_ent)));
+  });
+
+#+END_SRC
+** Add Lab and Experiment
+#+NAME: add_lab_experiment
+#+BEGIN_SRC js
+var select = document.querySelectorAll('[class$="add-lab-exp"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+       	var developer = [];
+	      var hostings_info = [];
+	      var asset = [];
+        id = button.id.split('-')[1];
+        ed = id.substr(0,3);
+
 	institute_id_box = $('#add-'+id+'-institute-id-select');
     institute_id = institute_id_box[0].selectedOptions[0].value;
 
@@ -920,7 +1036,10 @@ var select = document.querySelectorAll('[class$="lab-exp"]');
 	integration_level = parseInt(integration_level_box[0].value);
 
     $('#add-'+id+'-developer-id-select :selected').each(function(){
-      developer.push($(this).val());
+      var new_dev={};
+      new_dev.name = $(this).attr('name');
+      new_dev.email = $(this).val();
+      developer.push(new_dev);
     });  
 
 	 $('#add-'+id+'-container #add-developer-new-'+ed+'-id').find("li").each(function(){
@@ -932,7 +1051,7 @@ var select = document.querySelectorAll('[class$="lab-exp"]');
 			  developer.push(new_dev);
 			});
 
-	 $('#add-'+id+'-container #new-hosting-'+ed+'-div').find("li").each(function(){
+	 $('#add-new-hosting-'+ed+'-div').find("li").each(function(){
               var input = $(this).find('input');
               var new_hos={};
 			  new_hos.hosted_on = input[2].value ;
@@ -945,11 +1064,14 @@ var select = document.querySelectorAll('[class$="lab-exp"]');
 
 
   $('#add-'+id+'-asset-id-select :selected').each(function(){
-     asset.push($(this).val());
+    var new_ass={};
+		  new_ass.path = $(this).val() ;
+			new_ass.asset_type = $(this).attr('asset_type');
+      asset.push(new_ass);
   });  
   
 
-	 $('#add-'+id+'-container #new-asset-'+ed+'-div').find("li").each(function(){
+	 $('#add-'+id+'-container #add-asset-new-'+ed+'-div').find("li").each(function(){
               var input = $(this).find('input');
               var new_ass={};
 			  new_ass.path = input[0].value ;
@@ -958,19 +1080,31 @@ var select = document.querySelectorAll('[class$="lab-exp"]');
 			  asset.push(new_ass);
 			});
 
-	var section = [];
-
+	var section1 = [];
+  var section2 = [];  
   $('#add-'+id+'-section-id-select :selected').each(function(){
-     section.push($(this).val());
-  }); 
+      name = $(this).val();
+      var new_sec = {};
+      new_sec.name = name;
+      section1.push(name);
+      section2.push(new_sec);
+  });
 
 	 $('#add-'+id+'-container #add-section-new-'+ed+'-id').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_sec={};
-			  name = input[0].value ;
-			  if(name)
-				 section.push(name);
+        var input = $(this).find('input');
+        var new_sec={};
+        name = input[0].value ;
+        new_sec.name = name;
+			  if(name) {
+         section1.push(name);
+         section2.push(new_sec);
+        }
 			});
+
+  switch(id) {
+    case 'lab' : section = section2; break;
+    case 'experiment' : section = section1; break;
+  }
 
     var p = {}
     var alive_data = {
@@ -991,7 +1125,13 @@ var select = document.querySelectorAll('[class$="lab-exp"]');
       check_function2(id,JSON.parse(data));
     });  
   }); 
+
+};
+
+
 #+END_SRC
+
+
 
 ** Update User and Roles Dropdown
 There is an interesting problem. We will take you through the journey
@@ -1179,7 +1319,7 @@ var check_function4 = function(call, data) {
 #+END_SRC
 
 ** Update for LDS entities
-
+#+NAME: updateLdsFunction
 #+BEGIN_SRC js
 var updateLdsFunction = function(button, call) {
 
@@ -1196,7 +1336,7 @@ Let us throw light on how the delete operations of the entities are being made.
 Event handlers are added to all the delete buttons of the LDS dashboard. All
 the buttons of dashboard have specific id's which also indicate the entity
 they are pointing to.
-
+#+NAME: removeLdsFunction
 #+BEGIN_SRC js
 var removeLdsFunction = function(button, call) {
 
@@ -1222,14 +1362,13 @@ Now switch statement is used to call the appropriate function to send request
 to the LDS dashboard. Based on the entity, the entity =name= and =id= is sent
 in the arguments while calling =check_function4=.
 
-
 ** Update Helper for LDS
 All the =update= and =delete= buttons of LDS entities should be populated
 with event handlers.
 All the respective buttons are extracted using the prefix update and remove
 respectively. After extracting the buttons, a loop is made to attach event
 handlers to all the buttons which either delete or update entities.
-
+#+NAME: updateLdsHelperFunction
 #+BEGIN_SRC js
 var updateLdsHelperFunction = function(entity) {
   var buttons = document.querySelectorAll('[id^="update-'+entity+'-pre-sbt-"]');
@@ -1248,7 +1387,6 @@ var updateLdsHelperFunction = function(entity) {
 
 
 
-
 ** Developer Table Populate
 When a User wants to see the list of developers, we ought to attract
 the user and keep the page as fancy as possible and very easy for him
@@ -1257,6 +1395,7 @@ Tables are created to populate the developers table. Whenever we call the functi
 =populate_tables_dev= , the table is cleared and is freshly populated.
 It takes the updated data and populates the table accordingly.
 
+#+NAME: populate_tables_dev
 #+BEGIN_SRC js
 var populate_tables_dev = function(data) {
   $('#developer-table').find('tr:not(:first)').remove();
@@ -1292,6 +1431,7 @@ Also, in each row, an =update= and a =delete= button is added so as
 to update or delete the developer. The buttons are assigned specific
 id's based on their =id= in the database.
 
+** Sections Table Populate
 ** Discipine and Institute Table Populate
 When a user wants to have a look at the institutes or disciplines of LDS, he just have to click
 the view button and all the institutes or disciplines are populated.
@@ -1302,6 +1442,8 @@ The institutes or disciplines are shown in a table
 with appropriate columns. Also an =update= and =delete= button is added
 against it so as to add or delete that particular entity.
 The Buttons are assigned specific id's based on its =id= in the database.  
+
+#+NAME: populate_asset_tables_call
 #+BEGIN_SRC js
 var populate_asset_tables_call = function(entity, data) {
   $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
@@ -1340,7 +1482,6 @@ var populate_asset_tables_call = function(entity, data) {
 
 #+END_SRC
 
-
 ** Lab and Experiment Table Populate
 Below code populates the labs or experiments table based on our requirement.
 When the function is called, =entity= is sent in the arguments which tells
@@ -1352,6 +1493,8 @@ create new rows,columns and buttons to the table.
 
 Also, an =update= and a =delete= button is added in every row to perform that operation
 on the respective entity.
+
+#+NAME: populate_over_tables_call
 #+BEGIN_SRC js
 var populate_over_tables_call = function(entity, data) {
   $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
@@ -1407,41 +1550,7 @@ var populate_over_tables_call = function(entity, data) {
 
 #+END_SRC
 
-** Sections Table Populate
- #+BEGIN_SRC js
-var populate_tables_section = function(data) {
-  $('#section-table').find('tr:not(:first)').remove();
-  console.log(data);
-  var tableRef = document.getElementById('section-table').getElementsByTagName('tbody')[0];
-  for (var i in data) {
-      var newRow = tableRef.insertRow(-1);
-      var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(Number(i)+1));
-      var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(data[i].id));
-      var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(data[i].name));
 
-      var newCell = newRow.insertCell(-1);
-      var updateButton = document.createElement('button');
-      updateButton.setAttribute('id','update-section-pre-sbt-'+i);
-      updateButton.setAttribute('ids',data[i].id);
-      updateButton.setAttribute('name',data[i].name);
-      updateButton.appendChild(document.createTextNode('Update'));
-      newCell.appendChild(updateButton);
-
-      var newCell = newRow.insertCell(-1);
-      var removeButton = document.createElement('button');
-      removeButton.setAttribute('id','remove-section-pre-sbt-'+i);
-      removeButton.setAttribute('ids',data[i].id);
-      removeButton.setAttribute('name',data[i].name);
-      removeButton.appendChild(document.createTextNode('Delete'));
-      newCell.appendChild(removeButton);
-  }
-    updateSectionsHelperFunction();
-};  
- 
- #+END_SRC
 ** Checkbox - Dropdown Checker for New LDS entities
 While adding a lab or experiment to LDS, we need to add assets, developers
 sections and hosting info. It is not necessary that they already exist in the
@@ -1453,6 +1562,7 @@ to add new assets ,developers etc , he can surely do.
 A checkbox is given, if it is selected the user will be able to add new data.
 Extra input boxes are given so as to add new data.
  
+#+NAME: checkbox
 #+BEGIN_SRC js
  var checkbox = function () {
   $("input[type='checkbox']").each(function() {
@@ -1467,6 +1577,105 @@ Extra input boxes are given so as to add new data.
 Bases on whether the checkbox is disabled or enabled, ablity to add data changes.
 Accordingly, the properties of the checkboxes are updated.
 
+** Update Developer
+
+#+NAME: update_developers
+#+BEGIN_SRC js
+var updateDeveloperHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-developer-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_developers(button);
+  });
+}
+
+var update_developers = function(button) {
+	name = $('#'+button.id).attr('name');
+	email = $('#'+button.id).attr('email');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-developer-sbt').attr('email',email);
+    $('#edit-new-developer-name').val(name);
+		navigate('update-developer');
+	});
+};
+
+#+END_SRC
+
+** Update Assets
+
+#+NAME: update_assets
+#+BEGIN_SRC js
+var updateAssetHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-asset-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_assets(button);
+  });
+}
+
+var update_assets = function(button) {
+	type = $('#'+button.id).attr('type');
+	path = $('#'+button.id).attr('path');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-asset-sbt').attr('path',path);
+    $('#edit-new-asset-type').val(type);
+		navigate('update-asset');
+	});
+};
+
+#+END_SRC
+** Update Hosting Info
+
+#+NAME: update_hosting_info
+#+BEGIN_SRC js
+var updateHostingInfoHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-hosting-info-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_hosting-info(button);
+  });
+};
+
+var update_hosting_info = function(button) {
+	url = $('#'+button.id).attr('url');
+	status = $('#'+button.id).attr('status');
+	hosted_on = $('#'+button.id).attr('hosted_on');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-hosting-status-sbt').attr('url',url);
+    $('#edit-new-hosting-status').val(status);
+    $('#edit-new-hosted-on').val(hosted_on);
+		navigate('update-hosting-info');
+	});
+};
+
+#+END_SRC
+
+** Update Sections
+
+#+NAME: update_sections
+#+BEGIN_SRC js
+var updateSectionsHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-section-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_sections(button);
+  });
+}
+
+var update_sections = function(button) {
+	id = $('#'+button.id).attr('id');
+	name = $('#'+button.id).attr('name');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-section-sbt').attr('id',id);
+    $('#edit-new-section-name').val(name);
+		navigate('update-section');
+	});
+};
+
+#+END_SRC
+
+
+
 ** Data for New LDS entity helper
 When the user want to add new developers or assets or sections etc while adding a lab
 or experiment, as discussed in the previous slide, he has to click the checkbox.
@@ -1475,8 +1684,9 @@ labels.
 Below code shows the implementation of creating new blocks in the form while adding new
 developers or assets or sections or hosting info. 
 The created block is returned back.
+
+#+NAME: new_add_data  
 #+BEGIN_SRC js
-/* Worthy are those who use switch case to make it short. Alas, I am not one of them. */
 var new_add_data = {
   developer: function() {
     var list = document.createElement("li");
@@ -1562,7 +1772,6 @@ var new_add_data = {
 #+END_SRC
 
 
-
 ** Add new LDS entity button
 Referring to the previous slide, the new input block is created and returned back to us.
 Below the checkbox there is a =+= and a =-= button to add a new data or remove data.
@@ -1570,6 +1779,8 @@ Event handler is added to all the =+= buttons in the user interface.
 All the buttons are extracted using their id's and event handlers are attached
 to each of them. Whenever a '+' button is clicked, new input block is created
 and appended to the particualar =div=.
+
+#+NAME: adding_data_test
 #+BEGIN_SRC js
 var adding_data_test = function (){
   var select = document.querySelectorAll('[id^="add-more-"]');  
@@ -1593,6 +1804,8 @@ So, whenever the '-' button is pressed, it first checks if there is
 atleast 1 block in the div. If yes, it removes the last block from the
 div. If there is no block, there is no point of removing blocks, so
 it does not do anything in that case.
+
+#+NAME: remove_data_test
 #+BEGIN_SRC js
 var remove_data_test = function (){
   var select = document.querySelectorAll('[id^="remove-more-"]');  
@@ -1623,6 +1836,8 @@ an AJAX call to the LDS dashboard and extracts the data.
 The Data is taken and the dropdowns are populated accordingly.
 
 Switch statements are used to make the code compact and elegant.
+
+#+NAME: dropdown_fillup
 #+BEGIN_SRC js
 var dropdown_fillup = function() {
 
@@ -1650,8 +1865,8 @@ var dropdown_fillup = function() {
 };
 #+END_SRC
 
-
 ** show Assets and Overview
+#+NAME: show_assets
 #+BEGIN_SRC js
   var select = document.querySelectorAll('[class^="lds-show-asset"]');
   [].forEach.call(select, function (button) {
@@ -1674,6 +1889,8 @@ var dropdown_fillup = function() {
 #+END_SRC
 
 ** Show Developers and Sections
+
+#+NAME: show_developers 
 #+BEGIN_SRC js
  $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
     populate_tables_dev(check_function('developers'));
@@ -1684,357 +1901,6 @@ var dropdown_fillup = function() {
   });
 
 #+END_SRC
-
-** Update Lab and Experiment
-#+BEGIN_SRC js
- var select = document.querySelectorAll('[class$="update-lab-exp"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-       	var developer = [];
-	      var hostings_info = [];
-	      var asset = [];
-        id = button.id.split('-')[1];
-        ed = id.substr(0,3);
-
-	institute_id_box = $('#update-'+id+'-institute-id-select');
-    institute_id = institute_id_box[0].selectedOptions[0].value;
-
-	discipline_id_box = $('#update-'+id+'-discipline-id-select');
-    discipline_id = discipline_id_box[0].selectedOptions[0].value;
-
-    integration_level_box = $('#update-'+id+'-integration-level-box');
-	integration_level = parseInt(integration_level_box[0].value);
-
-    $('#update-'+id+'-developer-id-select :selected').each(function(){
-      var new_dev={};
-      new_dev.name = $(this).attr('name');
-      new_dev.email = $(this).val();
-      developer.push(new_dev);
-    });  
-
-	 $('#update-'+id+'-container #update-developer-new-'+ed+'-id').find("li").each(function(){
-        var input = $(this).find('input');
-        var new_dev={};
-			  new_dev.name = input[0].value ;
-			  new_dev.email = input[1].value;
-			  if(new_dev.name && new_dev.email)
-			  developer.push(new_dev);
-			});
-
-	 $('#update-new-hosting-'+ed+'-div').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_hos={};
-			  new_hos.hosted_on = input[2].value ;
-			  new_hos.hosted_url = input[0].value;
-			  new_hos.hosting_status = input[1].value;
-			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
-			  hostings_info.push(new_hos);
-			});
-   
-
-
-  $('#update-'+id+'-asset-id-select :selected').each(function(){
-    var new_ass={};
-		  new_ass.path = $(this).val() ;
-			new_ass.asset_type = $(this).attr('asset_type');
-      asset.push(new_ass);
-  });  
-  
-
-	 $('#update-'+id+'-container #update-asset-new'+ed+'-id').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_ass={};
-			  new_ass.path = input[0].value ;
-			  new_ass.asset_type = input[1].value;
-			  if(new_ass.path && new_ass.asset_type)
-			  asset.push(new_ass);
-			});
-
-	var section1 = [];
-  var section2 = [];  
-  $('#update-'+id+'-section-id-select :selected').each(function(){
-      name = $(this).val();
-      var new_sec = {};
-      new_sec.name = name;
-      section1.push(name);
-      section2.push(new_sec);
-  });
-
-	 $('#update-'+id+'-container #update-section-new-'+ed+'-id').find("li").each(function(){
-        var input = $(this).find('input');
-        var new_sec={};
-        name = input[0].value ;
-        new_sec.name = name;
-			  if(name) {
-         section1.push(name);
-         section2.push(new_sec);
-        }
-			});
-
-  switch(id) {
-    case 'lab' : section = section2; break;
-    case 'experiment' : section = section1; break;
-  }
-
-    var p = {}
-    var alive_data = {
-      id: $('#update-'+id+'-id-box').val(),
-      overview: $('#update-'+id+'-overview-box').val(),
-      name: $('#update-'+id+'-name-box').val(),
-      discipline_id: discipline_id,
-      institute_id: institute_id,
-	    assets:asset,
-	    hosting_info:hostings_info,
-	    developers:developer,
-      integration_level: integration_level,
-	    sections:section
-    };
-    p[id] = alive_data
-		var data = JSON.stringify(p);
-      call = id+'s?'+ed+'_id='+$(this).attr('ids');
-      check_function3(call,JSON.parse(data));
-    });  
-  }); 
-
-#+END_SRC
-
-** Add Institute and Discipline
-#+BEGIN_SRC js
-  var select = document.querySelectorAll('[class$="inst-disc"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-      id = button.id.split('-')[1];
-      var new_ent={};
-      new_ent[id+'_name'] = $('#add-'+id+'-name-box').val();
-      new_ent[id+'_id'] = $('#add-'+id+'-id-box').val();
-      new_ent.assets = [];
-      $('#add-'+id+'-asset-id-select :selected').each(function(){
-		      new_ent.assets.push($(this).val()) ;
-      });  
-       check_function2(id,JSON.parse(JSON.stringify(new_ent)));
-    });
-  });
-
-#+END_SRC
-
-** Add Section
-#+BEGIN_SRC js
- $('#add-section-sbt').on('click', function() {
-    var new_ent = {};
-    new_ent.name = $('#add-section-name-box').val();
-    check_function2('section',JSON.parse(JSON.stringify(new_ent)));
-  });
-
-#+END_SRC
-** Add Lab and Experiment
-#+BEGIN_SRC js
-var select = document.querySelectorAll('[class$="add-lab-exp"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-       	var developer = [];
-	      var hostings_info = [];
-	      var asset = [];
-        id = button.id.split('-')[1];
-        ed = id.substr(0,3);
-
-	institute_id_box = $('#add-'+id+'-institute-id-select');
-    institute_id = institute_id_box[0].selectedOptions[0].value;
-
-	discipline_id_box = $('#add-'+id+'-discipline-id-select');
-    discipline_id = discipline_id_box[0].selectedOptions[0].value;
-
-    integration_level_box = $('#add-'+id+'-integration-level-box');
-	integration_level = parseInt(integration_level_box[0].value);
-
-    $('#add-'+id+'-developer-id-select :selected').each(function(){
-      var new_dev={};
-      new_dev.name = $(this).attr('name');
-      new_dev.email = $(this).val();
-      developer.push(new_dev);
-    });  
-
-	 $('#add-'+id+'-container #add-developer-new-'+ed+'-id').find("li").each(function(){
-        var input = $(this).find('input');
-        var new_dev={};
-			  new_dev.name = input[0].value ;
-			  new_dev.email = input[1].value;
-			  if(new_dev.name && new_dev.email)
-			  developer.push(new_dev);
-			});
-
-	 $('#add-new-hosting-'+ed+'-div').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_hos={};
-			  new_hos.hosted_on = input[2].value ;
-			  new_hos.hosted_url = input[0].value;
-			  new_hos.hosting_status = input[1].value;
-			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
-			  hostings_info.push(new_hos);
-			});
-   
-
-
-  $('#add-'+id+'-asset-id-select :selected').each(function(){
-    var new_ass={};
-		  new_ass.path = $(this).val() ;
-			new_ass.asset_type = $(this).attr('asset_type');
-      asset.push(new_ass);
-  });  
-  
-
-	 $('#add-'+id+'-container #add-asset-new-'+ed+'-div').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_ass={};
-			  new_ass.path = input[0].value ;
-			  new_ass.asset_type = input[1].value;
-			  if(new_ass.path && new_ass.asset_type)
-			  asset.push(new_ass);
-			});
-
-	var section1 = [];
-  var section2 = [];  
-  $('#add-'+id+'-section-id-select :selected').each(function(){
-      name = $(this).val();
-      var new_sec = {};
-      new_sec.name = name;
-      section1.push(name);
-      section2.push(new_sec);
-  });
-
-	 $('#add-'+id+'-container #add-section-new-'+ed+'-id').find("li").each(function(){
-        var input = $(this).find('input');
-        var new_sec={};
-        name = input[0].value ;
-        new_sec.name = name;
-			  if(name) {
-         section1.push(name);
-         section2.push(new_sec);
-        }
-			});
-
-  switch(id) {
-    case 'lab' : section = section2; break;
-    case 'experiment' : section = section1; break;
-  }
-
-    var p = {}
-    var alive_data = {
-      id: $('#add-'+id+'-id-box').val(),
-      overview: $('#add-'+id+'-overview-box').val(),
-      name: $('#add-'+id+'-name-box').val(),
-      discipline_id: discipline_id,
-      institute_id: institute_id,
-	    assets:asset,
-	    hosting_info:hostings_info,
-	    developers:developer,
-      integration_level: integration_level,
-	    sections:section
-    };
-    p[id] = alive_data
-		var data = JSON.stringify(p);
-
-      check_function2(id,JSON.parse(data));
-    });  
-  }); 
-
-};
-
-
-#+END_SRC
-
-
-
-
-** Update Assets
-#+BEGIN_SRC js
-var updateAssetHelperFunction = function() {
-  var buttons = document.querySelectorAll('[id^="update-asset-pre-sbt-"]');
-    [].forEach.call(buttons, function (button) {
-       update_assets(button);
-  });
-}
-
-var update_assets = function(button) {
-	type = $('#'+button.id).attr('type');
-	path = $('#'+button.id).attr('path');
-  $('#'+button.id).on('click', function(clickEvent){
-    hashNotClicked=true;
-    $('#update-asset-sbt').attr('path',path);
-    $('#edit-new-asset-type').val(type);
-		navigate('update-asset');
-	});
-};
-
-#+END_SRC
-** Update Developer
-#+BEGIN_SRC js
-var updateDeveloperHelperFunction = function() {
-  var buttons = document.querySelectorAll('[id^="update-developer-pre-sbt-"]');
-    [].forEach.call(buttons, function (button) {
-       update_developers(button);
-  });
-}
-
-var update_developers = function(button) {
-	name = $('#'+button.id).attr('name');
-	email = $('#'+button.id).attr('email');
-  $('#'+button.id).on('click', function(clickEvent){
-    hashNotClicked=true;
-    $('#update-developer-sbt').attr('email',email);
-    $('#edit-new-developer-name').val(name);
-		navigate('update-developer');
-	});
-};
-
-#+END_SRC
-
-** Update Hosting Info
-#+BEGIN_SRC js
-var updateHostingInfoHelperFunction = function() {
-  var buttons = document.querySelectorAll('[id^="update-hosting-info-pre-sbt-"]');
-    [].forEach.call(buttons, function (button) {
-       update_hosting-info(button);
-  });
-};
-
-var update_hosting_info = function(button) {
-	url = $('#'+button.id).attr('url');
-	status = $('#'+button.id).attr('status');
-	hosted_on = $('#'+button.id).attr('hosted_on');
-  $('#'+button.id).on('click', function(clickEvent){
-    hashNotClicked=true;
-    $('#update-hosting-status-sbt').attr('url',url);
-    $('#edit-new-hosting-status').val(status);
-    $('#edit-new-hosted-on').val(hosted_on);
-		navigate('update-hosting-info');
-	});
-};
-
-#+END_SRC
-
-** Update Sections
-#+BEGIN_SRC js
-var updateSectionsHelperFunction = function() {
-  var buttons = document.querySelectorAll('[id^="update-section-pre-sbt-"]');
-    [].forEach.call(buttons, function (button) {
-       update_sections(button);
-  });
-}
-
-var update_sections = function(button) {
-	id = $('#'+button.id).attr('id');
-	name = $('#'+button.id).attr('name');
-  $('#'+button.id).on('click', function(clickEvent){
-    hashNotClicked=true;
-    $('#update-section-sbt').attr('id',id);
-    $('#edit-new-section-name').val(name);
-		navigate('update-section');
-	});
-};
-
-#+END_SRC
-
-
 
 
 ** On load
