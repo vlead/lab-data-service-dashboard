@@ -512,7 +512,8 @@ var update_users = function(button) {
     $('#edit-new-name-own').val(name);
     $('#edit-new-email-own').val(email);
 		navigate('update-profile');
-  }
+   });
+   }
   else
   {
   $('#'+button.id).on('click', function(clickEvent){
