@@ -5848,6 +5848,27 @@ This is the JSON specification for the guest dashboard.
 <<add_lab_experiment>>
 <<update_role_drop>>
 <<hash_home>>
+<<lds_get>>
+<<lds_post>>
+<<lds_put>>
+<<lds_delete>>
+<<updateLdsFunction>>
+<<removeLdsFunction>>
+<<updateLdsHelperFunction>>
+<<populate_tables_dev>>
+<<populate_tables_section>>
+<<populate_asset_tables_call>>
+<<populate_over_tables_call>>
+<<checkbox>>
+<<update_developers>>
+<<update_assets>>
+<<update_hosting_info>>
+<<update_sections>>
+<<new_add_data>>
+<<adding_data_test>>
+<<remove_data_test>>
+<<dropdown_fillup>>
+
 <<onload>>
 #+END_SRC
    
