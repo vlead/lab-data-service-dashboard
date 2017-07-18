@@ -869,6 +869,50 @@ When the =home-btn-update-profile= button is clicked, the name and email
 of the user logged in is extracted from the session and populated on the 
 update profile page.
 
+#+NAME: onClick_event_handler5
+#+BEGIN_SRC  js
+var select = document.querySelectorAll('[class^="lds-show-asset"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+        console.log(button.id.split('-').pop(-1));
+        call = button.id.split('-').pop(-1);
+        populate_asset_tables_call(call,check_function(call));
+    });  
+  }); 
+
+#+END_SRC
+
+#+NAME: onClick_event_handler6
+#+BEGIN_SRC  js
+  var select = document.querySelectorAll('[class^="lds-show-over"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+        console.log(button.id.split('-').pop(-1));
+        call = button.id.split('-').pop(-1);
+        populate_over_tables_call(call,check_function(call));
+    });  
+  }); 
+
+
+#+END_SRC
+
+#+NAME: onClick_event_handler7
+#+BEGIN_SRC  js
+ $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
+    populate_tables_dev(check_function('developers'));
+  });
+
+
+#+END_SRC
+
+#+NAME: onClick_event_handler8
+#+BEGIN_SRC  js
+  $(document).on('click', '#home-btn-show-sections', function(clickEvent) {
+    populate_tables_section(check_function('sections'));
+  });
+
+
+#+END_SRC
 
 ** Update Lab and Experiment
 #+NAME: update_lab_experiment
