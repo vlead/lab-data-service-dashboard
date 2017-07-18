@@ -1651,7 +1651,7 @@ var dropdown_fillup = function() {
 #+END_SRC
 
 
-** heading
+** show Assets and Overview
 #+BEGIN_SRC js
   var select = document.querySelectorAll('[class^="lds-show-asset"]');
   [].forEach.call(select, function (button) {
@@ -1673,7 +1673,7 @@ var dropdown_fillup = function() {
 
 #+END_SRC
 
-** heading
+** Show Developers and Sections
 #+BEGIN_SRC js
  $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
     populate_tables_dev(check_function('developers'));
@@ -1685,40 +1685,265 @@ var dropdown_fillup = function() {
 
 #+END_SRC
 
-** heading
+** Update Lab and Experiment
 #+BEGIN_SRC js
+ var select = document.querySelectorAll('[class$="update-lab-exp"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+       	var developer = [];
+	      var hostings_info = [];
+	      var asset = [];
+        id = button.id.split('-')[1];
+        ed = id.substr(0,3);
+
+	institute_id_box = $('#update-'+id+'-institute-id-select');
+    institute_id = institute_id_box[0].selectedOptions[0].value;
+
+	discipline_id_box = $('#update-'+id+'-discipline-id-select');
+    discipline_id = discipline_id_box[0].selectedOptions[0].value;
+
+    integration_level_box = $('#update-'+id+'-integration-level-box');
+	integration_level = parseInt(integration_level_box[0].value);
+
+    $('#update-'+id+'-developer-id-select :selected').each(function(){
+      var new_dev={};
+      new_dev.name = $(this).attr('name');
+      new_dev.email = $(this).val();
+      developer.push(new_dev);
+    });  
+
+	 $('#update-'+id+'-container #update-developer-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_dev={};
+			  new_dev.name = input[0].value ;
+			  new_dev.email = input[1].value;
+			  if(new_dev.name && new_dev.email)
+			  developer.push(new_dev);
+			});
+
+	 $('#update-new-hosting-'+ed+'-div').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_hos={};
+			  new_hos.hosted_on = input[2].value ;
+			  new_hos.hosted_url = input[0].value;
+			  new_hos.hosting_status = input[1].value;
+			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
+			  hostings_info.push(new_hos);
+			});
+   
+
+
+  $('#update-'+id+'-asset-id-select :selected').each(function(){
+    var new_ass={};
+		  new_ass.path = $(this).val() ;
+			new_ass.asset_type = $(this).attr('asset_type');
+      asset.push(new_ass);
+  });  
+  
+
+	 $('#update-'+id+'-container #update-asset-new'+ed+'-id').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_ass={};
+			  new_ass.path = input[0].value ;
+			  new_ass.asset_type = input[1].value;
+			  if(new_ass.path && new_ass.asset_type)
+			  asset.push(new_ass);
+			});
+
+	var section1 = [];
+  var section2 = [];  
+  $('#update-'+id+'-section-id-select :selected').each(function(){
+      name = $(this).val();
+      var new_sec = {};
+      new_sec.name = name;
+      section1.push(name);
+      section2.push(new_sec);
+  });
+
+	 $('#update-'+id+'-container #update-section-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_sec={};
+        name = input[0].value ;
+        new_sec.name = name;
+			  if(name) {
+         section1.push(name);
+         section2.push(new_sec);
+        }
+			});
+
+  switch(id) {
+    case 'lab' : section = section2; break;
+    case 'experiment' : section = section1; break;
+  }
+
+    var p = {}
+    var alive_data = {
+      id: $('#update-'+id+'-id-box').val(),
+      overview: $('#update-'+id+'-overview-box').val(),
+      name: $('#update-'+id+'-name-box').val(),
+      discipline_id: discipline_id,
+      institute_id: institute_id,
+	    assets:asset,
+	    hosting_info:hostings_info,
+	    developers:developer,
+      integration_level: integration_level,
+	    sections:section
+    };
+    p[id] = alive_data
+		var data = JSON.stringify(p);
+      call = id+'s?'+ed+'_id='+$(this).attr('ids');
+      check_function3(call,JSON.parse(data));
+    });  
+  }); 
 
 #+END_SRC
 
-** heading
+** Add Institute and Discipline
 #+BEGIN_SRC js
-
-#+END_SRC
-** heading
-#+BEGIN_SRC js
-
-#+END_SRC
-
-
-
-
-** heading
-#+BEGIN_SRC js
-
-#+END_SRC
-** heading
-#+BEGIN_SRC js
+  var select = document.querySelectorAll('[class$="inst-disc"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+      id = button.id.split('-')[1];
+      var new_ent={};
+      new_ent[id+'_name'] = $('#add-'+id+'-name-box').val();
+      new_ent[id+'_id'] = $('#add-'+id+'-id-box').val();
+      new_ent.assets = [];
+      $('#add-'+id+'-asset-id-select :selected').each(function(){
+		      new_ent.assets.push($(this).val()) ;
+      });  
+       check_function2(id,JSON.parse(JSON.stringify(new_ent)));
+    });
+  });
 
 #+END_SRC
 
-** heading
+** Add Section
 #+BEGIN_SRC js
+ $('#add-section-sbt').on('click', function() {
+    var new_ent = {};
+    new_ent.name = $('#add-section-name-box').val();
+    check_function2('section',JSON.parse(JSON.stringify(new_ent)));
+  });
 
 #+END_SRC
-** heading
+** Add Lab and Experiment
 #+BEGIN_SRC js
+var select = document.querySelectorAll('[class$="add-lab-exp"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+       	var developer = [];
+	      var hostings_info = [];
+	      var asset = [];
+        id = button.id.split('-')[1];
+        ed = id.substr(0,3);
+
+	institute_id_box = $('#add-'+id+'-institute-id-select');
+    institute_id = institute_id_box[0].selectedOptions[0].value;
+
+	discipline_id_box = $('#add-'+id+'-discipline-id-select');
+    discipline_id = discipline_id_box[0].selectedOptions[0].value;
+
+    integration_level_box = $('#add-'+id+'-integration-level-box');
+	integration_level = parseInt(integration_level_box[0].value);
+
+    $('#add-'+id+'-developer-id-select :selected').each(function(){
+      var new_dev={};
+      new_dev.name = $(this).attr('name');
+      new_dev.email = $(this).val();
+      developer.push(new_dev);
+    });  
+
+	 $('#add-'+id+'-container #add-developer-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_dev={};
+			  new_dev.name = input[0].value ;
+			  new_dev.email = input[1].value;
+			  if(new_dev.name && new_dev.email)
+			  developer.push(new_dev);
+			});
+
+	 $('#add-new-hosting-'+ed+'-div').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_hos={};
+			  new_hos.hosted_on = input[2].value ;
+			  new_hos.hosted_url = input[0].value;
+			  new_hos.hosting_status = input[1].value;
+			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
+			  hostings_info.push(new_hos);
+			});
+   
+
+
+  $('#add-'+id+'-asset-id-select :selected').each(function(){
+    var new_ass={};
+		  new_ass.path = $(this).val() ;
+			new_ass.asset_type = $(this).attr('asset_type');
+      asset.push(new_ass);
+  });  
+  
+
+	 $('#add-'+id+'-container #add-asset-new-'+ed+'-div').find("li").each(function(){
+              var input = $(this).find('input');
+              var new_ass={};
+			  new_ass.path = input[0].value ;
+			  new_ass.asset_type = input[1].value;
+			  if(new_ass.path && new_ass.asset_type)
+			  asset.push(new_ass);
+			});
+
+	var section1 = [];
+  var section2 = [];  
+  $('#add-'+id+'-section-id-select :selected').each(function(){
+      name = $(this).val();
+      var new_sec = {};
+      new_sec.name = name;
+      section1.push(name);
+      section2.push(new_sec);
+  });
+
+	 $('#add-'+id+'-container #add-section-new-'+ed+'-id').find("li").each(function(){
+        var input = $(this).find('input');
+        var new_sec={};
+        name = input[0].value ;
+        new_sec.name = name;
+			  if(name) {
+         section1.push(name);
+         section2.push(new_sec);
+        }
+			});
+
+  switch(id) {
+    case 'lab' : section = section2; break;
+    case 'experiment' : section = section1; break;
+  }
+
+    var p = {}
+    var alive_data = {
+      id: $('#add-'+id+'-id-box').val(),
+      overview: $('#add-'+id+'-overview-box').val(),
+      name: $('#add-'+id+'-name-box').val(),
+      discipline_id: discipline_id,
+      institute_id: institute_id,
+	    assets:asset,
+	    hosting_info:hostings_info,
+	    developers:developer,
+      integration_level: integration_level,
+	    sections:section
+    };
+    p[id] = alive_data
+		var data = JSON.stringify(p);
+
+      check_function2(id,JSON.parse(data));
+    });  
+  }); 
+
+};
+
 
 #+END_SRC
+
+
+
 
 ** Update Assets
 #+BEGIN_SRC js
