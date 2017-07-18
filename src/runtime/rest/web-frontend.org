@@ -1284,7 +1284,7 @@ var populate_tables_dev = function(data) {
       removeButton.appendChild(document.createTextNode('Delete'));
       newCell.appendChild(removeButton);
   }
-   updateLdsHelperFunction('developer');
+  updateDeveloperHelperFunction(); 
 };
 
 #+END_SRC
@@ -1407,6 +1407,41 @@ var populate_over_tables_call = function(entity, data) {
 
 #+END_SRC
 
+** Sections Table Populate
+ #+BEGIN_SRC js
+var populate_tables_section = function(data) {
+  $('#section-table').find('tr:not(:first)').remove();
+  console.log(data);
+  var tableRef = document.getElementById('section-table').getElementsByTagName('tbody')[0];
+  for (var i in data) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(data[i].id));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(data[i].name));
+
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-section-pre-sbt-'+i);
+      updateButton.setAttribute('ids',data[i].id);
+      updateButton.setAttribute('name',data[i].name);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+
+      var newCell = newRow.insertCell(-1);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-section-pre-sbt-'+i);
+      removeButton.setAttribute('ids',data[i].id);
+      removeButton.setAttribute('name',data[i].name);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+  }
+    updateSectionsHelperFunction();
+};  
+ 
+ #+END_SRC
 ** Checkbox - Dropdown Checker for New LDS entities
 While adding a lab or experiment to LDS, we need to add assets, developers
 sections and hosting info. It is not necessary that they already exist in the
@@ -1614,6 +1649,166 @@ var dropdown_fillup = function() {
   });
 };
 #+END_SRC
+
+
+** heading
+#+BEGIN_SRC js
+  var select = document.querySelectorAll('[class^="lds-show-asset"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+        console.log(button.id.split('-').pop(-1));
+        call = button.id.split('-').pop(-1);
+        populate_asset_tables_call(call,check_function(call));
+    });  
+  }); 
+
+  var select = document.querySelectorAll('[class^="lds-show-over"]');
+  [].forEach.call(select, function (button) {
+    $('#'+button.id).on('click', function(clickEvent) {
+        console.log(button.id.split('-').pop(-1));
+        call = button.id.split('-').pop(-1);
+        populate_over_tables_call(call,check_function(call));
+    });  
+  }); 
+
+#+END_SRC
+
+** heading
+#+BEGIN_SRC js
+ $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
+    populate_tables_dev(check_function('developers'));
+  });
+
+  $(document).on('click', '#home-btn-show-sections', function(clickEvent) {
+    populate_tables_section(check_function('sections'));
+  });
+
+#+END_SRC
+
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+
+
+
+
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+** heading
+#+BEGIN_SRC js
+
+#+END_SRC
+
+** Update Assets
+#+BEGIN_SRC js
+var updateAssetHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-asset-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_assets(button);
+  });
+}
+
+var update_assets = function(button) {
+	type = $('#'+button.id).attr('type');
+	path = $('#'+button.id).attr('path');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-asset-sbt').attr('path',path);
+    $('#edit-new-asset-type').val(type);
+		navigate('update-asset');
+	});
+};
+
+#+END_SRC
+** Update Developer
+#+BEGIN_SRC js
+var updateDeveloperHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-developer-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_developers(button);
+  });
+}
+
+var update_developers = function(button) {
+	name = $('#'+button.id).attr('name');
+	email = $('#'+button.id).attr('email');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-developer-sbt').attr('email',email);
+    $('#edit-new-developer-name').val(name);
+		navigate('update-developer');
+	});
+};
+
+#+END_SRC
+
+** Update Hosting Info
+#+BEGIN_SRC js
+var updateHostingInfoHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-hosting-info-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_hosting-info(button);
+  });
+};
+
+var update_hosting_info = function(button) {
+	url = $('#'+button.id).attr('url');
+	status = $('#'+button.id).attr('status');
+	hosted_on = $('#'+button.id).attr('hosted_on');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-hosting-status-sbt').attr('url',url);
+    $('#edit-new-hosting-status').val(status);
+    $('#edit-new-hosted-on').val(hosted_on);
+		navigate('update-hosting-info');
+	});
+};
+
+#+END_SRC
+
+** Update Sections
+#+BEGIN_SRC js
+var updateSectionsHelperFunction = function() {
+  var buttons = document.querySelectorAll('[id^="update-section-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       update_sections(button);
+  });
+}
+
+var update_sections = function(button) {
+	id = $('#'+button.id).attr('id');
+	name = $('#'+button.id).attr('name');
+  $('#'+button.id).on('click', function(clickEvent){
+    hashNotClicked=true;
+    $('#update-section-sbt').attr('id',id);
+    $('#edit-new-section-name').val(name);
+		navigate('update-section');
+	});
+};
+
+#+END_SRC
+
 
 
 
