@@ -1476,6 +1476,41 @@ to update or delete the developer. The buttons are assigned specific
 id's based on their =id= in the database.
 
 ** Sections Table Populate
+#+NAME: populate_tables_section
+#+BEGIN_SRC js
+var populate_tables_section = function(data) {
+  $('#section-table').find('tr:not(:first)').remove();
+  console.log(data);
+  var tableRef = document.getElementById('section-table').getElementsByTagName('tbody')[0];
+  for (var i in data) {
+      var newRow = tableRef.insertRow(-1);
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(Number(i)+1));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(data[i].id));
+      var newCell = newRow.insertCell(-1);
+      newCell.appendChild(document.createTextNode(data[i].name));
+
+      var newCell = newRow.insertCell(-1);
+      var updateButton = document.createElement('button');
+      updateButton.setAttribute('id','update-section-pre-sbt-'+i);
+      updateButton.setAttribute('ids',data[i].id);
+      updateButton.setAttribute('name',data[i].name);
+      updateButton.appendChild(document.createTextNode('Update'));
+      newCell.appendChild(updateButton);
+
+      var newCell = newRow.insertCell(-1);
+      var removeButton = document.createElement('button');
+      removeButton.setAttribute('id','remove-section-pre-sbt-'+i);
+      removeButton.setAttribute('ids',data[i].id);
+      removeButton.setAttribute('name',data[i].name);
+      removeButton.appendChild(document.createTextNode('Delete'));
+      newCell.appendChild(removeButton);
+  }
+    updateSectionsHelperFunction();
+};  
+
+#+END_SRC
 ** Discipine and Institute Table Populate
 When a user wants to have a look at the institutes or disciplines of LDS, he just have to click
 the view button and all the institutes or disciplines are populated.
@@ -5858,6 +5893,7 @@ This is the JSON specification for the guest dashboard.
 <<populate_tables_dev>>
 <<populate_tables_section>>
 <<populate_asset_tables_call>>
+<<populate_tables_section>>
 <<populate_over_tables_call>>
 <<checkbox>>
 <<update_developers>>
