@@ -1865,42 +1865,6 @@ var dropdown_fillup = function() {
 };
 #+END_SRC
 
-** show Assets and Overview
-#+NAME: show_assets
-#+BEGIN_SRC js
-  var select = document.querySelectorAll('[class^="lds-show-asset"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-        console.log(button.id.split('-').pop(-1));
-        call = button.id.split('-').pop(-1);
-        populate_asset_tables_call(call,check_function(call));
-    });  
-  }); 
-
-  var select = document.querySelectorAll('[class^="lds-show-over"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-        console.log(button.id.split('-').pop(-1));
-        call = button.id.split('-').pop(-1);
-        populate_over_tables_call(call,check_function(call));
-    });  
-  }); 
-
-#+END_SRC
-
-** Show Developers and Sections
-
-#+NAME: show_developers 
-#+BEGIN_SRC js
- $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
-    populate_tables_dev(check_function('developers'));
-  });
-
-  $(document).on('click', '#home-btn-show-sections', function(clickEvent) {
-    populate_tables_section(check_function('sections'));
-  });
-
-#+END_SRC
 
 
 ** On load
@@ -5817,10 +5781,10 @@ This is the JSON specification for the guest dashboard.
 <<get_roles>>
 <<add_user>>
 <<add_role>>
-<<update_user_table>>
 <<updateUserHelperFunction>>
 <<update_users>>
 <<delete_user>>
+<<update_user_table>>
 <<update_role_table>>
 <<updateRoleHelperFunction>>
 <<delete_role>>
@@ -5834,6 +5798,10 @@ This is the JSON specification for the guest dashboard.
 <<onClick_event_handler6>>
 <<onClick_event_handler7>>
 <<onClick_event_handler8>>
+<<update_lab_experiment>>
+<<add_institute>>
+<<add_section>>
+<<add_lab_experiment>>
 <<update_role_drop>>
 <<hash_home>>
 <<onload>>
