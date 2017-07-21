@@ -10,7 +10,7 @@
   This document will illustrate installation of all the dependencies required
   for setting up the application.
 
-* Install dependendent python packages
+* Install dependent python packages
   Here we use the =setuptools= module from the standard lib, to make a
   =setup.py= file, which will install all the python library dependencies.
 
@@ -60,7 +60,7 @@ requires = [
 ]
 
 setup(
-    name='lds-dashboard',
+    name='ldsdashboard',
     version='2.0',
     install_requires=requires
 )
