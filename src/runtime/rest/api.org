@@ -1319,8 +1319,8 @@ class TestUpdateUsers(TestCase):
 		response = self.client.post("/add_user", data=json.dumps(payload), headers=headers)
 		
 		payload1 = {'new_name': 'Test_1',
-			       'email': 'test1@gmail.com',
-				   'new_email': 'test1@gmail.com',
+			       'email': 'test@gmail.com',
+			       'new_email': 'test1@gmail.com',
 		           'new_role' : 'user'
 		           }
 		headers = {'Content-Type': 'application/json'}
@@ -1940,7 +1940,7 @@ def lds_connect3():
     return jsonify(success=True, message="Life is broken"), 200
 #+END_SRC
 **** Test Cases
-#+NAME: logged_in
+#+NAME: test_logged_in
 #+BEGIN_SRC python
 @api.route('/logged_in', methods=['GET'])
 def loggedin():
