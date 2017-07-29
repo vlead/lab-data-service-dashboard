@@ -920,6 +920,46 @@ Here =check_function('sections')= returns the list of sections.
 
 #+END_SRC
 
+#+NAME: onClick_event_handler9
+#+BEGIN_SRC 
+$('#update-discipline-sbt').on('click', function(clickEvent){
+  var alive_data = {
+      discipline_id: $(this).attr('ids'),
+      name: $('#edit-new-discipline-name').val()
+    };
+		var data = JSON.stringify(alive_data);
+    check_function3('disciplines?discipline_id='+$(this).attr('ids'),JSON.parse(data));
+  });
+
+  $('#update-developer-sbt').on('click', function(clickEvent){
+    var alive_data = {
+      email: $(this).attr('email'),
+      name: $('#edit-new-developer-name').val()
+    };
+		var data = JSON.stringify(alive_data);
+    check_function3('developers?email='+$(this).attr('email'),JSON.parse(data));
+  });
+
+  $('#update-section-sbt').on('click', function(clickEvent){
+    var alive_data = {
+      s_id: $(this).attr('ids'),
+      name: $('#edit-new-section-name').val()
+    };
+		var data = JSON.stringify(alive_data);
+    check_function3('sections?s_id='+$(this).attr('ids'),JSON.parse(data));
+  });
+
+  $('#update-institute-sbt').on('click', function(clickEvent){
+    var alive_data = {
+      institute_id: $(this).attr('ids'),
+      name: $('#edit-new-institute-name').val()
+    };
+		var data = JSON.stringify(alive_data);
+    check_function3('institutes?institute_id='+$(this).attr('ids'),JSON.parse(data));
+  });
+
+#+END_SRC
+
 ** Update Lab and Experiment
 
 #+NAME: update_lab_experiment
@@ -1192,8 +1232,6 @@ var select = document.querySelectorAll('[class$="add-lab-exp"]');
 
 #+END_SRC
 
-
-
 ** Update User and Roles Dropdown
 There is an interesting problem. We will take you through the journey
 of how we solved this problem.
@@ -1403,9 +1441,6 @@ they are pointing to.
 var removeLdsFunction = function(button, call) {
 
   $('#'+button.id).on('click', function(clickEvent){
-   
-      console.log(button.id);
-
     var btt = button.id.split('-')[1];
     switch(btt) {
       case 'lab': check_function4(btt,JSON.parse(JSON.stringify({ id:'lab_id='+$(button).attr('ids')}))); break;
@@ -1413,9 +1448,11 @@ var removeLdsFunction = function(button, call) {
       case 'developer': check_function4(btt,JSON.parse(JSON.stringify({id:'email_id='+$(button).attr('email')}))); break;
       case 'institute': check_function4(btt,JSON.parse(JSON.stringify({id:'institute_id='+$(button).attr('ids')}))); break;
       case 'discipline': check_function4(btt,JSON.parse(JSON.stringify({id:'discipline_id='+$(button).attr('ids')}))); break;
+      case 'section': check_function4(btt,JSON.parse(JSON.stringify({id:'s_id='+$(button).attr('ids')}))); break;
     };
 	});
 };
+
 #+END_SRC
 In the above code,event handlers are being attached to all the delete buttons.
 The =id= is split so as to get the entity which is to be deleted. After splitting,
@@ -1448,7 +1485,6 @@ var updateLdsHelperFunction = function(entity) {
 
 
 
-
 ** Developer Table Populate
 When a User wants to see the list of developers, we ought to attract
 the user and keep the page as fancy as possible and very easy for him
@@ -1475,6 +1511,7 @@ var populate_tables_dev = function(data) {
       var updateButton = document.createElement('button');
       updateButton.setAttribute('id','update-developer-pre-sbt-'+i);
       updateButton.setAttribute('email',data[i].email.email);
+      updateButton.setAttribute('name',data[i].name.name);
       updateButton.appendChild(document.createTextNode('Update'));
       newCell.appendChild(updateButton);
 
@@ -1535,7 +1572,6 @@ var populate_tables_section = function(data) {
   }
     updateSectionsHelperFunction();
 };  
-
 #+END_SRC
 ** Discipine and Institute Table Populate
 When a user wants to have a look at the institutes or disciplines of LDS, he just have to click
@@ -1655,7 +1691,6 @@ var populate_over_tables_call = function(entity, data) {
 
 #+END_SRC
 
-
 ** Checkbox - Dropdown Checker for New LDS entities
 While adding a lab or experiment to LDS, we need to add assets, developers
 sections and hosting info. It is not necessary that they already exist in the
@@ -1702,17 +1737,21 @@ var updateDeveloperHelperFunction = function() {
     [].forEach.call(buttons, function (button) {
        update_developers(button);
   });
+   var buttons = document.querySelectorAll('[id^="remove-developer-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       removeLdsFunction(button);
+  });
 }
-
 var update_developers = function(button) {
-	name = $('#'+button.id).attr('name');
-	email = $('#'+button.id).attr('email');
   $('#'+button.id).on('click', function(clickEvent){
+    name = $('#'+button.id).attr('name');
+    email = $('#'+button.id).attr('email');
     hashNotClicked=true;
+		navigate('update-developer');
     $('#update-developer-sbt').attr('email',email);
     $('#edit-new-developer-name').val(name);
-		navigate('update-developer');
-	});
+    check_function3('developers?email='+email,$('#edit-new-developer-name').val());
+  });
 };
 
 #+END_SRC
@@ -1732,24 +1771,29 @@ we want to edit and then navigate to update-asset page.
 
 #+NAME: update_assets
 #+BEGIN_SRC js
+
 var updateAssetHelperFunction = function() {
   var buttons = document.querySelectorAll('[id^="update-asset-pre-sbt-"]');
     [].forEach.call(buttons, function (button) {
        update_assets(button);
   });
+   var buttons = document.querySelectorAll('[id^="remove-asset-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       removeLdsFunction(button);
+  });
 }
 
 var update_assets = function(button) {
-	type = $('#'+button.id).attr('type');
-	path = $('#'+button.id).attr('path');
   $('#'+button.id).on('click', function(clickEvent){
+	  type = $('#'+button.id).attr('type');
+	  path = $('#'+button.id).attr('path');
     hashNotClicked=true;
+		navigate('update-asset');
     $('#update-asset-sbt').attr('path',path);
     $('#edit-new-asset-type').val(type);
-		navigate('update-asset');
+    check_function3('assets?path='+email,$('#edit-new-asset-type').val());
 	});
 };
-
 #+END_SRC
 ** Update Hosting Info
 Admin can also edit the Hosting Information . All the Hosting Info are listed
@@ -1774,18 +1818,17 @@ var updateHostingInfoHelperFunction = function() {
 };
 
 var update_hosting_info = function(button) {
-	url = $('#'+button.id).attr('url');
-	status = $('#'+button.id).attr('status');
-	hosted_on = $('#'+button.id).attr('hosted_on');
   $('#'+button.id).on('click', function(clickEvent){
+	  url = $('#'+button.id).attr('url');
+	  status = $('#'+button.id).attr('status');
+	  hosted_on = $('#'+button.id).attr('hosted_on');
     hashNotClicked=true;
+		navigate('update-hosting-info');
     $('#update-hosting-status-sbt').attr('url',url);
     $('#edit-new-hosting-status').val(status);
     $('#edit-new-hosted-on').val(hosted_on);
-		navigate('update-hosting-info');
 	});
 };
-
 #+END_SRC
 
 ** Update Sections
@@ -1808,22 +1851,22 @@ var updateSectionsHelperFunction = function() {
     [].forEach.call(buttons, function (button) {
        update_sections(button);
   });
+  var buttons = document.querySelectorAll('[id^="remove-section-pre-sbt-"]');
+    [].forEach.call(buttons, function (button) {
+       removeLdsFunction(button);
+  });
 }
-
 var update_sections = function(button) {
-	id = $('#'+button.id).attr('id');
-	name = $('#'+button.id).attr('name');
   $('#'+button.id).on('click', function(clickEvent){
+	  name = $('#'+button.id).attr('name');
+	  id = $('#'+button.id).attr('ids');
     hashNotClicked=true;
-    $('#update-section-sbt').attr('id',id);
-    $('#edit-new-section-name').val(name);
 		navigate('update-section');
+    $('#update-section-sbt').attr('ids',id);
+    $('#edit-new-section-name').val(name);
 	});
 };
-
 #+END_SRC
-
-
 
 ** Data for New LDS entity helper
 When the user want to add new developers or assets or sections etc while adding a lab
@@ -1920,7 +1963,6 @@ var new_add_data = {
 };
 #+END_SRC
 
-
 ** Add new LDS entity button
 Referring to the previous slide, the new input block is created and returned back to us.
 Below the checkbox there is a =+= and a =-= button to add a new data or remove data.
@@ -2013,8 +2055,6 @@ var dropdown_fillup = function() {
   });
 };
 #+END_SRC
-
-
 
 ** On load
    Whenever the page refreshes or loads again, the following functions are
@@ -4124,7 +4164,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+NAME: edit_institute_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
-        {
+   {
           "typeofdiv":"div",
           "id":"update-institute-container",
           "class":"hidden",
@@ -4149,21 +4189,6 @@ generate HTML to do the CRUD operations on LDS database.
                           "typeofdiv":"input",
                           "id":"edit-new-institute-name",
                           "type":"text"
-                        }
-                      ]
-                    },
-                    {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
-                          "typeofdiv":"label",
-                          "id":"institute-id-label",
-                          "innerText":"Institute Id:"
-                        },
-                        {
-                          "typeofdiv":"select",
-                          "id":"institute-id",
-                          "innerText":"Institute:"
                         }
                       ]
                     },
@@ -4203,7 +4228,7 @@ generate HTML to do the CRUD operations on LDS database.
     
 #+NAME: edit_discipline_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
-        {
+       {
           "typeofdiv":"div",
           "id":"update-discipline-container",
           "class":"hidden",
@@ -4228,21 +4253,6 @@ generate HTML to do the CRUD operations on LDS database.
                           "typeofdiv":"input",
                           "id":"edit-new-discipline-name",
                           "type":"text"
-                        }
-                      ]
-                    },
-                    {
-                      "typeofdiv":"li",
-                      "elements":[
-                        {
-                          "typeofdiv":"label",
-                          "id":"new-discipline-id-label",
-                          "innerText":"Discipline Id:"
-                        },
-                        {
-                          "typeofdiv":"select",
-                          "id":"edit-disicipline",
-                          "innerText":"Discipline:"
                         }
                       ]
                     },
@@ -4277,6 +4287,7 @@ generate HTML to do the CRUD operations on LDS database.
                 }
               ]
         },
+
 #+END_SRC
 *** Edit Experiment
 
@@ -4679,7 +4690,7 @@ generate HTML to do the CRUD operations on LDS database.
 
 #+NAME: edit_section_spec
 #+BEGIN_SRC json :tangle ./app/static/js/main.json 
-        {
+       {
           "typeofdiv":"div",
           "id":"update-section-container",
           "class":"hidden",
@@ -4695,22 +4706,22 @@ generate HTML to do the CRUD operations on LDS database.
                 {
                 "typeofdiv":"li",
                 "elements":[
-                {
-                "typeofdiv":"label",
-                "id":"new-section-name-label",
-                "innerText":"New Name:"
-                },
-                {
-                "typeofdiv":"input",
-                "id":"edit-new-section-name",
-                "type":"text"
-                }
-                ]
-                },
-                {
-                "typeofdiv":"li",
-                "elements":[
-                {
+                        {
+                          "typeofdiv":"label",
+                          "id":"new-section-name-label",
+                          "innerText":"New section Name:"
+                        },
+                        {
+                          "typeofdiv":"input",
+                          "id":"edit-new-section-name",
+                          "type":"text"
+                        }
+                      ]
+                    },
+                    {
+                      "typeofdiv":"li",
+                      "elements":[
+                        {
                           "typeofdiv":"input",
                           "id":"update-section-sbt",
                           "type":"button",
@@ -5947,6 +5958,7 @@ This is the JSON specification for the guest dashboard.
 <<onClick_event_handler6>>
 <<onClick_event_handler7>>
 <<onClick_event_handler8>>
+<<onClick_event_handler9>>
 <<update_lab_experiment>>
 <<add_institute>>
 <<add_section>>
