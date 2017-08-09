@@ -7,42 +7,54 @@
 #+OPTIONS: ^:nil
 
 * Introduction
-  This "Literate Document" is an illustration of building the client side frontend for our LDS app. This represents our
-  approach for the attempt to create a LDS dashboard as a "Single Page Application", which actually means that along with 
-  Decorative JS residing and HTML rendering which happens traditionally, Business Logic JS residing and HTML generation 
-  will also take place at the client side. This helps us achieve a lot of tasks which wouldn't have been possible with a 
-  simple website. Some of them just being
-  1. Redrawing only that part of the page that is needed and not whole of the page; thus there's a rapid rendering and
-     feedback attached to SPA.
-  2. Minimizing the response time by keeping the working data from the server to the browser whereever possible with assurance
-     of it's safety against any kind of manipulation.
-  3. Global accessibility since it only needs a browser that could render HTML and JS, which is now supported by most of OS
-     and simply saying devices for usage.
+  This "Literate Document" is an illustration of building the client side
+  frontend for our LDS app. This represents our approach for the attempt to
+  create a LDS dashboard as a "Single Page Application", which actually means
+  that along with Decorative JS residing and HTML rendering which happens
+  traditionally, Business Logic JS residing and HTML generation will also take
+  place at the client side. This helps us achieve a lot of tasks which wouldn't
+  have been possible with a simple website. Some of them just being
+  1. Redrawing only that part of the page that is needed and not whole of the
+     page; thus there's a rapid rendering and feedback attached to SPA.
+  2. Minimizing the response time by keeping the working data from the server
+     to the browser whereever possible with assurance of it's safety against
+     any kind of manipulation.
+  3. Global accessibility since it only needs a browser that could render HTML
+     and JS, which is now supported by most of OS and simply saying devices for
+     usage.
   
-  Now the stage has been set with the basic sight of our aim we may now proceed towards writing JavaScript that would render our
-  frontend HTML and define the Business logic.
+  Now the stage has been set with the basic sight of our aim we may now proceed
+  towards writing JavaScript that would render our frontend HTML and define the
+  Business logic.
 
  
 * Front-End JavaScript
-  When we start to create a web page the first thing we need to do is to modularise the functionality. We need to start to Give 
-  thoughts about making functions and variables that aid those functions that could be the universal solutions for your functionality 
-  needs. We might begin with the function that will be governing the part of HTML (and it's inner elements) which are supposed to 
-  stay constant throughout any user session and then begin with definitions of functions to get required data from server and the
-  local files. Then finally function aiding the dynamic behaviour of our page which includes generation of elements and their
-  updatation. We now begin with a variable declaration(s) which will aid the functions required for our first step.
+  When we start to create a web page the first thing we need to do is to
+  modularise the functionality. We need to start to Give thoughts about making
+  functions and variables that aid those functions that could be the universal
+  solutions for your functionality needs. We might begin with the function that
+  will be governing the part of HTML (and it's inner elements) which are
+  supposed to stay constant throughout any user session and then begin with
+  definitions of functions to get required data from server and the local
+  files. Then finally function aiding the dynamic behaviour of our page which
+  includes generation of elements and their updatation. We now begin with a
+  variable declaration(s) which will aid the functions required for our first
+  step.
   
-  Naming conventions play a key role in our implementation in order to
-  make the functions work for any further addition or modification to
-  data. Pay close attention to exploitation of naming convention in
-  order to make most out of functions and make them immutable to
-  addition/deletion of data, which is basically the DOM elements, they
-  are required to process.
+  Naming conventions play a key role in our implementation in order to make the
+  functions work for any further addition or modification to data. Pay close
+  attention to exploitation of naming convention in order to make most out of
+  functions and make them immutable to addition/deletion of data, which is
+  basically the DOM elements, they are required to process.
 
 ** Auth API
-   In our implementation the top naviagation bar is the only DOM entity to be harcoded in our HTML file and thus remain constant in 
-   all user sessions but it's carries a button element that change it's attributes on the basis of session login state. Thus we define 
-   an object that could store the routes, which are already implemented in the backend, this button will redirect to. In our case it's 
-   just login and logout. 
+   In our implementation the top naviagation bar is the only DOM entity to be
+   harcoded in our HTML file and thus remain constant in all user sessions but
+   it's carries a button element that change it's attributes on the basis of
+   session login state. Thus we define an object that could store the routes,
+   which are already implemented in the backend, this button will redirect
+   to. In our case it's just login and logout.
+
 #+NAME: auth_api
 #+BEGIN_SRC js 
 var AuthAPI = {
@@ -53,18 +65,24 @@ var AuthAPI = {
     window.location.href = '/logout';
   }
 };
+
 #+END_SRC
-   At first even route to home, since navigation bar had another button element for home; was part of this object but since functionality 
-   of home emerged more as hash route, it was removed from here. It now exist as a hash route, content for which other than the side
-   navigation bar has not been decided yet.
+
+   At first even route to home, since navigation bar had another button element
+   for home; was part of this object but since functionality of home emerged
+   more as hash route, it was removed from here. It now exist as a hash route,
+   content for which other than the side navigation bar has not been decided
+   yet.
 
 ** Index Handler
-   Now we needed a function that could change the attributes of elements of our navigation bar just on the basis the current login session
-   state. We came up with this function which would be taking login session state data from another helper function to update our DOM 
-   elements as required, which are innerHTML content in this case along with glyph icons for eye candy part. 
+   Now we needed a function that could change the attributes of elements of our
+   navigation bar just on the basis the current login session state. We came up
+   with this function which would be taking login session state data from
+   another helper function to update our DOM elements as required, which are
+   innerHTML content in this case along with glyph icons for eye candy part.
+
 #+NAME: index_handler
 #+BEGIN_SRC js
-
 var index_handler = function() {
   var auth_btn = $('#login-logout-btn')[0];
   var span_btn = $('#login-logout-spn')[0];
@@ -86,12 +104,16 @@ var index_handler = function() {
     span_btn.className = 'glyphicon glyphicon-log-in';
   }
 };
+
 #+END_SRC   
    
 ** Logged In
-   Now it is the time to define the define the helper function that would be provided our previous function the login session state details.
-   In order to get this data in need to interact with the server. We use an Synchronus AJAX call for it because we dont want the stale data
-   to interfere with the updatation fo DOM content at any given moment.
+   Now it is the time to define the define the helper function that would be
+   provided our previous function the login session state details.  In order to
+   get this data in need to interact with the server. We use an Synchronus AJAX
+   call for it because we dont want the stale data to interfere with the
+   updatation fo DOM content at any given moment.
+
 #+NAME: logged_in
 #+BEGIN_SRC js 
 var is_logged_in = function() {
@@ -111,13 +133,18 @@ var is_logged_in = function() {
   });
   return logged;
 };  
+
 #+END_SRC
 
 ** Get JSON
-   After working on the DOM elements that were supposed to stay constant throught the user session to it is time to  define function that 
-   could will help us to get HTML data to populate for the current user session from the local JSON file. We defines two functions to get
-   Dashboard and Side Navigation Bar seperately as of now which might change towards our final draft. This data is planned to be fed to 
-   functions that would genrate elements for us and finally appends them to the body.
+   After working on the DOM elements that were supposed to stay constant
+   throught the user session to it is time to define function that could will
+   help us to get HTML data to populate for the current user session from the
+   local JSON file. We defines two functions to get Dashboard and Side
+   Navigation Bar seperately as of now which might change towards our final
+   draft. This data is planned to be fed to functions that would genrate
+   elements for us and finally appends them to the body.
+
 #+NAME: get_json_dash
 #+BEGIN_SRC js 
 var getJSONDash = function(role) {
@@ -135,6 +162,7 @@ var getJSONDash = function(role) {
   });
   return data;
 };
+
 #+END_SRC
 
 #+NAME: get_json_nav
@@ -154,11 +182,15 @@ var getJSONNav = function(role) {
   });
   return data;
 };
+
 #+END_SRC
 ** Docoding a JSON
-   Since we had the HTML data in JSON format we were in a need of functions to which would be able process this data and generatee the
-   required elements which we would be able to attach to our body one by one. We seperated the required functionality in three parts 
-   which are first to get the data, then process the data to create elements and then finally attach these elements to the body of HTML.
+   Since we had the HTML data in JSON format we were in a need of functions to
+   which would be able process this data and generatee the required elements
+   which we would be able to attach to our body one by one. We seperated the
+   required functionality in three parts which are first to get the data, then
+   process the data to create elements and then finally attach these elements
+   to the body of HTML.
 
 #+NAME: create_Division
 #+BEGIN_SRC js
@@ -200,33 +232,41 @@ var attachDivsionsToBody = function (divisions) {
 #+END_SRC
 
 ** Hash to Handler Map
-   For a Single Page Application like ours one of the must have part is a client side router. It knows how to tweak the content of the 
-   navigation/url bar and informs the rest system about the URL changes. We here tried to implement hash based routing for our app. A
-   hash based routing uses anchor part of the URL to simulate different actions on the browser screen. A hash of the page for the example 
-   given below will be ~first-page~.
+   For a Single Page Application like ours one of the must have part is a
+   client side router. It knows how to tweak the content of the navigation/url
+   bar and informs the rest system about the URL changes. We here tried to
+   implement hash based routing for our app. A hash based routing uses anchor
+   part of the URL to simulate different actions on the browser screen. A hash
+   of the page for the example given below will be ~first-page~.
 
-#+BEGIN_SRC js
+#+BEGIN_EXAMPLE
 http://webapp.com/#first-page
-#+END_SRC
+#+END_EXAMPLE
 
-   It is interesting to note that ~#first-page~ is never sent to server; hence doesn't need to be defined as route in our backend, since
-   hash-routing never involves reloading of the page, it just helps in making the page dynamic at the client side. Though, This might arise
-   another problem of 'Then how to register the accessible hashes?'. We would tackle all these problems and implementing our hash routing 
-   below using couple of functions.
+   It is interesting to note that ~#first-page~ is never sent to server; hence
+   doesn't need to be defined as route in our backend, since hash-routing never
+   involves reloading of the page, it just helps in making the page dynamic at
+   the client side. Though, This might arise another problem of 'Then how to
+   register the accessible hashes?'. We would tackle all these problems and
+   implementing our hash routing below using couple of functions.
 
-   We start of with define an object =hash_to_handlers_map= that would contain all the available hash routes for us. In our case since
-   home is common to all the user sessions, we start off with initialzing it with ~home~.
+   We start of with define an object =hash_to_handlers_map= that would contain
+   all the available hash routes for us. In our case since home is common to
+   all the user sessions, we start off with initialzing it with ~home~.
 
 #+NAME: handlers_map
 #+BEGIN_SRC js
 hash_to_handlers_map = {home:'home'}; 
 #+END_SRC
 
-   Now we need to add the rest of available hash routes for the logged in user depending upon it's privlidges. We accomplish this task by 
-   creating a function that would search for all the elements in current populated HTML page (based on the user's role in the current 
-   session) for the substring ~-container~ in end of all the element ids. Once all the hash-routes are added we freeze the object in order
-   to make sure no manipulation of our object takes places at the client side, which would prevent user to access unauthorized/non-existant
-   hash routes.
+   Now we need to add the rest of available hash routes for the logged in user
+   depending upon it's privlidges. We accomplish this task by creating a
+   function that would search for all the elements in current populated HTML
+   page (based on the user's role in the current session) for the substring
+   ~-container~ in end of all the element ids. Once all the hash-routes are
+   added we freeze the object in order to make sure no manipulation of our
+   object takes places at the client side, which would prevent user to access
+   unauthorized/non-existant hash routes.
 
 #+NAME: handlers_map_func_def
 #+BEGIN_SRC js
@@ -242,11 +282,12 @@ var handlers_map = function () {
 #+END_SRC
 
 ** Hash Route Navigation
-   As we are now done with defining all our accessible hash routes, we now need the functions that could allow us to catch hold of the
-   current window hash route and further navigate to a different hash route. We use the inbuilt JavaScript function window.location 
-   for the same.
-   We can also use hash path functions which are predefined in the JavaScript library and thus the definitons of the current version
-   of this functions are subjected to change.
+   As we are now done with defining all our accessible hash routes, we now need
+   the functions that could allow us to catch hold of the current window hash
+   route and further navigate to a different hash route. We use the inbuilt
+   JavaScript function window.location for the same.  We can also use hash path
+   functions which are predefined in the JavaScript library and thus the
+   definitons of the current version of this functions are subjected to change.
 #+NAME: current_window_hash
 #+BEGIN_SRC js
 var get_window_hash_path = function() {
@@ -264,11 +305,14 @@ var navigate = function (path) {
 #+END_SRC
 
 ** Register on hash change
-   Now we need a function that would change our web page as soon as a different =hash= in the url is requested. This functions was supposed
-   to check for the wether the hash change was done by side navigation bar button click or simply using the URL. This task has been
-   accomplished by using a variable ~hashNotClicked~ in order to keep the track of the button hit/url change. We even check for the requested
-   hash to be accessible to our user in the current session. Any attempt to access non-existant/unauthorized hash will give a alert and
-   redirection to home shall happen.
+   Now we need a function that would change our web page as soon as a different
+   =hash= in the url is requested. This functions was supposed to check for the
+   wether the hash change was done by side navigation bar button click or
+   simply using the URL. This task has been accomplished by using a variable
+   ~hashNotClicked~ in order to keep the track of the button hit/url change. We
+   even check for the requested hash to be accessible to our user in the
+   current session. Any attempt to access non-existant/unauthorized hash will
+   give a alert and redirection to home shall happen.
  
 #+NAME: register_on_hash_change
 #+BEGIN_SRC js
@@ -310,13 +354,14 @@ var register_onhashchange_handlers = function(hash_to_handlers_map) {
 #+END_SRC
 
 ** Show and Hide containers.
-   Since we have stuck to SPA, we should be hiding and displaying stuff dynamically.
- If the whole content is shown everytime, it will surely be a mess.So based on the
-hash, certain containers are hidden and certain containers are displayed.Below
-code shows to Show containers, Show only one container and Hide all containers.   
-We Basically extract the =id's= of the containers by the prefix or suffix and 
-add or remove a class called =hidden=. We have defined this class hidden in the
-CSS file whose =display= attribute is set to =none=. 
+   Since we have stuck to SPA, we should be hiding and displaying stuff
+ dynamically.  If the whole content is shown everytime, it will surely be a
+ mess.So based on the hash, certain containers are hidden and certain
+ containers are displayed.Below code shows to Show containers, Show only one
+ container and Hide all containers.  We Basically extract the =id's= of the
+ containers by the prefix or suffix and add or remove a class called
+ =hidden=. We have defined this class hidden in the CSS file whose =display=
+ attribute is set to =none=.
 
 #+NAME: show_all_container
 #+BEGIN_SRC js 
@@ -346,10 +391,10 @@ var hide_all_containers = function() {
 #+END_SRC
 
 ** Get Users
-Since this is a user directory, the admin should be able to view all the users who
-are registered for LDS. So, we send a synchronous AJAX call to the backend server
-and get the list of users. As of now, we have given this rights only to admin.
-Later on we can give access to other people based on our requirements.   
+Since this is a user directory, the admin should be able to view all the users
+who are registered for LDS. So, we send a synchronous AJAX call to the backend
+server and get the list of users. As of now, we have given this rights only to
+admin.  Later on we can give access to other people based on our requirements.
 
 #+NAME: get_users
 #+BEGIN_SRC js
@@ -370,11 +415,11 @@ var get_users = function() {
 
 #+END_SRC
 ** Get Roles
-   Since this is a user directory, the admin should also be able to view all the 
-different types of roles registered to LDS. So, we send a synchronous AJAX call 
-to the backend server and get the list of roles available in the database. 
-As of now, we have given this rights only to admin. Later on we can give access 
-to other people based on our requirements.   
+   Since this is a user directory, the admin should also be able to view all
+the different types of roles registered to LDS. So, we send a synchronous AJAX
+call to the backend server and get the list of roles available in the database.
+As of now, we have given this rights only to admin. Later on we can give access
+to other people based on our requirements.
 
 #+NAME: get_roles
 #+BEGIN_SRC js
@@ -396,13 +441,12 @@ var get_roles = function() {
 #+END_SRC
 
 ** Add User
-We now land on the Add operations. An =admin= has the access to add
-a user to LDS services. Again as of now,we have given this access
-only to admin. Later on, we can give access to other people also
-based on our requirements. We have stuck to only 2 roles =admin=
-and =guest= as of now.To Add a user, his =name=, =email= and =role=
-are required. If he gives an invalid input, an error is thrown. 
-Event handler is attached to the =add-user= button which takes the 
+We now land on the Add operations. An =admin= has the access to add a user to
+LDS services. Again as of now,we have given this access only to admin. Later
+on, we can give access to other people also based on our requirements. We have
+stuck to only 2 roles =admin= and =guest= as of now.To Add a user, his =name=,
+=email= and =role= are required. If he gives an invalid input, an error is
+thrown.  Event handler is attached to the =add-user= button which takes the
 data from the input boxes and makes a synchronous AJAX call to the backend
 server. Based on the responce it shows the success or error message.
 
@@ -431,18 +475,15 @@ $(document).on('click', '#add-user-sbt', function(clickEvent) {
 
 #+END_SRC
 ** Add Role
-Moving on in the Add operations, an =admin= has the access to add
-a role to LDS services. As of now, we have stuck to only 2 roles
-=admin= and =guest=. Later on, we can add a new =role= and assign
-the necessary restrictions to access based on our requirements. 
-To Add a role, =role_name= is required and we have not implemented
-giving access rights to the role.Probably as we move on ,we will 
-assign restrictions to the new role. If he gives an invalid input, 
-an error is thrown. 
-Event handler is attached to the =add-role= button which takes the 
-data from the input boxes and makes a synchronous AJAX call to the backend
-server. Based on the responce it shows the success or error message.
-
+Moving on in the Add operations, an =admin= has the access to add a role to LDS
+services. As of now, we have stuck to only 2 roles =admin= and =guest=. Later
+on, we can add a new =role= and assign the necessary restrictions to access
+based on our requirements.  To Add a role, =role_name= is required and we have
+not implemented giving access rights to the role.Probably as we move on ,we
+will assign restrictions to the new role. If he gives an invalid input, an
+error is thrown.  Event handler is attached to the =add-role= button which
+takes the data from the input boxes and makes a synchronous AJAX call to the
+backend server. Based on the responce it shows the success or error message.
 
 #+NAME: add_role
 #+BEGIN_SRC js
@@ -467,15 +508,13 @@ $(document).on('click', '#add-role-sbt', function(clickEvent) {
 #+END_SRC
 
 ** Update And Remove User Helper on Admin Dash
- Simply adding a button against the operation does not suffice.
- We ought to feed the button of what it is supposed to do when 
- it is clicked. Since the button is not a human being,it just 
- cant assume things and move on. It solely is our duty to 
- explain it each and every thing. 
- All the Update buttons and the Remove buttons are extracted
-by their prefix =update-user-pre-sbt= and =remove-user-pre-sbt=
-respectively. The last part of the =id= is unique which actually
-helps us in identifying the button.
+ Simply adding a button against the operation does not suffice.  We ought to
+ feed the button of what it is supposed to do when it is clicked. Since the
+ button is not a human being,it just cant assume things and move on. It solely
+ is our duty to explain it each and every thing.  All the Update buttons and
+ the Remove buttons are extracted by their prefix =update-user-pre-sbt= and
+ =remove-user-pre-sbt= respectively. The last part of the =id= is unique which
+ actually helps us in identifying the button.
 
 #+NAME: updateUserHelperFunction
 #+BEGIN_SRC js
@@ -553,12 +592,12 @@ $(document).on('click', '#update-user-sbt', function(clickEvent) {
 
 ** Remove User
    In the previous slide, we observed that the =delete= buttons were attached
-   to an event listener.As already been said, we are using AJAX calls to 
-   send a request to the backend server. We extract the =id= of the selected
-   button, get the data of the input box associated with this button.
-   After extracting the email, a request is sent through a synchronous 
-   AJAX call. Based on the responce from backend server, appropriate
-   success or error message is displayed.
+   to an event listener.As already been said, we are using AJAX calls to send a
+   request to the backend server. We extract the =id= of the selected button,
+   get the data of the input box associated with this button.  After extracting
+   the email, a request is sent through a synchronous AJAX call. Based on the
+   responce from backend server, appropriate success or error message is
+   displayed.
   
 #+NAME: delete_user
 #+BEGIN_SRC js
@@ -591,13 +630,13 @@ we call the =populate_tables_user= functions so that a new request is again
 sent to the backend server and we get back the updated list of users.
 
 ** User Tables
-As we are developing LDS dashboard,we ought to keep things as fancy 
-as possible.So everytime a page is rereshed, we dynamically update the
-user tables. We create necessary rows in the table, display appropriate
-data and attach the necessary event handlers.Below code shows how the  
- users are being populated. Each row contains the =name=, =email=
-and =role= of the user. It Also contains an =Edit= button and a =Delete= 
-button to edit and delete a user respectively.
+As we are developing LDS dashboard,we ought to keep things as fancy as
+possible.So everytime a page is rereshed, we dynamically update the user
+tables. We create necessary rows in the table, display appropriate data and
+attach the necessary event handlers.Below code shows how the users are being
+populated. Each row contains the =name=, =email= and =role= of the user. It
+Also contains an =Edit= button and a =Delete= button to edit and delete a user
+respectively.
 
 #+NAME: update_user_table
 #+BEGIN_SRC js
@@ -639,13 +678,13 @@ var populate_tables_user = function() {
 };
 #+END_SRC
 ** Role Tables
-Again to make the dashboard fancy, we update the tables dynamically
-each and every time the browser is refreshed. We create necessary rows
-and populate them with appropriate data and also attach a button
-to a row to be able to delete the role.Only admin can delete a role.
-Later on, we can give this access to other roles also. Below code 
-shows how the roles are being populated. Each row contains the =name= 
-of the role.It  Also contains a =Delete= button to delete the respective role.
+Again to make the dashboard fancy, we update the tables dynamically each and
+every time the browser is refreshed. We create necessary rows and populate them
+with appropriate data and also attach a button to a row to be able to delete
+the role.Only admin can delete a role.  Later on, we can give this access to
+other roles also. Below code shows how the roles are being populated. Each row
+contains the =name= of the role.It Also contains a =Delete= button to delete
+the respective role.
 
 #+NAME: update_role_table
 #+BEGIN_SRC js
@@ -672,15 +711,13 @@ var populate_tables_role = function() {
 #+END_SRC
 ** Remove Role Helper on Admin Dash
 
-We have feeded the update and delete user buttons. It is now
-the remove roles button's turn. We need to attach event
-handlers to the buttons so that it can actually do its work.
-These buttons are really nice and faithfull, they do what 
-has been said to them and the best part is they never try to 
-act oversmart. 
-All the =remove_role= buttons are extracted using the prefix 
-=remove-role-pre-sbt= and an event handler is attached to each 
-of them  so that on clicking the button, the role is deleted.
+We have feeded the update and delete user buttons. It is now the remove roles
+button's turn. We need to attach event handlers to the buttons so that it can
+actually do its work.  These buttons are really nice and faithfull, they do
+what has been said to them and the best part is they never try to act
+oversmart.  All the =remove_role= buttons are extracted using the prefix
+=remove-role-pre-sbt= and an event handler is attached to each of them so that
+on clicking the button, the role is deleted.
 
 #+NAME: updateRoleHelperFunction
 #+BEGIN_SRC js
@@ -692,11 +729,11 @@ var removeHelperFunction = function() {
 };
 #+END_SRC
 ** Remove Role
-   In the previous slide, we observed that the =delete role= buttons were attached
-   to an event listener. As already been said, we are using AJAX calls to 
-   send a request to the backend server. We extract the =id= of the selected
-   button, get the data of the input box associated with this button.
-   After extracting the name of the role, a request is sent through a synchronous 
+   In the previous slide, we observed that the =delete role= buttons were
+   attached to an event listener. As already been said, we are using AJAX calls
+   to send a request to the backend server. We extract the =id= of the selected
+   button, get the data of the input box associated with this button.  After
+   extracting the name of the role, a request is sent through a synchronous
    AJAX call. Based on the responce from the backend server, appropriate
    success or error message is displayed.
 
@@ -725,19 +762,19 @@ $('#'+button.id).on('click', function(clickEvent) {
 });
 }
 #+END_SRC
-Now when a role is deleted, this role is no longer availed to LDS. So, it should'nt
-be there in the show roles page. So, everytime a role is deleted or added,
-we call the =populate_tables_role= functions so that a new request is again
-sent to the backend server and we get back the updated list of roles.
+Now when a role is deleted, this role is no longer availed to LDS. So, it
+should'nt be there in the show roles page. So, everytime a role is deleted or
+added, we call the =populate_tables_role= functions so that a new request is
+again sent to the backend server and we get back the updated list of roles.
 
 ** Update Profile
-A user who is logged should be able to update his profile.Session's details
-are extracted and now the user logged in can edit his name or email.
-He need give his present email as the details are taken from the session.
-A user cannot update is role. If he is given this authority, every user
-would change thier role to admin and mess up things. 
-New details are taken from the input boxes and a POST request is sent to 
-the backend server.Based on the response, an error message or success message is shown.
+A user who is logged should be able to update his profile.Session's details are
+extracted and now the user logged in can edit his name or email.  He need give
+his present email as the details are taken from the session.  A user cannot
+update is role. If he is given this authority, every user would change thier
+role to admin and mess up things.  New details are taken from the input boxes
+and a POST request is sent to the backend server.Based on the response, an
+error message or success message is shown.
 #+NAME: update_own_click
 #+BEGIN_SRC js
 $(document).on('click', '#update-profile-sbt', function(clickEvent) {
@@ -773,18 +810,17 @@ $(document).on('click', '#update-profile-sbt', function(clickEvent) {
 #+END_SRC
 After the user updates his profile, he is logged out of LDS dashboard.
 ** OnClick Event Handlers
-The web application needs to be dynamic. For that, we have to take
-care of a lot of issues and ensure that they are being addressed in
-a proper and efficient way. 
+The web application needs to be dynamic. For that, we have to take care of a
+lot of issues and ensure that they are being addressed in a proper and
+efficient way.
 
-We need not update the =users= and =roles= table each and everytime
-the application is refreshed. We can make it efficient by updating
-the user and roles tables only when a change is detected.
-So whenever a user or role is added or deleted, we populate the
-=users= and =roles= table dynamically.
+We need not update the =users= and =roles= table each and everytime the
+application is refreshed. We can make it efficient by updating the user and
+roles tables only when a change is detected.  So whenever a user or role is
+added or deleted, we populate the =users= and =roles= table dynamically.
 
-For that, we have defined a class =update-btn= which updates the
-tables whenever an Add or Remove or Update operation is performed.
+For that, we have defined a class =update-btn= which updates the tables
+whenever an Add or Remove or Update operation is performed.
 
 #+NAME: onClick_event_handler
 #+BEGIN_SRC js
@@ -800,19 +836,18 @@ var onClickFunctions = function() {
   }); 
 #+END_SRC 
 
-It is essential that event handlers are attached to the buttons
-in the home navigation bar.
-Firstly, all the home buttons are extracted using the prefix
-=home-btn-= . Now, for each button in the list we extract the 
-second half of the button which actually specifies the operation.
-For Example : When we perform =button.id.slice(9)= operation to the
-button =home-btn-add-user= we get back =add-user=.
-This is an inbuilt Javascript function which made things easy for us.
+It is essential that event handlers are attached to the buttons in the home
+navigation bar.  Firstly, all the home buttons are extracted using the prefix
+=home-btn-= . Now, for each button in the list we extract the second half of
+the button which actually specifies the operation.  For Example : When we
+perform =button.id.slice(9)= operation to the button =home-btn-add-user= we get
+back =add-user=.  This is an inbuilt Javascript function which made things easy
+for us.
 
-The actual process of attaching event handlers happen now. Whenever
-a specific button is clicked, we hide all the container and only show 
-the navigation bar and the respective container.
-Then, we change the hash in the URL.
+The actual process of attaching event handlers happen now. Whenever a specific
+button is clicked, we hide all the container and only show the navigation bar
+and the respective container.  Then, we change the hash in the URL.
+
 #+NAME: onClick_event_handler1
 #+BEGIN_SRC js 
   var select = document.querySelectorAll('[id^="home-btn-"]');
@@ -829,8 +864,8 @@ Then, we change the hash in the URL.
   });  
 #+END_SRC
 
-When the =home-btn-show-users= button is clicked, =populate_tables_user=
-is called which gets the lsit of =users= list through an AJAX call and populates
+When the =home-btn-show-users= button is clicked, =populate_tables_user= is
+called which gets the lsit of =users= list through an AJAX call and populates
 the =show-users= page.
 #+NAME: onClick_event_handler2
 #+BEGIN_SRC js
@@ -841,9 +876,9 @@ the =show-users= page.
   
 #+END_SRC
 
-When the =home-btn-show-roles= button is clicked, =populate_tables_role=
-is called which gets the list of =roles= list through an AJAX call and 
-populates the =show-roles= page.
+When the =home-btn-show-roles= button is clicked, =populate_tables_role= is
+called which gets the list of =roles= list through an AJAX call and populates
+the =show-roles= page.
 #+NAME: onClick_event_handler3
 #+BEGIN_SRC js
   $(document).on('click', '#home-btn-show-roles', function(clickEvent) {
@@ -851,8 +886,8 @@ populates the =show-roles= page.
   });
 #+END_SRC  
 
-When the =home-btn-update-user= button is clicked, =updateHelperFunction=
-is called which attaches event handlers to all the update buttons.
+When the =home-btn-update-user= button is clicked, =updateHelperFunction= is
+called which attaches event handlers to all the update buttons.
 #+NAME: onClick_event_handler4
 #+BEGIN_SRC js
   $(document).on('click', '#home-btn-update-user', function(clickEvent) {
@@ -866,9 +901,9 @@ is called which attaches event handlers to all the update buttons.
 
 };
 #+END_SRC
-When the =home-btn-update-profile= button is clicked, the name and email
-of the user logged in is extracted from the session and populated on the 
-update profile page.
+When the =home-btn-update-profile= button is clicked, the name and email of the
+user logged in is extracted from the session and populated on the update
+profile page.
 
 
 #+NAME: onClick_event_handler5
@@ -898,9 +933,9 @@ var select = document.querySelectorAll('[class^="lds-show-asset"]');
 
 #+END_SRC
 
-Event handler is being added to the button =show-developers= in th home navigation bar.
-Whenever this button is clicked, the developers table is populated. 
-Here =check_function('developers')= returns the list of developers.
+Event handler is being added to the button =show-developers= in th home
+navigation bar.  Whenever this button is clicked, the developers table is
+populated.  Here =check_function('developers')= returns the list of developers.
 #+NAME: onClick_event_handler7
 #+BEGIN_SRC  js
  $(document).on('click', '#home-btn-show-developers', function(clickEvent) {
@@ -909,9 +944,9 @@ Here =check_function('developers')= returns the list of developers.
 
 #+END_SRC
 
-Event handler is being added to the button =show-sections= in th home navigation bar.
-Whenever this button is clicked, the sections table is populated. 
-Here =check_function('sections')= returns the list of sections.
+Event handler is being added to the button =show-sections= in th home
+navigation bar.  Whenever this button is clicked, the sections table is
+populated.  Here =check_function('sections')= returns the list of sections.
 #+NAME: onClick_event_handler8
 #+BEGIN_SRC  js
   $(document).on('click', '#home-btn-show-sections', function(clickEvent) {
@@ -921,7 +956,7 @@ Here =check_function('sections')= returns the list of sections.
 #+END_SRC
 
 #+NAME: onClick_event_handler9
-#+BEGIN_SRC 
+#+BEGIN_SRC js
 $('#update-discipline-sbt').on('click', function(clickEvent){
   var alive_data = {
       discipline_id: $(this).attr('ids'),
