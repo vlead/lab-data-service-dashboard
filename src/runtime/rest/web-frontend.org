@@ -26,7 +26,6 @@
   Now the stage has been set with the basic sight of our aim we may now proceed
   towards writing JavaScript that would render our frontend HTML and define the
   Business logic.
-
  
 * Front-End JavaScript
   When we start to create a web page the first thing we need to do is to
@@ -391,10 +390,11 @@ var hide_all_containers = function() {
 #+END_SRC
 
 ** Get Users
-Since this is a user directory, the admin should be able to view all the users
-who are registered for LDS. So, we send a synchronous AJAX call to the backend
-server and get the list of users. As of now, we have given this rights only to
-admin.  Later on we can give access to other people based on our requirements.
+   Since this is a user directory, the admin should be able to view all the
+users who are registered for LDS. So, we send a synchronous AJAX call to the
+backend server and get the list of users. As of now, we have given this rights
+only to admin.  Later on we can give access to other people based on our
+requirements.
 
 #+NAME: get_users
 #+BEGIN_SRC js
@@ -441,8 +441,8 @@ var get_roles = function() {
 #+END_SRC
 
 ** Add User
-We now land on the Add operations. An =admin= has the access to add a user to
-LDS services. Again as of now,we have given this access only to admin. Later
+   We now land on the Add operations. An =admin= has the access to add a user
+to LDS services. Again as of now,we have given this access only to admin. Later
 on, we can give access to other people also based on our requirements. We have
 stuck to only 2 roles =admin= and =guest= as of now.To Add a user, his =name=,
 =email= and =role= are required. If he gives an invalid input, an error is
@@ -475,15 +475,16 @@ $(document).on('click', '#add-user-sbt', function(clickEvent) {
 
 #+END_SRC
 ** Add Role
-Moving on in the Add operations, an =admin= has the access to add a role to LDS
-services. As of now, we have stuck to only 2 roles =admin= and =guest=. Later
-on, we can add a new =role= and assign the necessary restrictions to access
-based on our requirements.  To Add a role, =role_name= is required and we have
-not implemented giving access rights to the role.Probably as we move on ,we
-will assign restrictions to the new role. If he gives an invalid input, an
-error is thrown.  Event handler is attached to the =add-role= button which
-takes the data from the input boxes and makes a synchronous AJAX call to the
-backend server. Based on the responce it shows the success or error message.
+   Moving on in the Add operations, an =admin= has the access to add a role to
+LDS services. As of now, we have stuck to only 2 roles =admin= and
+=guest=. Later on, we can add a new =role= and assign the necessary
+restrictions to access based on our requirements.  To Add a role, =role_name=
+is required and we have not implemented giving access rights to the
+role.Probably as we move on ,we will assign restrictions to the new role. If he
+gives an invalid input, an error is thrown.  Event handler is attached to the
+=add-role= button which takes the data from the input boxes and makes a
+synchronous AJAX call to the backend server. Based on the responce it shows the
+success or error message.
 
 #+NAME: add_role
 #+BEGIN_SRC js
@@ -508,7 +509,7 @@ $(document).on('click', '#add-role-sbt', function(clickEvent) {
 #+END_SRC
 
 ** Update And Remove User Helper on Admin Dash
- Simply adding a button against the operation does not suffice.  We ought to
+   Simply adding a button against the operation does not suffice.  We ought to
  feed the button of what it is supposed to do when it is clicked. Since the
  button is not a human being,it just cant assume things and move on. It solely
  is our duty to explain it each and every thing.  All the Update buttons and
@@ -530,11 +531,12 @@ var updateHelperFunction = function() {
 }
 #+END_SRC
 
-So, Event handlers are added to all the =update= and =remove= buttons.
-Based on the =id's= the buttons are extracted and each button
-is attached to an event handler.
+So, Event handlers are added to all the =update= and =remove= buttons.  Based
+on the =id's= the buttons are extracted and each button is attached to an event
+handler.
 
 ** Update User
+
 #+NAME: update_users
 #+BEGIN_SRC js
 var update_users = function(button) {
@@ -624,13 +626,13 @@ $('#'+button.id).on('click', function(clickEvent) {
 });
 }
 #+END_SRC
-Now when a user is deleted, he is no longer availed to LDS. So, he should'nt
-be there in the show users page. So, everytime a user is deleted or added,
-we call the =populate_tables_user= functions so that a new request is again
-sent to the backend server and we get back the updated list of users.
+Now when a user is deleted, he is no longer availed to LDS. So, he should'nt be
+there in the show users page. So, everytime a user is deleted or added, we call
+the =populate_tables_user= functions so that a new request is again sent to the
+backend server and we get back the updated list of users.
 
 ** User Tables
-As we are developing LDS dashboard,we ought to keep things as fancy as
+   As we are developing LDS dashboard,we ought to keep things as fancy as
 possible.So everytime a page is rereshed, we dynamically update the user
 tables. We create necessary rows in the table, display appropriate data and
 attach the necessary event handlers.Below code shows how the users are being
@@ -678,7 +680,7 @@ var populate_tables_user = function() {
 };
 #+END_SRC
 ** Role Tables
-Again to make the dashboard fancy, we update the tables dynamically each and
+   Again to make the dashboard fancy, we update the tables dynamically each and
 every time the browser is refreshed. We create necessary rows and populate them
 with appropriate data and also attach a button to a row to be able to delete
 the role.Only admin can delete a role.  Later on, we can give this access to
@@ -710,10 +712,9 @@ var populate_tables_role = function() {
 
 #+END_SRC
 ** Remove Role Helper on Admin Dash
-
-We have feeded the update and delete user buttons. It is now the remove roles
-button's turn. We need to attach event handlers to the buttons so that it can
-actually do its work.  These buttons are really nice and faithfull, they do
+   We have feeded the update and delete user buttons. It is now the remove
+roles button's turn. We need to attach event handlers to the buttons so that it
+can actually do its work.  These buttons are really nice and faithfull, they do
 what has been said to them and the best part is they never try to act
 oversmart.  All the =remove_role= buttons are extracted using the prefix
 =remove-role-pre-sbt= and an event handler is attached to each of them so that
@@ -727,6 +728,7 @@ var removeHelperFunction = function() {
        remove_roles(button);
   });
 };
+
 #+END_SRC
 ** Remove Role
    In the previous slide, we observed that the =delete role= buttons were
@@ -761,6 +763,7 @@ $('#'+button.id).on('click', function(clickEvent) {
   });
 });
 }
+
 #+END_SRC
 Now when a role is deleted, this role is no longer availed to LDS. So, it
 should'nt be there in the show roles page. So, everytime a role is deleted or
@@ -768,13 +771,14 @@ added, we call the =populate_tables_role= functions so that a new request is
 again sent to the backend server and we get back the updated list of roles.
 
 ** Update Profile
-A user who is logged should be able to update his profile.Session's details are
-extracted and now the user logged in can edit his name or email.  He need give
-his present email as the details are taken from the session.  A user cannot
-update is role. If he is given this authority, every user would change thier
-role to admin and mess up things.  New details are taken from the input boxes
-and a POST request is sent to the backend server.Based on the response, an
-error message or success message is shown.
+   A user who is logged should be able to update his profile.Session's details
+are extracted and now the user logged in can edit his name or email.  He need
+give his present email as the details are taken from the session.  A user
+cannot update is role. If he is given this authority, every user would change
+their role to admin and mess up things.  New details are taken from the input
+boxes and a POST request is sent to the backend server.Based on the response,
+an error message or success message is shown.
+
 #+NAME: update_own_click
 #+BEGIN_SRC js
 $(document).on('click', '#update-profile-sbt', function(clickEvent) {
@@ -810,7 +814,7 @@ $(document).on('click', '#update-profile-sbt', function(clickEvent) {
 #+END_SRC
 After the user updates his profile, he is logged out of LDS dashboard.
 ** OnClick Event Handlers
-The web application needs to be dynamic. For that, we have to take care of a
+   The web application needs to be dynamic. For that, we have to take care of a
 lot of issues and ensure that they are being addressed in a proper and
 efficient way.
 
@@ -1111,12 +1115,14 @@ $('#update-discipline-sbt').on('click', function(clickEvent){
 #+END_SRC
 
 ** Add Institute and Discipline
-Adding a discipline and Institute is almost similar because they have same attributes
-=name=, =id=, and =assets=. So, instead of writing two seperate functions, we have made
-things simpler by writing a common function for both the entities.
+   Adding a discipline and Institute is almost similar because they have same
+attributes =name=, =id=, and =assets=. So, instead of writing two seperate
+functions, we have made things simpler by writing a common function for both
+the entities.
 
-We extract the data from the User Interface and make a call to the =check_function2=
-which takes the data and internally makes an AJAX call to the LDS dashboard.
+We extract the data from the User Interface and make a call to the
+=check_function2= which takes the data and internally makes an AJAX call to the
+LDS dashboard.
 #+NAME: add_institute
 #+BEGIN_SRC js
   var select = document.querySelectorAll('[class$="inst-disc"]');
@@ -1137,9 +1143,10 @@ which takes the data and internally makes an AJAX call to the LDS dashboard.
 #+END_SRC
 
 ** Add Section
-When the uer wants to add a section to LDS, he is given a form to be filled.
-When he submits, the data is extracted and =check_function2= is called along
-with the input data. This function internally send a request to LDS dashboard.
+   When the user wants to add a section to LDS, he is given a form to be
+filled.  When he submits, the data is extracted and =check_function2= is called
+along with the input data. This function internally send a request to LDS
+dashboard.
 
 #+NAME: add_section
 #+BEGIN_SRC js
@@ -1154,22 +1161,22 @@ with the input data. This function internally send a request to LDS dashboard.
 #+NAME: add_lab_experiment
 #+BEGIN_SRC js
 var select = document.querySelectorAll('[class$="add-lab-exp"]');
-  [].forEach.call(select, function (button) {
-    $('#'+button.id).on('click', function(clickEvent) {
-       	var developer = [];
-	      var hostings_info = [];
-	      var asset = [];
-        id = button.id.split('-')[1];
-        ed = id.substr(0,3);
-
-	institute_id_box = $('#add-'+id+'-institute-id-select');
+[].forEach.call(select, function (button) {
+  $('#'+button.id).on('click', function(clickEvent) {
+    var developer = [];
+    var hostings_info = [];
+    var asset = [];
+    id = button.id.split('-')[1];
+    ed = id.substr(0,3);
+    
+    institute_id_box = $('#add-'+id+'-institute-id-select');
     institute_id = institute_id_box[0].selectedOptions[0].value;
-
-	discipline_id_box = $('#add-'+id+'-discipline-id-select');
+    
+    discipline_id_box = $('#add-'+id+'-discipline-id-select');
     discipline_id = discipline_id_box[0].selectedOptions[0].value;
-
+    
     integration_level_box = $('#add-'+id+'-integration-level-box');
-	integration_level = parseInt(integration_level_box[0].value);
+    integration_level = parseInt(integration_level_box[0].value);
 
     $('#add-'+id+'-developer-id-select :selected').each(function(){
       var new_dev={};
@@ -1177,70 +1184,70 @@ var select = document.querySelectorAll('[class$="add-lab-exp"]');
       new_dev.email = $(this).val();
       developer.push(new_dev);
     });  
+    
+    $('#add-'+id+'-container #add-developer-new-'+ed+'-id').find("li").each(function(){
+      var input = $(this).find('input');
+      var new_dev={};
+      new_dev.name = input[0].value ;
+      new_dev.email = input[1].value;
+      if(new_dev.name && new_dev.email)
+	developer.push(new_dev);
+    });
+    
+    $('#add-new-hosting-'+ed+'-div').find("li").each(function(){
+      var input = $(this).find('input');
+      var new_hos={};
+      new_hos.hosted_on = input[2].value ;
+      new_hos.hosted_url = input[0].value;
+      new_hos.hosting_status = input[1].value;
+      if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
+	hostings_info.push(new_hos);
+    });
+    
 
-	 $('#add-'+id+'-container #add-developer-new-'+ed+'-id').find("li").each(function(){
-        var input = $(this).find('input');
-        var new_dev={};
-			  new_dev.name = input[0].value ;
-			  new_dev.email = input[1].value;
-			  if(new_dev.name && new_dev.email)
-			  developer.push(new_dev);
-			});
 
-	 $('#add-new-hosting-'+ed+'-div').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_hos={};
-			  new_hos.hosted_on = input[2].value ;
-			  new_hos.hosted_url = input[0].value;
-			  new_hos.hosting_status = input[1].value;
-			  if(new_hos.hosted_on && new_hos.hosted_url && new_hos.hosting_status)
-			  hostings_info.push(new_hos);
-			});
-   
-
-
-  $('#add-'+id+'-asset-id-select :selected').each(function(){
-    var new_ass={};
-		  new_ass.path = $(this).val() ;
-			new_ass.asset_type = $(this).attr('asset_type');
+    $('#add-'+id+'-asset-id-select :selected').each(function(){
+      var new_ass={};
+      new_ass.path = $(this).val() ;
+      new_ass.asset_type = $(this).attr('asset_type');
       asset.push(new_ass);
   });  
-  
+    
+    
+    $('#add-'+id+'-container #add-asset-new-'+ed+'-div').find("li").each(function(){
+      var input = $(this).find('input');
+      var new_ass={};
+      new_ass.path = input[0].value ;
+      new_ass.asset_type = input[1].value;
+      if(new_ass.path && new_ass.asset_type)
+	asset.push(new_ass);
+    });
 
-	 $('#add-'+id+'-container #add-asset-new-'+ed+'-div').find("li").each(function(){
-              var input = $(this).find('input');
-              var new_ass={};
-			  new_ass.path = input[0].value ;
-			  new_ass.asset_type = input[1].value;
-			  if(new_ass.path && new_ass.asset_type)
-			  asset.push(new_ass);
-			});
-
-	var section1 = [];
-  var section2 = [];  
-  $('#add-'+id+'-section-id-select :selected').each(function(){
+    var section1 = [];
+    var section2 = [];  
+    $('#add-'+id+'-section-id-select :selected').each(function(){
       name = $(this).val();
       var new_sec = {};
       new_sec.name = name;
       section1.push(name);
       section2.push(new_sec);
-  });
-
-	 $('#add-'+id+'-container #add-section-new-'+ed+'-id').find("li").each(function(){
-        var input = $(this).find('input');
-        var new_sec={};
-        name = input[0].value ;
-        new_sec.name = name;
-			  if(name) {
-         section1.push(name);
-         section2.push(new_sec);
-        }
-			});
-
-  switch(id) {
+    });
+    
+    $('#add-'+id+'-container #add-section-new-'+ed+'-id').find("li").each(function(){
+      var input = $(this).find('input');
+      var new_sec={};
+      name = input[0].value ;
+      new_sec.name = name;
+      if(name) {
+        section1.push(name);
+        section2.push(new_sec);
+      }
+    });
+    
+    switch(id) {
     case 'lab' : section = section2; break;
     case 'experiment' : section = section1; break;
-  }
+    }
 
     var p = {}
     var alive_data = {
@@ -1249,35 +1256,32 @@ var select = document.querySelectorAll('[class$="add-lab-exp"]');
       name: $('#add-'+id+'-name-box').val(),
       discipline_id: discipline_id,
       institute_id: institute_id,
-	    assets:asset,
-	    hosting_info:hostings_info,
-	    developers:developer,
+      assets:asset,
+      hosting_info:hostings_info,
+      developers:developer,
       integration_level: integration_level,
-	    sections:section
+      sections:section
     };
     p[id] = alive_data
-		var data = JSON.stringify(p);
-
-      check_function2(id,JSON.parse(data));
-    });  
-  }); 
+    var data = JSON.stringify(p);
+    
+    check_function2(id,JSON.parse(data));
+  });  
+}); 
 
 };
-
 
 #+END_SRC
 
 ** Update User and Roles Dropdown
-There is an interesting problem. We will take you through the journey
-of how we solved this problem.
-So when the admin is adding a user to LDS, he needs to give the details
-=name= , =email= and =role=. The role which he will assign to the new user
-needs to be there in the database. So there is one ipute box and admin needs
-to give the =role_name= with 100% accuracy which is not really a convincing way
-to deal with things. So, we thought of having dropdowns so that he can assign a 
-role which is there in the list.This makes things easier and more convincing.
-Same goes with providing the list of emails in the database.
-
+   There is an interesting problem. We will take you through the journey of how
+we solved this problem.  So when the admin is adding a user to LDS, he needs to
+give the details =name= , =email= and =role=. The role which he will assign to
+the new user needs to be there in the database. So there is one ipute box and
+admin needs to give the =role_name= with 100% accuracy which is not really a
+convincing way to deal with things. So, we thought of having dropdowns so that
+he can assign a role which is there in the list.This makes things easier and
+more convincing.  Same goes with providing the list of emails in the database.
 
 #+NAME: update_role_drop
 #+BEGIN_SRC js
@@ -1301,18 +1305,20 @@ var load_role_users = function() {
       });
   });
 };
+
 #+END_SRC
 We first extract all the =options= of the =dropdown= by using the prefix
-=-user-role= and =-user-email= respectively.Then we delete all these options
-by the function =remove()=. Then, we create new options with the respective
+=-user-role= and =-user-email= respectively.Then we delete all these options by
+the function =remove()=. Then, we create new options with the respective
 =role_name= or =email= and append to the respective dropdowns.
 
 ** On hash change
-In a SPA, We have to dynamically display and hide containers based on our requirement.
-To show home, we wrote a function manually to take care of the case when the hash is 
-changed to home. This is beacause, for other hashes we have automated things and dynamically
-displayed a container based on the input received. The input received was sliced from the =id's=
-of buttons on the home page. 
+   In a SPA, We have to dynamically display and hide containers based on our
+requirement.  To show home, we wrote a function manually to take care of the
+case when the hash is changed to home. This is beacause, for other hashes we
+have automated things and dynamically displayed a container based on the input
+received. The input received was sliced from the =id's= of buttons on the home
+page.
 
 #+NAME: hash_home
 #+BEGIN_SRC js
@@ -1323,14 +1329,14 @@ $(window).on('hashchange', function(e) {
   }
 })
 #+END_SRC
-So whenever the hash is changed to =home=, we hide all the container and show onnly
-the side navigation bar.
+So whenever the hash is changed to =home=, we hide all the container and show
+only the side navigation bar.
 ** LDS Request
 *** Get Requests
-Let us now recall the design of the LDS dashboard.The User makes a request
-to the LDS dashboard and then the dashboard sends an appropriate request
-to the actual LDS. Bases on the input, LDS sends back response to LDS
-dashboard and then user is shown the details he requested.
+    Let us now recall the design of the LDS dashboard.The User makes a request
+to the LDS dashboard and then the dashboard sends an appropriate request to the
+actual LDS. Bases on the input, LDS sends back response to LDS dashboard and
+then user is shown the details he requested.
 
 #+NAME: lds_get
 #+BEGIN_SRC js
@@ -1354,20 +1360,20 @@ var check_function = function(call) {
 };
 
 #+END_SRC
-When a user wants to view the data of LDS, we take the input =entity=
-from the user and based on that we make a call to the LDS.We
-call the check_function with the argument =call= so that we
-send a request to LDS to extract appropriate data.
+When a user wants to view the data of LDS, we take the input =entity= from the
+user and based on that we make a call to the LDS.We call the check_function
+with the argument =call= so that we send a request to LDS to extract
+appropriate data.
 
 *** Post Requests
-Again throwing light on the design we chose, User first send a request to 
-LDS dashboard and then the dashboard sends request to LDS.
-TO send POST request , the function =check_function2= is used.
-Whenever we post data such as adding an entity, the user gives
-his input in the forms. When he sumbits the form, an AJAX call
-is made to the LDS dashboard in which the input data is sent.
-Also =call= is sent in the request which indicates, to which
-entity changes are being made.
+    Again throwing light on the design we chose, User first send a request to
+LDS dashboard and then the dashboard sends request to LDS.  TO send POST
+request , the function =check_function2= is used.  Whenever we post data such
+as adding an entity, the user gives his input in the forms. When he sumbits the
+form, an AJAX call is made to the LDS dashboard in which the input data is
+sent.  Also =call= is sent in the request which indicates, to which entity
+changes are being made.
+
 #+NAME: lds_post
 #+BEGIN_SRC js
 var check_function2 = function(call, data) {
@@ -1389,14 +1395,15 @@ var check_function2 = function(call, data) {
     }
   });
 };
+
 #+END_SRC
 
 *** Put Requests
-Landing on the update operations, the function =check_function3= is used
-to process sending requests.Whenever a user updates any entity and sumbits,
-an AJAX call is sent to the LDS Dashboard. We extract the input data given
-by the user and send the =data= along with =call= which indicates the call
-to be made to LDS server.
+    Landing on the update operations, the function =check_function3= is used to
+process sending requests.Whenever a user updates any entity and sumbits, an
+AJAX call is sent to the LDS Dashboard. We extract the input data given by the
+user and send the =data= along with =call= which indicates the call to be made
+to LDS server.
 
 #+NAME: lds_put
 #+BEGIN_SRC js
@@ -1419,13 +1426,13 @@ var check_function3 = function(call, data) {
     }
   });
 };
+
 #+END_SRC
 *** Delete Requests
-Now let us deal with the delete requests. Whenever a user wants
-to delete any entity , the user interface send an AJAX call
-to the LDS dashboard which internally send a request to LDS.
-We take the input from the user in the form of =data=. We 
-also send =call= in the request, which indicates the call to be
+    Now let us deal with the delete requests. Whenever a user wants to delete
+any entity , the user interface send an AJAX call to the LDS dashboard which
+internally send a request to LDS.  We take the input from the user in the form
+of =data=. We also send =call= in the request, which indicates the call to be
 made to LDS server.
 
 #+NAME: lds_delete
@@ -1467,41 +1474,41 @@ var updateLdsFunction = function(button, call) {
 #+END_SRC
 
 ** Remove for LDS entities
-Let us throw light on how the delete operations of the entities are being made.
-Event handlers are added to all the delete buttons of the LDS dashboard. All
-the buttons of dashboard have specific id's which also indicate the entity
-they are pointing to.
+   Let us throw light on how the delete operations of the entities are being
+made.  Event handlers are added to all the delete buttons of the LDS
+dashboard. All the buttons of dashboard have specific id's which also indicate
+the entity they are pointing to.
+
 #+NAME: removeLdsFunction
 #+BEGIN_SRC js
 var removeLdsFunction = function(button, call) {
-
   $('#'+button.id).on('click', function(clickEvent){
     var btt = button.id.split('-')[1];
     switch(btt) {
-      case 'lab': check_function4(btt,JSON.parse(JSON.stringify({ id:'lab_id='+$(button).attr('ids')}))); break;
-      case 'experiment': check_function4(btt,JSON.parse(JSON.stringify({id:'exp_id='+$(button).attr('ids')}))); break;
-      case 'developer': check_function4(btt,JSON.parse(JSON.stringify({id:'email_id='+$(button).attr('email')}))); break;
-      case 'institute': check_function4(btt,JSON.parse(JSON.stringify({id:'institute_id='+$(button).attr('ids')}))); break;
-      case 'discipline': check_function4(btt,JSON.parse(JSON.stringify({id:'discipline_id='+$(button).attr('ids')}))); break;
-      case 'section': check_function4(btt,JSON.parse(JSON.stringify({id:'s_id='+$(button).attr('ids')}))); break;
+    case 'lab': check_function4(btt,JSON.parse(JSON.stringify({ id:'lab_id='+$(button).attr('ids')}))); break;
+    case 'experiment': check_function4(btt,JSON.parse(JSON.stringify({id:'exp_id='+$(button).attr('ids')}))); break;
+    case 'developer': check_function4(btt,JSON.parse(JSON.stringify({id:'email_id='+$(button).attr('email')}))); break;
+    case 'institute': check_function4(btt,JSON.parse(JSON.stringify({id:'institute_id='+$(button).attr('ids')}))); break;
+    case 'discipline': check_function4(btt,JSON.parse(JSON.stringify({id:'discipline_id='+$(button).attr('ids')}))); break;
+    case 'section': check_function4(btt,JSON.parse(JSON.stringify({id:'s_id='+$(button).attr('ids')}))); break;
     };
-	});
+  });
 };
 
 #+END_SRC
 In the above code,event handlers are being attached to all the delete buttons.
-The =id= is split so as to get the entity which is to be deleted. After splitting,
-it can either be =lab=, =experiment=, =developer=, =institute= or =discipline=.
-Now switch statement is used to call the appropriate function to send request
-to the LDS dashboard. Based on the entity, the entity =name= and =id= is sent
-in the arguments while calling =check_function4=.
+The =id= is split so as to get the entity which is to be deleted. After
+splitting, it can either be =lab=, =experiment=, =developer=, =institute= or
+=discipline=.  Now switch statement is used to call the appropriate function to
+send request to the LDS dashboard. Based on the entity, the entity =name= and
+=id= is sent in the arguments while calling =check_function4=.
 
 ** Update Helper for LDS
-All the =update= and =delete= buttons of LDS entities should be populated
-with event handlers.
-All the respective buttons are extracted using the prefix update and remove
-respectively. After extracting the buttons, a loop is made to attach event
-handlers to all the buttons which either delete or update entities.
+   All the =update= and =delete= buttons of LDS entities should be populated
+with event handlers.  All the respective buttons are extracted using the prefix
+update and remove respectively. After extracting the buttons, a loop is made to
+attach event handlers to all the buttons which either delete or update
+entities.
 #+NAME: updateLdsHelperFunction
 #+BEGIN_SRC js
 var updateLdsHelperFunction = function(entity) {
@@ -1516,17 +1523,12 @@ var updateLdsHelperFunction = function(entity) {
 }
 
 #+END_SRC
-
-
-
-
 ** Developer Table Populate
-When a User wants to see the list of developers, we ought to attract
-the user and keep the page as fancy as possible and very easy for him
-to read the data.
-Tables are created to populate the developers table. Whenever we call the function
-=populate_tables_dev= , the table is cleared and is freshly populated.
-It takes the updated data and populates the table accordingly.
+   When a User wants to see the list of developers, we ought to attract the
+user and keep the page as fancy as possible and very easy for him to read the
+data.  Tables are created to populate the developers table. Whenever we call
+the function =populate_tables_dev= , the table is cleared and is freshly
+populated.  It takes the updated data and populates the table accordingly.
 
 #+NAME: populate_tables_dev
 #+BEGIN_SRC js
@@ -1566,13 +1568,12 @@ to update or delete the developer. The buttons are assigned specific
 id's based on their =id= in the database.
 
 ** Sections Table Populate
-The below code populates the sections table whenever the user requests.
-Everytime the user requests, the table is freshly populated. All the
-rows except the first row are deleted.
-The table has 2 columns =id= and =name=. Also each row contains
-2 buttons =update= and =delete= to edit and delete the section
-respectively. Accordingly, event handlers are added to the buttons.
-
+   The below code populates the sections table whenever the user requests.
+Every time the user requests, the table is freshly populated. All the rows
+except the first row are deleted.  The table has 2 columns =id= and
+=name=. Also each row contains 2 buttons =update= and =delete= to edit and
+delete the section respectively. Accordingly, event handlers are added to the
+buttons.
 
 #+NAME: populate_tables_section
 #+BEGIN_SRC js
@@ -1609,15 +1610,14 @@ var populate_tables_section = function(data) {
 };  
 #+END_SRC
 ** Discipine and Institute Table Populate
-When a user wants to have a look at the institutes or disciplines of LDS, he just have to click
-the view button and all the institutes or disciplines are populated.
-Things are kept as fancy as possible. 
-We slice the =entity= which is an argument to the function to know whether
-to populate disciplines or institutes.
-The institutes or disciplines are shown in a table
-with appropriate columns. Also an =update= and =delete= button is added
-against it so as to add or delete that particular entity.
-The Buttons are assigned specific id's based on its =id= in the database.  
+   When a user wants to have a look at the institutes or disciplines of LDS, he
+just have to click the view button and all the institutes or disciplines are
+populated.  Things are kept as fancy as possible.  We slice the =entity= which
+is an argument to the function to know whether to populate disciplines or
+institutes.  The institutes or disciplines are shown in a table with
+appropriate columns. Also an =update= and =delete= button is added against it
+so as to add or delete that particular entity.  The Buttons are assigned
+specific id's based on its =id= in the database.
 
 #+NAME: populate_asset_tables_call
 #+BEGIN_SRC js
@@ -1659,16 +1659,16 @@ var populate_asset_tables_call = function(entity, data) {
 #+END_SRC
 
 ** Lab and Experiment Table Populate
-Below code populates the labs or experiments table based on our requirement.
-When the function is called, =entity= is sent in the arguments which tells
-us whether to popuate labs or experiments. We slice the entity and accordingly
-populate the tables.
-The tables have quite a lot of columns. Everytime the function is called, the table
-is cleared and is freshly populated based on the data given to us. We dynamically
-create new rows,columns and buttons to the table.
+   Below code populates the labs or experiments table based on our requirement.
+When the function is called, =entity= is sent in the arguments which tells us
+whether to popuate labs or experiments. We slice the entity and accordingly
+populate the tables.  The tables have quite a lot of columns. Everytime the
+function is called, the table is cleared and is freshly populated based on the
+data given to us. We dynamically create new rows,columns and buttons to the
+table.
 
-Also, an =update= and a =delete= button is added in every row to perform that operation
-on the respective entity.
+Also, an =update= and a =delete= button is added in every row to perform that
+operation on the respective entity.
 
 #+NAME: populate_over_tables_call
 #+BEGIN_SRC js
@@ -1727,12 +1727,13 @@ var populate_over_tables_call = function(entity, data) {
 #+END_SRC
 
 ** Checkbox - Dropdown Checker for New LDS entities
-While adding a lab or experiment to LDS, we need to add assets, developers
+   While adding a lab or experiment to LDS, we need to add assets, developers
 sections and hosting info. It is not necessary that they already exist in the
-database. We can add new assets,developers, sections etc while adding a lab too.
+database. We can add new assets,developers, sections etc while adding a lab
+too.
 
-So a dropdown is given with the available data in the database. If the User wants 
-to add new assets ,developers etc , he can surely do.
+So a dropdown is given with the available data in the database. If the User
+wants to add new assets ,developers etc , he can surely do.
 
 A checkbox is given, if it is selected the user will be able to add new data.
 Extra input boxes are given so as to add new data.
@@ -1753,17 +1754,17 @@ Bases on whether the checkbox is disabled or enabled, ablity to add data changes
 Accordingly, the properties of the checkboxes are updated.
 
 ** Update Developer
-Admin can also edit the developer's details. All the developers are listed
-in the show-developers page. Againt each developer, there is an 
-=update= and a =delete= button. 
+   Admin can also edit the developer's details. All the developers are listed in
+the show-developers page. Againt each developer, there is an =update= and a
+=delete= button.
 
-Event handlers are being added to all the update buttons in the code 
-given below. First, all the update buttons are extracted using the =id=
-and then =update_developers= function is called for each button which 
-attaches event handlers to those buttons.
+Event handlers are being added to all the update buttons in the code given
+below. First, all the update buttons are extracted using the =id= and then
+=update_developers= function is called for each button which attaches event
+handlers to those buttons.
 
-When the button is clicked, we pre-populate the details of the developer
-we want to edit and then navigate to update-developer page.
+When the button is clicked, we pre-populate the details of the developer we
+want to edit and then navigate to update-developer page.
 
 #+NAME: update_developers
 #+BEGIN_SRC js
@@ -1792,21 +1793,20 @@ var update_developers = function(button) {
 #+END_SRC
 
 ** Update Assets
-Admin can also edit the assets details. All the assets are listed
-in the show-assets page. Againt each asset, there is an 
-=update= and a =delete= button. 
+   Admin can also edit the assets details. All the assets are listed in the
+show-assets page. Againt each asset, there is an =update= and a =delete=
+button.
 
-Event handlers are being added to all the update buttons in the code 
-given below. First, all the update buttons are extracted using the =id=
-and then =update_assets= function is called for each button which 
-attaches event handlers to those buttons.
+Event handlers are being added to all the update buttons in the code given
+below. First, all the update buttons are extracted using the =id= and then
+=update_assets= function is called for each button which attaches event
+handlers to those buttons.
 
-When the button is clicked, we pre-populate the details of the asset
-we want to edit and then navigate to update-asset page.
+When the button is clicked, we pre-populate the details of the asset we want to
+edit and then navigate to update-asset page.
 
 #+NAME: update_assets
 #+BEGIN_SRC js
-
 var updateAssetHelperFunction = function() {
   var buttons = document.querySelectorAll('[id^="update-asset-pre-sbt-"]');
     [].forEach.call(buttons, function (button) {
@@ -1829,19 +1829,20 @@ var update_assets = function(button) {
     check_function3('assets?path='+email,$('#edit-new-asset-type').val());
 	});
 };
+
 #+END_SRC
 ** Update Hosting Info
-Admin can also edit the Hosting Information . All the Hosting Info are listed
-in the show-hosting-info page. Againt each hosted url, there is an 
-=update= and a =delete= button. 
+   Admin can also edit the Hosting Information . All the Hosting Info are listed
+in the show-hosting-info page. Againt each hosted url, there is an =update= and
+a =delete= button.
 
-Event handlers are being added to all the update buttons in the code 
-given below. First, all the update buttons are extracted using the =id=
-and then =update_hosting_info= function is called for each button which 
-attaches event handlers to those buttons.
+Event handlers are being added to all the update buttons in the code given
+below. First, all the update buttons are extracted using the =id= and then
+=update_hosting_info= function is called for each button which attaches event
+handlers to those buttons.
 
-When the button is clicked, we pre-populate the Hosting information 
-we want to edit and then navigate to update-hosting-info page.
+When the button is clicked, we pre-populate the Hosting information we want to
+edit and then navigate to update-hosting-info page.
 
 #+NAME: update_hosting_info
 #+BEGIN_SRC js
@@ -1864,20 +1865,21 @@ var update_hosting_info = function(button) {
     $('#edit-new-hosted-on').val(hosted_on);
 	});
 };
+
 #+END_SRC
 
 ** Update Sections
-Admin can also edit the details of a section. All the sections are listed
-in the show-sections page. Againt each developer, there is an 
-=update= and a =delete= button. 
+   Admin can also edit the details of a section. All the sections are listed in
+the show-sections page. Againt each developer, there is an =update= and a
+=delete= button.
 
-Event handlers are being added to all the update buttons in the code 
-given below. First, all the update buttons are extracted using the =id=
-and then =update_sections= function is called for each button which 
-attaches event handlers to those buttons.
+Event handlers are being added to all the update buttons in the code given
+below. First, all the update buttons are extracted using the =id= and then
+=update_sections= function is called for each button which attaches event
+handlers to those buttons.
 
-When the button is clicked, we pre-populate the details of the section
-we want to edit and then navigate to update-section page.
+When the button is clicked, we pre-populate the details of the section we want
+to edit and then navigate to update-section page.
 
 #+NAME: update_sections
 #+BEGIN_SRC js
@@ -1901,16 +1903,16 @@ var update_sections = function(button) {
     $('#edit-new-section-name').val(name);
 	});
 };
+
 #+END_SRC
 
 ** Data for New LDS entity helper
-When the user want to add new developers or assets or sections etc while adding a lab
-or experiment, as discussed in the previous slide, he has to click the checkbox.
-When the checkbox is clicked , he should be provided with input boxes with appropriate
-labels. 
-Below code shows the implementation of creating new blocks in the form while adding new
-developers or assets or sections or hosting info. 
-The created block is returned back.
+   When the user want to add new developers or assets or sections etc while
+adding a lab or experiment, as discussed in the previous slide, he has to click
+the check box.  When the checkbox is clicked , he should be provided with input
+boxes with appropriate labels.  Below code shows the implementation of creating
+new blocks in the form while adding new developers or assets or sections or
+hosting info.  The created block is returned back.
 
 #+NAME: new_add_data  
 #+BEGIN_SRC js
@@ -1999,12 +2001,12 @@ var new_add_data = {
 #+END_SRC
 
 ** Add new LDS entity button
-Referring to the previous slide, the new input block is created and returned back to us.
-Below the checkbox there is a =+= and a =-= button to add a new data or remove data.
-Event handler is added to all the =+= buttons in the user interface.
-All the buttons are extracted using their id's and event handlers are attached
-to each of them. Whenever a '+' button is clicked, new input block is created
-and appended to the particualar =div=.
+   Referring to the previous slide, the new input block is created and returned
+back to us.  Below the checkbox there is a =+= and a =-= button to add a new
+data or remove data.  Event handler is added to all the =+= buttons in the user
+interface.  All the buttons are extracted using their id's and event handlers
+are attached to each of them. Whenever a '+' button is clicked, new input block
+is created and appended to the particualar =div=.
 
 #+NAME: adding_data_test
 #+BEGIN_SRC js
@@ -2022,14 +2024,13 @@ var adding_data_test = function (){
 
 #+END_SRC
 ** Remove new LDS entity button 
-If a user clicks the =+= button and now he does'nt want to add data,
-he can click the =-= button and delete that block.
-All the =-= buttons are extracted using the id's and event handlers
-are attached to all the buttons.
-So, whenever the '-' button is pressed, it first checks if there is 
-atleast 1 block in the div. If yes, it removes the last block from the
-div. If there is no block, there is no point of removing blocks, so
-it does not do anything in that case.
+   If a user clicks the =+= button and now he does'nt want to add data, he can
+click the =-= button and delete that block.  All the =-= buttons are extracted
+using the id's and event handlers are attached to all the buttons.  So,
+whenever the '-' button is pressed, it first checks if there is atleast 1 block
+in the div. If yes, it removes the last block from the div. If there is no
+block, there is no point of removing blocks, so it does not do anything in that
+case.
 
 #+NAME: remove_data_test
 #+BEGIN_SRC js
@@ -2051,15 +2052,15 @@ var remove_data_test = function (){
 #+END_SRC
 
 ** Dropdown populate for LDS Add
-As said earlier, while adding a lab or an experiment, the user can choose
-entities like assets, developers, sections etc either from the dropdowns
-or can add new data. So the dropdown needs to be populated with the data
-available in the database.The Below code extracts data from the database
-and accordingly populates the dropdowns.
+   As said earlier, while adding a lab or an experiment, the user can choose
+entities like assets, developers, sections etc either from the dropdowns or can
+add new data. So the dropdown needs to be populated with the data available in
+the database.The Below code extracts data from the database and accordingly
+populates the dropdowns.
 
-The function =check_function()= is called which internally makes
-an AJAX call to the LDS dashboard and extracts the data.
-The Data is taken and the dropdowns are populated accordingly.
+The function =check_function()= is called which internally makes an AJAX call
+to the LDS dashboard and extracts the data.  The Data is taken and the
+dropdowns are populated accordingly.
 
 Switch statements are used to make the code compact and elegant.
 
@@ -2094,9 +2095,9 @@ var dropdown_fillup = function() {
 ** On load
    Whenever the page refreshes or loads again, the following functions are
 called. Appropriate HTML is generated based on the hash.
+
 #+NAME: onload
 #+BEGIN_SRC js
-
 window.onload = function () {
   hashNotClicked=false;
   logged = is_logged_in();
@@ -2120,53 +2121,49 @@ window.onload = function () {
 
 #+END_SRC  
 
-
 * HTML
 ** Index
-The App is now a SPA. Here's the basic skeleton.
+The App is now a SPA. Here's the basic skeleton.  
 ~Side Nav to be removed from here in future releases.~
 #+NAME: index
 #+BEGIN_SRC html :tangle app/templates/index.html
 <!DOCTYPE html>
 <html>
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes"/>
-	<title>LDS Dashboard</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="./static/css/style.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<!-- jQuery library -->	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script type="text/javascript" src="./static/js/main.js"></script>
-</head>
-<body id="body">
-	<nav class="navbar navbar-inverse"> 
-  		<div class="container-fluid">
-    		<div class="navbar-header">
-      			<a class="navbar-brand">LDS Dashboard</a>
-    		</div>
-    		<ul class="nav navbar-nav">
-      			<li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick=""><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
-    		</ul>
-    		<ul class="nav navbar-nav navbar-right">
-      			<li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
-    		</ul>
-  		</div>
-	</nav>
-</body>
+    <title>LDS Dashboard</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->	
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./static/js/main.js"></script>
+  </head>
+  <body id="body">
+    <nav class="navbar navbar-inverse"> 
+      <div class="container-fluid">
+    	<div class="navbar-header">
+      	  <a class="navbar-brand">LDS Dashboard</a>
+    	</div>
+    	<ul class="nav navbar-nav">
+      	  <li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick=""><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
+    	</ul>
+    	<ul class="nav navbar-nav navbar-right">
+      	  <li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
+    	</ul>
+      </div>
+    </nav>
+  </body>
 </html>
-
 
 #+END_SRC
 
-
-
 * CSS
 ** CSS
-This is styling code for our side nav bar.
-~Will be removed from here in future releases~
+   This is styling code for our side nav bar.
+   ~Will be removed from here in future releases~
 #+NAME: style
 #+BEGIN_SRC css :tangle app/static/css/style.css 
 .sidenav {
@@ -2195,7 +2192,6 @@ transition: 0.3s;
 	margin-left: 280px;
 }
 #+END_SRC
-
 
 * JSON
 ** User and Role Specifications
@@ -5862,7 +5858,7 @@ generate HTML to do the CRUD operations on LDS database.
 #+END_SRC
 
 ** Guest
-This is the JSON specification for the guest dashboard.
+   This is the JSON specification for the guest dashboard.
 #+NAME: guest_spec_file
 #+BEGIN_SRC json :tangle ./app/static/js/main.json
   "guest_dash":[
