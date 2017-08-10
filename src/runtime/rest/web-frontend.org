@@ -1269,8 +1269,6 @@ var select = document.querySelectorAll('[class$="add-lab-exp"]');
   });  
 }); 
 
-};
-
 #+END_SRC
 
 ** Update User and Roles Dropdown
