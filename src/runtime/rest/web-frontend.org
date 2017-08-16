@@ -214,7 +214,7 @@ var createElements = function(element) {
   if (element['elements']) {
     element['elements'].forEach(function (ele) {
       var temp_element = createElements(ele);
-      new_ele.append(temp_element)
+      new_ele.appendChild(temp_element)
     });
   }
   return new_ele;

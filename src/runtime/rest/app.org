@@ -11,14 +11,15 @@
 
 
 * __INIT__ FILE
-This is the __init__.py file in which the app is being configured 
-and also login manager is configured.
-Blueprint =api= is registered in this file.
-Here we initialize our application using flask, it will be referred to as app and import the configuration from the config file,
-which in our case is flask_app_config.py.
-Further we go on build a database, which is managed by SQLAlchemy.
-Then a Login Manager for our app was defined just to make add the user in the session to our =current_user= object provided by the Flask.
-Further an OAuth for our app is initialized that can be used for Google OAuth login using the Google OAuth credentials.
+  This is the __init__.py file in which the app is being configured and also
+  login manager is configured.  Blueprint =api= is registered in this file.
+  Here we initialize our application using flask, it will be referred to as app
+  and import the configuration from the config file, which in our case is
+  flask_app_config.py.  Further we go on build a database, which is managed by
+  SQLAlchemy.  Then a Login Manager for our app was defined just to make add
+  the user in the session to our =current_user= object provided by the Flask.
+  Further an OAuth for our app is initialized that can be used for Google OAuth
+  login using the Google OAuth credentials.
 
 #+NAME: configure
 #+BEGIN_SRC python 
@@ -33,16 +34,16 @@ login_manager = LoginManager(app)
 login_manager.login_view = "users.login"
 login_manager.session_protection = "strong"
 oauth = OAuth()
+configure_logging(app)
 #+END_SRC
 
 
 * Error Handling
-This is error handler function. It returns 404.html file when 
-an error is raised.
-App 404 error handler, redirects to 404.html whenever non exitent/registered
-route is tried to be accessed.
-App 405 error handler, redirects to 405.html whenever a existing/registered
-route is tried to be accessed using a method which is not allowed.
+  This is error handler function. It returns 404.html file when an error is
+  raised.  App 404 error handler, redirects to 404.html whenever non
+  existent/registered route is tried to be accessed.  App 405 error handler,
+  redirects to 405.html whenever a existing/registered route is tried to be
+  accessed using a method which is not allowed.
 
 #+NAME: error_handling
 #+BEGIN_SRC python
@@ -58,14 +59,47 @@ def handle_404(e):
 #+END_SRC
 
 
+* Configure Logging
+  :PROPERTIES:
+  :CUSTOM_ID: configure_logging
+  :END: 
+#+NAME: configure_logging
+#+BEGIN_SRC python
+def configure_logging(app):
+    import logging
+    import logging.handlers
+    formatter = logging.Formatter('%(asctime)s: %(levelname)s: %(filename)s:'
+                                  ' %(funcName)s():%(lineno)d: %(message)s')
+
+    # Also error can be sent out via email. So we can also have a SMTPHandler?
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           '../..',
+                           LOG_FILE_DIRECTORY)
+
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    log_file = "%s/%s" % (log_dir, LOG_FILE)
+    os.system("sudo touch %s" % log_file)
+    os.system("sudo chmod 777 %s" % log_file)
+    max_size = 1024 * 1024 * 20  # Max Size for a log file: 20MB
+    log_handler = logging.handlers.RotatingFileHandler(log_file,
+                                                       maxBytes=max_size,
+                                                       backupCount=10)
+    log_level = LOG_LEVEL
+    log_handler.setFormatter(formatter)
+    app.logger.addHandler(log_handler)
+    app.logger.setLevel(log_level)
+
+#+END_SRC
+
+
 * Roles
 ** Admin Authorisation
-This function checks if the user logged in is =Admin= or not.
-If no user is logged in, it return a JSON object with a message
-=Unauthorized= and success as =False=.
-If the user logged in is guest , it returns a JSON object with
-a message and success as =False=.
-If the user logged in is admin, function becomes true.
+   This function checks if the user logged in is =Admin= or not.  If no user is
+   logged in, it return a JSON object with a message =Unauthorized= and success
+   as =False=.  If the user logged in is guest , it returns a JSON object with
+   a message and success as =False=.  If the user logged in is admin, function
+   becomes true.
 #+NAME: admin_auth
 #+BEGIN_SRC python  
 #Custom decorator declartions to segregrate CRUD functionality available to an
@@ -87,13 +121,12 @@ def requires_admin_auth(f):
 #+END_SRC
 
 ** Guest Authorisation
+   This function checks if the user logged in is =Guest= or not.  If no user is
+   logged in, it return a JSON object with a message =Unauthorized= and success
+   as =False=.  If the user logged in has another role , it returns a JSON
+   object with a message and success as =False=.  If the user logged in is
+   guest, function becomes true.
 
-This function checks if the user logged in is =Guest= or not.
-If no user is logged in, it return a JSON object with a message
-=Unauthorized= and success as =False=.
-If the user logged in has another role , it returns a JSON object with
-a message and success as =False=.
-If the user logged in is guest, function becomes true.
 #+NAME: guest_auth
 #+BEGIN_SRC python
 #2. Guest (Redundant as of now, should be used when more roles are added.)
@@ -112,9 +145,9 @@ def requires_guest_auth(f):
 
 
 * Routes acess via Only AJAX
-We wanted to restrict entry to some routes through AJAX calls only, this would be
-helping us to not worry about users getting to know about server implemented route
-and their access to it. 
+  We wanted to restrict entry to some routes through AJAX calls only, this
+  would be helping us to not worry about users getting to know about server
+  implemented route and their access to it.
 
 #+NAME: only_ajax
 #+BEGIN_SRC python
@@ -133,8 +166,10 @@ def disable_access_on_hash(f):
 
 
 * Login Managar
-LoginManager decorated user_loader function is defined  which allow Flask to intialise current_user object on its own, If your
-models are declared in a separate module, we need to import them before calling according to Flask documentation.
+  LoginManager decorated user_loader function is defined which allow Flask to
+  intialise current_user object on its own, If your models are declared in a
+  separate module, we need to import them before calling according to Flask
+  documentation.
 
 #+NAME: login_manager
 #+BEGIN_SRC python 
@@ -149,20 +184,21 @@ def load_user(user_id):
 
 
 * Register Blueprint(s)
-  Here we register blueprint(s) which is generally a template for generating main
-  section of our web application. In order to visit the routes in our api we need 
-  to register our blueprint (like in unittesting).
+  Here we register blueprint(s) which is generally a template for generating
+  main section of our web application. In order to visit the routes in our api
+  we need to register our blueprint (like in unittesting).
 #+NAME: blueprints
 #+BEGIN_SRC python 
-
 from runtime.rest.app.users.api import api
 app.register_blueprint(api)
+
 #+END_SRC
 
 
 * Socket
-Workaround for socket file pipes not getting enough time to restart while
-changes are made in debugger mode. ~I am trying to find a better solutions to this~.
+  Workaround for socket file pipes not getting enough time to restart while
+  changes are made in debugger mode. ~I am trying to find a better solutions to
+  this~.
 #+NAME: socket_workaround
 #+BEGIN_SRC python 
 
@@ -171,8 +207,9 @@ time.sleep(3)
 
 
 * SSL
-  We initially decided to host our app over =HTTPS= instead of =HTTP=. Hence in order to do so we need
-  SSL certificates for it. This function is supposed to create the required files for the developing.
+  We initially decided to host our app over =HTTPS= instead of =HTTP=. Hence in
+  order to do so we need SSL certificates for it. This function is supposed to
+  create the required files for the developing.
 ** SSL_DEVCERT
 #+NAME: ssl_devcert
 #+BEGIN_SRC python :tangle cert.py
@@ -208,12 +245,17 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 import time
 from functools import wraps
+from runtime.config.flask_app_config import LOG_FILE_DIRECTORY
+from runtime.config.flask_app_config import LOG_FILE
+from runtime.config.flask_app_config import LOG_LEVEL
+
 #+END_SRC
   
 
 * Tangle
 #+BEGIN_SRC python :tangle app/__init__.py :eval no :noweb yes 
 <<imports>>
+<<configure_logging>>
 <<configure>>
 <<admin_auth>>
 <<guest_auth>>
