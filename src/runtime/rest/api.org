@@ -240,7 +240,6 @@ user =Name= , =Email= and =Role= fields are required.  Implementation of the
 @login_required
 @requires_admin_auth
 def create_user():
-
     try:
         temp = json.loads(request.data)
         email = temp['email']
@@ -281,13 +280,14 @@ def create_user():
     u.name = name
     u.email = email
     u.role = role
-    current_app.logger.error("Adding user with name = %s, email = %s,"
+    current_app.logger.debug("Adding user with name = %s, email = %s,"
     " role=%s" %(u.name, u.email, u.role))
     db.session.add(u)
     try:
         db.session.commit()
-        current_app.logger.error("Sucessfully Added user with name = %s, 
-        email = %s, role=%s" %(u.name, u.email, u.role))
+        current_app.logger.debug("Sucessfully Added user with name = %s," 
+                                     "email = %s, role=%s"\
+                                     %(u.name, u.email, u.role))
 
     except IntegrityError as e:
         db.session.rollback()
@@ -525,19 +525,29 @@ def create_role():
     except:
         try:
             name = request.args['role_name']
+            current_app.logger.debug("creating new role with role_name=%s"
+                                         % name)
+
         except KeyError as e:
+            current_app.logger.error("%s not sent in the request"
+                                         % e.args)
+
             return jsonify(success=False, message="%s not sent in the request"
                                % e.args), 400
 
     if not name:
+        current_app.logger.error("No role provided")
         return jsonify(success=False, message="No role provided"), 400
 
     u = Roles(role_name=name)
     db.session.add(u)
+    current_app.logger.debug("Adding new role..")
     try:
         db.session.commit()
+        current_app.logger.debug("Sucessfully added new role..")
     except IntegrityError as e:
         db.session.rollback()
+        current_app.logger.error("This role already exists")
         return jsonify(success=False, message="This role already exists"), 500
 	
     return jsonify(success=True)
@@ -647,7 +657,7 @@ if __name__ == '__main__':
 
 *** Implementation
     This API shows the list of all users who are registered for the LDS.  The
-implementation is given below.
+    implementation is given below.
 
 #+NAME: show_users
 #+BEGIN_SRC python 
@@ -655,12 +665,13 @@ implementation is given below.
 @login_required
 @disable_access_on_hash
 def show_users():
-	users = User.query.all()
-	allusers = []
-	for i in users:
-		temp = i.to_dict()
-		allusers.append(temp)
-	return jsonify(success=True,users=allusers)
+    current_app.logger.debug("running show users...")
+    users = User.query.all()
+    allusers = []
+    for u in users:
+        temp = u.to_dict()
+        allusers.append(temp)
+    return jsonify(success=True,users=allusers)
 #+END_SRC
 *** Test Cases
 **** Imports 
@@ -790,10 +801,11 @@ Implementation of =show role= API is given below
 @login_required
 @disable_access_on_hash	
 def show_roles():
+    current_app.logger.debug("running show roles...")
     roles = Roles.query.all()
     allroles = []
-    for i in roles:
-        temp = i.to_dict()
+    for r in roles:
+        temp = r.to_dict()
         allroles.append(temp)
     return jsonify(success=True,roles=allroles)
 
@@ -899,7 +911,8 @@ if __name__ == '__main__':
     http://localhost:5000/delete_user?email=test@gmail.com
     #+END_EXAMPLE
 *** Implementation
-    Admin also has the right to delete a user. To delete a user =email= should be given as the field to delete a particular user.
+    Admin also has the right to delete a user. To delete a user =email= should
+    be given as the field to delete a particular user.
 
 #+NAME: delete_user
 #+BEGIN_SRC python 
@@ -913,24 +926,36 @@ def delete_user():
     except:
         try:
             email = request.args['user_email']
+            current_app.logger.debug("deleting user with email=%s" % email)
         except KeyError as e:
-            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+            current_app.logger.error("%s not sent in the request" % e.args)
+            return jsonify(success=False, message="%s not sent in the"
+                               "request" % e.args), 400
 
     user = User.query.filter(User.email == email)
     user_todel = user.first()
     
     if user_todel is None:
-        return jsonify(success=False, message="This email does not exists"), 400
+        current_app.logger.error("This email does not exists to delete user")
+        return jsonify(success=False,
+                           message="This email does not exists"), 400
     elif (user_todel == current_user):
-    	return jsonify(success=False, message="This is not an valid operation"), 400
+        current_app.logger.error("This is not a valid operation")
+    	return jsonify(success=False,
+                           message="This is not a valid operation"), 400
     elif (user_todel.role == 'admin' and len(user) == 1):
-    	return jsonify(success=False, message="At least one admin must be present"), 400
+        current_app.logger.error("At least one admin must be present")
+    	return jsonify(success=False,
+                           message="At least one admin must be present"), 400
 
     db.session.delete(user_todel)
+    current_app.logger.debug("Deleting user %s" % user_todel)
     try:
         db.session.commit()
+        current_app.logger.debug("Successfully deleted user %s" % user_todel)
     except IntegrityError as e:
         db.session.rollback()
+        current_app.logger.error("could'nt delete the user %s" % user_todel)
         return jsonify(success=False, message="could'nt delete the user"), 500
     return jsonify(success=True)
 
@@ -1083,25 +1108,37 @@ def delete_role():
     except:
         try:
             role_name = request.args['role_name']
+            current_app.logger.debug("deleting role with role_name=%s"
+                                         % role_name)
         except KeyError as e:
-            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+            current_app.logger.error("%s not sent in the request"
+                                         % e.args)
+            return jsonify(success=False, message="%s not sent in the request"
+                               % e.args), 400
 
     if not role_name:
+        current_app.logger.error("No role provided")
         return jsonify(success=False, message="No role provided"), 400
 
     role_todel = Roles.query.filter(Roles.role_name==role_name).first()
     
     if role_todel is None:
+        current_app.logger.error("This role does not exists")        
         return jsonify(success=False, message="This role does not exists"), 400
     elif (role_todel == 'admin'):
-    	return jsonify(success=False, message="You cannot delete this role"), 400
+        current_app.logger.error("You cannot delete this role")                
+    	return jsonify(success=False, message="You cannot delete"
+                           "this role"),400
     
+    current_app.logger.debug("Deleting role %s" %role_todel)                
     db.session.delete(role_todel)
     try:
+        current_app.logger.debug("Deleted role %s" %role_todel)                
         db.session.commit()
     except IntegrityError as e:
         db.session.rollback()
-        return jsonify(success=False, message="could'nt delete the user"), 500
+        current_app.logger.error("could'nt delete the role" %role_todel)                
+        return jsonify(success=False, message="could'nt delete the role"), 500
     return jsonify(success=True)
 
 
@@ -1244,34 +1281,46 @@ def update_user():
             new_email = request.args.get['new_email']
             new_role = request.args.get['new_role']
         except KeyError as e:
-            return jsonify(success=False, message="%s not sent in the request" % e.args), 400
+            current_app.logger.error("%s not sent in the request" %e.args)                
+            return jsonify(success=False, message="%s not sent in the request"
+                               % e.args), 400
 
     if not (new_name or new_role or new_email):
-        return jsonify(success=False, message="Invalid arguments were provided"), 400
+        current_app.logger.error("Invalid arguments were provided")                        
+        return jsonify(success=False, message="Invalid arguments were"
+                           "provided"), 400
 
     user_toupdate = User.query.filter(User.email == email).first()
     user_checkupdate = User.query.filter(User.email == new_email).first()
 
     if user_toupdate is None:
+        current_app.logger.error("This email doesn't exists")                        
         return jsonify(success=False, message="This email doesn't exists"), 400
     elif user_checkupdate is not None and user_checkupdate != user_toupdate:
+        current_app.logger.error("Email is already registered in our"
+        "database.")                        
         return jsonify(success=False, message="Email is already registered in our database."), 400
 
     check_role = Roles.query.filter(Roles.role_name == new_role).first()
     if check_role is None:
+        current_app.logger.error("%s Role doesn't exist" %check_role)
         return jsonify(success=False, message="Role doesn't exist"), 400
     elif check_role.role_name == 'admin' and check_role != current_user:
-        return jsonify(success=False, message="You cannot edit another admin"), 400
+        current_app.logger.error("You cannot edit another admin")
+        return jsonify(success=False, message="You cannot edit another admin"),
+        400
 
 
     user_toupdate.name = new_name
     user_toupdate.email = new_email
     user_toupdate.role = new_role
-
+    current_app.logger.debug("Updating User...")
     try:
         db.session.commit()
+        current_app.logger.debug("Updated User Successfully...")
     except IntegrityError as e:
         session.rollback()
+        current_app.logger.error("Could not update the user")
         return jsonify(success=False, message="Could not update the user"), 500
 
     return jsonify(success=True)
@@ -1473,30 +1522,37 @@ def update_own():
             new_name = request.args.get['new_name']
             new_email = request.args.get['new_email']
         except KeyError as e:
+            current_app.logger.error("%s not sent in the request" % e.args)
             return jsonify(success=False, message="%s not sent in the request" % e.args), 400
 
     print session['data']['email']
 
     if email != session['data']['email']:
+        current_app.logger.error("There was a session's email mismatch" % e.args)
         return jsonify(success=False, message="There was a session's email mismatch"), 400
     elif not (new_name or new_email):
+        current_app.logger.error("Invalid arguments were provided")
         return jsonify(success=False, message="Invalid arguments were provided"), 400
 
     user_toupdate = User.query.filter(User.email == email).first()
     user_checkupdate = User.query.filter(User.email == new_email).first()
 
     if user_toupdate is None:
+        current_app.logger.error("This email doesn't exists.")
         return jsonify(success=False, message="This email doesn't exists."), 400
     elif user_checkupdate is not None and user_toupdate != user_checkupdate:
+        current_app.logger.error("Email is already registered in our database.")
         return jsonify(success=False, message="Email is already registered in our database."), 400
 
     user_toupdate.name = new_name
     user_toupdate.email = new_email
-
+    current_app.logger.debug("Updating user...")
     try:
         db.session.commit()
+        current_app.logger.debug("Updated user successfully")
     except IntegrityError as e:
         session.rollback()
+        current_app.logger.error("Could not update the user")
         return jsonify(success=False, message="Could not update the user"), 500
     if user_toupdate.email == session['data']['email']:
         return jsonify(success=True, logout=True), 200
