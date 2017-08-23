@@ -108,7 +108,7 @@ def callback():
             email = data['email']
             current_app.logger.debug("Email = %s" % email)
             user = User.query.filter_by(email=email).first()
-            current_app.logger.debug("User = %s" % user.to_client())
+            current_app.logger.debug("User = %s" % user)
             if user is None:
                 return render_template("index.html")
             roles = Roles.query.all()
