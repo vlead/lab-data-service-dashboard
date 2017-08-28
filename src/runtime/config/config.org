@@ -63,6 +63,10 @@ SECRET_KEY = os.urandom(13)
 LOGIN_REQUIRED = True
 TESTING = False
 
+#Google Authentication Credentials
+CONSUMER_KEY = "420719460133-g13g6abnnised3v4nq4d430jo8mpb9m8.apps.googleusercontent.com"
+CONSUMER_SECRET = "DQxOnwOectvfFFe05jqKTIQT"
+
 #+END_SRC
 
 

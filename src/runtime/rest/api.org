@@ -37,6 +37,7 @@ def index():
     When user clicks on =login= button from f/e it will invoke =/login= api and
     thereby it will forward request to =google=. User must sign in using it's 
     google credentials which is then stored in our database.
+
 #+NAME: oauth_session_creation
 #+BEGIN_SRC python 
 def get_google_auth(state=None, token=None):
@@ -58,6 +59,12 @@ def get_google_auth(state=None, token=None):
 
 #+NAME: login_route
 #+BEGIN_SRC python
+@api.route('/login')
+def login():
+    return google_oauth.authorize(callback=url_for('APIs.authorized', _external=True))
+#+END_SRC
+
+#+BEGIN_SRC python 
 @api.route('/login', methods=["GET"])
 def login():
     if current_user.is_authenticated:
@@ -69,7 +76,7 @@ def login():
     return redirect(auth_url, code=302)
  
 #+END_SRC
-    
+
 *** Google Callback response =API=
     - Once the Google verfies the user credentials it will send callback
       response to =/authorized= api which should be registered at google's
@@ -79,6 +86,56 @@ def login():
       authorize the user to use the application.
 
 #+NAME: callback_google_api
+#+BEGIN_SRC python 
+@api.route('/authorized')
+def authorized():
+    try:
+        resp = google_oauth.authorized_response()
+        if resp is None:
+            return redirect("/")
+        session['google_token'] = (resp['access_token'], '')
+        user_info = google_oauth.get('userinfo')
+        email = str(user_info.data['email'])
+
+    except Exception as e:
+        session['error'] = "Error in Google Authentication : " + str(e)            
+        return redirect("/")
+    try:
+        url_for_getting_the_user = "%s/users?email=%s" % \
+                                   (APP_URL, email)
+        backend_resp = requests.get(url_for_getting_the_user)
+
+        if (len(backend_resp.text.encode('ascii')) != 2):
+            if 'error' in session:
+                session.pop('error', None)
+
+            session['email'] = email
+            role = backend_resp.json()[0]['role']['name'].encode('ascii')
+            name = backend_resp.json()[0]['name'].encode('ascii')
+            session['role'] = role
+            session['name'] = name
+            session['id'] = backend_resp.json()[0]['id']
+            
+            if role == "OC":
+                return redirect("/oc")
+            
+            elif role == "NC":
+                return redirect("/nc")
+            
+            elif role == "admin":
+                return redirect("/admin")
+
+        else:        
+            session.pop('google_token', None)
+            session['error'] = "Unauthorized Email : "+email            
+            return redirect("/")
+          
+    except Exception as e:
+        session['error'] = "Error in Outreach Authentication : "+str(e)            
+        return redirect("/")
+
+#+END_SRC
+
 #+BEGIN_SRC python
 @api.route('/gCallback')
 def callback():
@@ -131,15 +188,31 @@ def callback():
             return redirect('/')
 
         return  jsonify(success=False, message="Couldn't fetch information"), 400
-
 #+END_SRC
 
 *** Google OAuth Credentials
     Google OAuth service required URLs (Credentials) should be specified
 
 #+NAME: google_oauth_configuration
-#+BEGIN_SRC python
+#+BEGIN_SRC python 
+session_list = {}
+oauth = OAuth()
+google_oauth = oauth.remote_app(
+    'google',
+    consumer_key=CONSUMER_KEY,
+    consumer_secret=CONSUMER_SECRET,
+    request_token_params={
+        'scope': 'email', 'prompt' : 'select_account'
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
+#+END_SRC
+#+BEGIN_SRC python 
 class Auth:
     CLIENT_ID = "Your client ID"
     CLIENT_SECRET = "Your client secret"
@@ -173,6 +246,22 @@ class Auth:
 
 #+NAME: logout_route
 #+BEGIN_SRC python
+@api.route('/logout')
+def logout():
+    if 'google_token' in session:
+        session.pop('google_token', None)
+        session.pop('role', None)
+        session.pop('email', None)
+        session.pop('id', None)
+        session.pop('name', None)
+    if 'error' in session:
+        session.pop('error', None)
+
+    return redirect("/")
+
+#+END_SRC
+
+#+BEGIN_SRC python 
 
 @api.route('/logout', methods=["GET"])
 @login_required
@@ -200,8 +289,19 @@ def logout():
    - Error Response ::
     + Code: 400 
 *** Implemenation
+**** Google token getter
+      - Once the google verfies the credentials token will be shared.
+
 #+NAME: logged_in
-#+BEGIN_SRC python
+#+BEGIN_SRC python 
+@google_oauth.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
+
+#+END_SRC
+
+#+NAME: logged_in
+#+BEGIN_SRC python 
 @api.route('/logged_in', methods=['GET'])
 def loggedin():
     if 'google_token' in session:
@@ -2255,8 +2355,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_required, login_user, \
     logout_user, current_user
 from requests_oauthlib import OAuth2Session
+from flask_oauthlib.client import OAuth
 from requests.exceptions import HTTPError
 from runtime.config.goauth_config import Auth
+from runtime.config.flask_app_config import CONSUMER_KEY, CONSUMER_SECRET
 from runtime.rest.app import app, db, requires_guest_auth, \
      requires_admin_auth, disable_access_on_hash
 from runtime.rest.app.users.db import User, Roles
@@ -2280,6 +2382,7 @@ api = Blueprint('users', __name__)
 ** sources
 #+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
 <<imports_for_sources>>
+<<google_oauth_configuration>>
 <<oauth_session_creation>>
 <<serve_index_html>>
 <<login_route>>	
