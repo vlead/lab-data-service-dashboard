@@ -85,7 +85,7 @@ KEY = os.urandom(13)
 class Auth:
     CLIENT_ID = "Your client ID"
     CLIENT_SECRET = "Your client secret"
-    REDIRECT_URI = 'https://localhost:5000/gCallback'
+    REDIRECT_URI = 'https://localhost:5000/authorized'
     AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
     TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
     USER_INFO = 'https://www.googleapis.com/userinfo/v2/me'

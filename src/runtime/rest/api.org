@@ -61,7 +61,8 @@ def get_google_auth(state=None, token=None):
 #+BEGIN_SRC python
 @api.route('/login')
 def login():
-    return google_oauth.authorize(callback=url_for('APIs.authorized', _external=True))
+    return google_oauth.authorize(callback=url_for('users.authorized', _external=True))
+
 #+END_SRC
 
 #+BEGIN_SRC python 
@@ -89,55 +90,59 @@ def login():
 #+BEGIN_SRC python 
 @api.route('/authorized')
 def authorized():
-    try:
-        resp = google_oauth.authorized_response()
-        if resp is None:
-            return redirect("/")
-        session['google_token'] = (resp['access_token'], '')
-        user_info = google_oauth.get('userinfo')
-        email = str(user_info.data['email'])
-
-    except Exception as e:
-        session['error'] = "Error in Google Authentication : " + str(e)            
+    if current_user is not None and current_user.is_authenticated:
         return redirect("/")
-    try:
-        url_for_getting_the_user = "%s/users?email=%s" % \
-                                   (APP_URL, email)
-        backend_resp = requests.get(url_for_getting_the_user)
-
-        if (len(backend_resp.text.encode('ascii')) != 2):
-            if 'error' in session:
-                session.pop('error', None)
-
-            session['email'] = email
-            role = backend_resp.json()[0]['role']['name'].encode('ascii')
-            name = backend_resp.json()[0]['name'].encode('ascii')
-            session['role'] = role
-            session['name'] = name
-            session['id'] = backend_resp.json()[0]['id']
-            
-            if role == "OC":
-                return redirect("/oc")
-            
-            elif role == "NC":
-                return redirect("/nc")
-            
-            elif role == "admin":
-                return redirect("/admin")
-
-        else:        
-            session.pop('google_token', None)
-            session['error'] = "Unauthorized Email : "+email            
-            return redirect("/")
-          
-    except Exception as e:
-        session['error'] = "Error in Outreach Authentication : "+str(e)            
+    if 'error' in request.args:
+        if request.args.get('error') == 'access_denied':
+            current_app.logger.error("You have been denied access.")
+            return 'You have been denied access.'
+        return 'Error encountered.'
+    if 'code' not in request.args and 'state' not in request.args:
         return redirect("/")
+    else:
+        google = get_google_auth(state=session.get('oauth_state'))
+        try:
+            token = google.fetch_token(
+                Auth.TOKEN_URI,
+                client_secret=Auth.CLIENT_SECRET,
+                authorization_response=request.url)
+        except:
+            return jsonify(success=False, message="HTTP connectivity error"), 401
 
+        google = get_google_auth(token=token)
+        resp = google.get(Auth.USER_INFO)
+        data = resp.json()
+        if resp.status_code == 200:
+            email = data['email']
+            current_app.logger.debug("Email = %s" % email)
+            user = User.query.filter_by(email=email).first()
+            current_app.logger.debug("User = %s" % user)
+            if user is None:
+                return render_template("index.html")
+            roles = Roles.query.all()
+            allroles = []
+            for i in roles:
+                temp = i.to_dict()
+                allroles.append(temp['role'])
+            if user.role in allroles:
+                current_app.logger.debug("cheking user role in all roles")
+                login_user(user)
+                current_app.logger.debug("User Logged in Sucessfully")
+                session['type'] = user.role
+            else:
+                return render_template("index.html")
+
+            session['google_token'] = token
+            session['data'] = user.to_dict()
+            current_app.logger.debug("data = %s" % session['data'])
+#            print session['data']
+            return redirect('/')
+
+        return  jsonify(success=False, message="Couldn't fetch information"), 400
 #+END_SRC
 
 #+BEGIN_SRC python
-@api.route('/gCallback')
+@api.route('/authorized')
 def callback():
     if current_user is not None and current_user.is_authenticated:
         return redirect("/")
