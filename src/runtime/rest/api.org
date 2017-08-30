@@ -330,7 +330,7 @@ import client
 #+NAME: test_add_user
 #+BEGIN_SRC python :tangle app/tests/test_add_user.py
 class TestAddUser(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -581,7 +581,7 @@ import client
 #+NAME: test_add_role
 #+BEGIN_SRC python :tangle app/tests/test_add_role.py
 class TestAddRole(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -701,7 +701,7 @@ import client
 #+NAME: test_show_users
 #+BEGIN_SRC python :tangle app/tests/test_show_users.py
 class TestShowUsers(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -839,7 +839,7 @@ import client
 #+NAME: test_show_roles
 #+BEGIN_SRC python :tangle app/tests/test_show_roles.py
 class TestShowRole(TestCase):
-	TESTING = True
+	
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -987,7 +987,7 @@ import client
 #+NAME: test_delete_user
 #+BEGIN_SRC python :tangle app/tests/test_delete_user.py
 class TestDeleteUser(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -1170,7 +1170,7 @@ import client
 #+NAME: test_delete_role
 #+BEGIN_SRC python :tangle app/tests/test_delete_role.py
 class TestDeleteRole(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -1353,7 +1353,7 @@ import client
 #+NAME: test_update_user
 #+BEGIN_SRC python :tangle app/tests/test_update_user.py
 class TestUpdateUsers(TestCase):
-	TESTING = True
+	
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1596,7 +1596,7 @@ config = {
 #+NAME: test_update_profile
 #+BEGIN_SRC python :tangle app/tests/test_update_profile.py
 class TestUpdateUsers(TestCase):
-	TESTING = True
+	
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1786,7 +1786,7 @@ from runtime.rest.app import app, db
 import client
 
 class TestLdsGet(TestCase):
-	TESTING = True
+	
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1916,7 +1916,7 @@ from runtime.rest.app import app, db
 import client
 
 class TestLdsPost(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -2131,7 +2131,7 @@ from runtime.rest.app import app, db
 import client
 
 class TestLdsPost(TestCase):
-    TESTING = True
+    
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -2264,6 +2264,7 @@ import os
 import json
 import re
 import time
+import requests
 from sqlalchemy.exc import IntegrityError
 
 api = Blueprint('users', __name__)
