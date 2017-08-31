@@ -27,6 +27,8 @@ app = Flask(__name__)
 app.config.from_object("runtime.config.flask_app_config")
 app.config['TRAP_HTTP_EXCEPTIONS']=True
 app.config['CORS_HEADERS'] = 'Content-Type'
+# Until running with secured SSL verified certificates
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 db = SQLAlchemy(app)
 
