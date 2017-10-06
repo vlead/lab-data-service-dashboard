@@ -1758,9 +1758,14 @@ def lds_connect1():
 
     os.environ['http_proxy'] = os.environ['https_proxy'] = ''
     r = requests.get('https://localhost:1307/'+payload, verify = False)
+    print r.headers['X-Pagination']
+    try:
+        page = r.headers['X-Pagination']
+    except:
+        page = None
     os.environ['http_proxy'] = http_proxy
     os.environ['https_proxy'] = https_proxy
-    return jsonify(success=True, data=r.json()), 200
+    return jsonify(success=True, data=r.json(), page=page), 200
 
 #+END_SRC
 **** Test Cases
@@ -2026,9 +2031,13 @@ def lds_connect3():
         except:
             return jsonify(success=False, message="Arguments were broken"), 400
     
-    payment = json.loads(payload)['data'] 
-    payment['key'] = 'defaultkey'
-    call = json.loads(payload)['call']+'s'
+    payment = json.loads(payload)['data']
+    print payment
+    try:
+        payment['key'] = 'defaultkey'
+        call = json.loads(payload)['call']+'s'
+    except:
+        call = json.loads(payload)['call']+'s?key=defaulykey'
     data = json.dumps(payment)    
 
     try:
