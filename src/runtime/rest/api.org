@@ -212,6 +212,45 @@ def loggedin():
         return jsonify(success=False), 300
 
 #+END_SRC
+** Signup
+*** API Design
+   - URL :: /signup
+   - Method :: GET
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+
+   - URL :: /signup
+   - Method :: POST
+   - Success Response ::
+    + Code: 200
+   - Error Response ::
+    + Code: 400 
+*** Implemenation
+#+NAME: sign_up
+#+BEGIN_SRC python
+@api.route("/signup", methods=['GET','POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form['input_name']
+        email = request.form['input_email']
+        body = request.form['input_body']
+        print name,email,body
+        if email and body and name:
+            msg = Message('Access Request', sender=ADMINS[0], recipients=[email])
+            msg.body = """
+            From: %s 
+            Googe Email: %s;
+            Reason: %s
+            """ % (name, email, body)
+            mail.send(msg)
+            return redirect('/')
+        else:
+            return jsonify(success=False, message="Fill all fields"), 400
+    else:
+        return render_template('contact.html')
+#+END_SRC 
 ** Add User
    API to add a User
 *** API Design
@@ -2267,14 +2306,15 @@ from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 from runtime.config.goauth_config import Auth
 from runtime.rest.app import app, db, requires_guest_auth, \
-     requires_admin_auth, disable_access_on_hash
+     requires_admin_auth, disable_access_on_hash, ADMINS, mail
 from runtime.rest.app.users.db import User, Roles
 import os
 import json
 import re
 import time
-import requests
 from sqlalchemy.exc import IntegrityError
+import requests
+from flask_mail import Message
 
 api = Blueprint('users', __name__)
 
@@ -2296,6 +2336,7 @@ api = Blueprint('users', __name__)
 <<callback_google_api>>
 <<logout_route>>
 <<logged_in>>
+<<sign_up>>
 <<add_user>>
 <<add_role>>
 <<show_users>>
@@ -2312,4 +2353,5 @@ api = Blueprint('users', __name__)
    
 
 
+   
    

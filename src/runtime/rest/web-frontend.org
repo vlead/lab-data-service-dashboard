@@ -2210,6 +2210,33 @@ window.onload = function () {
 
 #+END_SRC  
 
+** Contact Form
+#+NAME: contact
+#+BEGIN_SRC js :tangle app/static/js/contact.js
+var AuthAPI = {
+    login: function() {
+      window.location.href = '/login';
+    },
+    logout: function() {
+      window.location.href = '/logout';
+    }
+  };
+  
+  var index_handler = function() {
+    var auth_btn = $('#login-logout-btn')[0];
+    var span_btn = $('#login-logout-spn')[0];
+
+      auth_btn.onclick = AuthAPI.login;
+      auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGIN';
+      span_btn = $('#login-logout-spn')[0];
+      span_btn.className = 'glyphicon glyphicon-log-in';
+  };
+
+  window.onload = function () {
+    index_handler();
+};
+
+#+END_SRC
 * HTML
 ** Index
 The App is now a SPA. Here's the basic skeleton.  
@@ -2248,13 +2275,69 @@ The App is now a SPA. Here's the basic skeleton.
 </html>
 
 #+END_SRC
+** Contact
+#+NAME: contact
+#+BEGIN_SRC html :tangle app/templates/contact.html
 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes"/>
+    <title>LDS Dashboard</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->	
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="./static/js/contact.js"></script>
+  </head>
+  <body id="body">
+    <nav class="navbar navbar-inverse"> 
+      <div class="container-fluid">
+    	<div class="navbar-header">
+      	  <a class="navbar-brand">LDS Dashboard</a>
+    	</div>
+    	<ul class="nav navbar-nav">
+      	  <li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick=""><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
+    	</ul>
+    	<ul class="nav navbar-nav navbar-right">
+      	  <li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
+    	</ul>
+      </div>
+    </nav>
+    <div class = 'jumbotron' id ="contact_form">
+    <form action="/signup" method="POST">
+        <fieldset>
+          <legend>LDS Request Form:</legend>
+          Name:<br>
+          <input id='input_name' type="text" name="input_name" value="">
+          <br>
+          Email:<br>
+          <input id='input_email' type="text" name="input_email" value="">
+          <br/>
+          Body:<br>
+          <input id='input_body' type="textarea" name="input_body" value="">
+          <br/>
+          <br/>
+          <button type="submit" value="Submit">Submit</button>
+          <button type="reset" value="Reset">Reset</button>
+        </fieldset>
+      </form>
+    </div>
+  </body>
+</html>
+
+
+#+END_SRC
 * CSS
 ** CSS
    This is styling code for our side nav bar.
    ~Will be removed from here in future releases~
 #+NAME: style
 #+BEGIN_SRC css :tangle app/static/css/style.css 
+
 .sidenav {
 height: 100%;
 width: 250px;
@@ -2280,6 +2363,60 @@ transition: 0.3s;
 #main {
 	margin-left: 280px;
 }
+
+form input {
+	width: 400px;
+	background-color: #fafafa;
+	-webkit-border-radius: 3px;
+	   -moz-border-radius: 3px;
+			border-radius: 3px;
+	border: 1px solid #cccccc;
+	padding: 5px;
+	font-size: 1.1em;
+  }
+
+  form input#submit {
+	display: block;
+	-webkit-border-radius: 3px; 
+	   -moz-border-radius: 3px;
+			border-radius: 3px;
+	border:1px solid #d8d8d8;
+	padding: 10px; 
+	font-weight:bold; 
+	text-align: center; 
+	color: #000000; 
+	background-color: #f4f4f4;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f4f4f4), color-stop(100%, #e5e5e5));
+	background-image: -webkit-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: -moz-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: -ms-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: -o-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: linear-gradient(top, #f4f4f4, #e5e5e5);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#f4f4f4, endColorstr=#e5e5e5);
+  }
+   
+  form input#submit:hover{
+	cursor: pointer;
+	border:1px solid #c1c1c1; 
+	background-color: #dbdbdb;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdbdb), color-stop(100%, #cccccc));
+	background-image: -webkit-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: -moz-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: -ms-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: -o-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: linear-gradient(top, #dbdbdb, #cccccc);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#dbdbdb, endColorstr=#cccccc);
+  }
+
+  form
+  {
+	  display: inline-block;
+	  margin-left: auto;
+	  margin-right: auto;
+	  text-align: left;
+  }
+  #contact_form {
+	display: flex;
+	justify-content: center;
+  }
 #+END_SRC
 
 * JSON
