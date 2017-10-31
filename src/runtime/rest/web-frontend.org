@@ -144,16 +144,19 @@ var is_logged_in = function() {
    draft. This data is planned to be fed to functions that would genrate
    elements for us and finally appends them to the body.
 
-#+NAME: get_json_dash
+#+NAME: get_json
 #+BEGIN_SRC js 
-var getJSONDash = function(role) {
+getJSON = function(role) {
   $.ajax({
     url: 'static/js/main.json',
     dataType: 'json',
     async: false,
     success: function (response) {
-      className = role+ '_dash';
-      data = response[className];
+      data = []
+      className1 = role+ '_nav';
+      className2 = role+ '_dash';
+      data[0] = response[className1];
+      data[1] = response[className2];
     },
     error: function() {
       data = null;
@@ -161,27 +164,6 @@ var getJSONDash = function(role) {
   });
   return data;
 };
-
-#+END_SRC
-
-#+NAME: get_json_nav
-#+BEGIN_SRC js
-var getJSONNav = function(role) {
-  $.ajax({
-    url: 'static/js/main.json',
-    dataType: 'json',
-    async: false,
-    success: function (response) {
-      className = role+ '_nav';
-      data = response[className];
-    },
-    error: function() {
-      data = null;
-    }
-  });
-  return data;
-};
-
 #+END_SRC
 ** Docoding a JSON
    Since we had the HTML data in JSON format we were in a need of functions to
@@ -193,10 +175,14 @@ var getJSONNav = function(role) {
 
 #+NAME: create_Division
 #+BEGIN_SRC js
+
 var createDivisions = function () {
-  attachDivsionsToBody(getJSONNav(session_detail.role).map(createElements));
-  attachDivsionsToBody(getJSONDash(session_detail.role).map(createElements));
+  jsonData = getJSON(session_detail.role)
+  console.log(jsonData)
+  attachDivsionsToBody(jsonData[0].map(createElements));
+  attachDivsionsToBody(jsonData[1].map(createElements));
 };
+
 #+END_SRC
 
 #+NAME: decoding_Json
@@ -903,7 +889,6 @@ called which attaches event handlers to all the update buttons.
     $('#edit-new-email-own').val(session_detail.email);
   });
 
-};
 #+END_SRC
 When the =home-btn-update-profile= button is clicked, the name and email of the
 user logged in is extracted from the session and populated on the update
@@ -926,14 +911,12 @@ var select = document.querySelectorAll('[class^="lds-show-asset"]');
 #+NAME: onClick_event_handler6
 #+BEGIN_SRC  js
   var select = document.querySelectorAll('[class^="lds-show-over"]');
-  [].forEach.call(select, function (button) {
+  [].forEach.call(select, function(button) {
     $('#'+button.id).on('click', function(clickEvent) {
-        console.log(button.id.split('-').pop(-1));
-        call = button.id.split('-').pop(-1);
-        populate_over_tables_call(call,check_function(call));
-    });  
-  }); 
-
+      call = button.id.split('-').pop(-1);
+      populate_over_tables_call(call,check_function(call));
+    });
+  });
 
 #+END_SRC
 
@@ -956,7 +939,7 @@ populated.  Here =check_function('sections')= returns the list of sections.
   $(document).on('click', '#home-btn-show-sections', function(clickEvent) {
     populate_tables_section(check_function('sections'));
   });
-
+};
 #+END_SRC
 
 #+NAME: onClick_event_handler9
@@ -1346,8 +1329,11 @@ var check_function = function(call) {
     contentType: 'json/application,charset=UTF-8',
     async: false,
     success: function (response) {
-      table_data = response.data
-      console.log(response);     
+      table_data = []
+      table_data[0] = response.data
+      if (response.page) {
+        table_data[1] = response.page 
+      }
     },
     error: function (response) {
       table_data = response.data
@@ -1532,34 +1518,60 @@ populated.  It takes the updated data and populates the table accordingly.
 #+BEGIN_SRC js
 var populate_tables_dev = function(data) {
   $('#developer-table').find('tr:not(:first)').remove();
+  entity = 'developer';
+  var buttons = document.querySelectorAll('[id^=Nav]');
+  [].forEach.call(buttons, function (button) {
+    $('#'+button.id).remove();
+  });
+  if (data.length-1) {
+    var foo = document.getElementById("show-"+entity+'-container');
+    page_data = JSON.parse(data[1]);
+    var button1 = document.createElement("button");
+    if (page_data.nextPageLink){
+    button1.innerHTML = "Next";  
+    button1.setAttribute('id','NavnextButtton'+entity)
+      $(button1).on('click', function(clickEvent) {
+        populate_over_tables_call(entity,check_function(page_data.nextPageLink.slice(1)));   
+      });
+      foo.appendChild(button1);
+    }
+    if (page_data.previousPageLink) {
+      var button2 = document.createElement("button");
+      button2.setAttribute('id','NavbackButton'+entity)
+      button2.innerHTML = "Back";
+      $(button2).on('click', function(clickEvent) {
+        populate_over_tables_call(entity,check_function(page_data.previousPageLink.slice(1)));
+      });
+      foo.appendChild(button2); 
+    }
+  } 
   var tableRef = document.getElementById('developer-table').getElementsByTagName('tbody')[0];
-  for (var i in data) {
+  for (var i in data[0]) {
       var newRow = tableRef.insertRow(-1);
       var newCell = newRow.insertCell(-1);
       newCell.appendChild(document.createTextNode(Number(i)+1));
       var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(data[i].name.name));
+      newCell.appendChild(document.createTextNode(data[0][i].name.name));
       var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(data[i].email.email));
+      newCell.appendChild(document.createTextNode(data[0][i].email.email));
 
       var newCell = newRow.insertCell(-1);
       var updateButton = document.createElement('button');
       updateButton.setAttribute('id','update-developer-pre-sbt-'+i);
-      updateButton.setAttribute('email',data[i].email.email);
-      updateButton.setAttribute('name',data[i].name.name);
+      updateButton.setAttribute('email',data[0][i].email.email);
+      updateButton.setAttribute('name',data[0][i].name.name);
       updateButton.appendChild(document.createTextNode('Update'));
       newCell.appendChild(updateButton);
 
       var newCell = newRow.insertCell(-1);
       var removeButton = document.createElement('button');
       removeButton.setAttribute('id','remove-developer-pre-sbt-'+i);
-      removeButton.setAttribute('email',data[i].email.email);
+      removeButton.setAttribute('email',data[0][i].email.email);
       removeButton.appendChild(document.createTextNode('Delete'));
       newCell.appendChild(removeButton);
   }
   updateDeveloperHelperFunction(); 
 };
-
 #+END_SRC
 Also, in each row, an =update= and a =delete= button is added so as
 to update or delete the developer. The buttons are assigned specific
@@ -1577,30 +1589,56 @@ buttons.
 #+BEGIN_SRC js
 var populate_tables_section = function(data) {
   $('#section-table').find('tr:not(:first)').remove();
-  console.log(data);
+  entity = 'section'
+  var buttons = document.querySelectorAll('[id^=Nav]');
+  [].forEach.call(buttons, function (button) {
+    $('#'+button.id).remove();
+  });
+  if (data.length-1) {
+    var foo = document.getElementById("show-"+entity+'-container');
+    page_data = JSON.parse(data[1]);
+    var button1 = document.createElement("button");
+    if (page_data.nextPageLink){
+    button1.innerHTML = "Next";  
+    button1.setAttribute('id','NavnextButtton'+entity)
+      $(button1).on('click', function(clickEvent) {
+        populate_over_tables_call(entity,check_function(page_data.nextPageLink.slice(1)));   
+      });
+      foo.appendChild(button1);
+    }
+    if (page_data.previousPageLink) {
+      var button2 = document.createElement("button");
+      button2.setAttribute('id','NavbackButton'+entity)
+      button2.innerHTML = "Back";
+      $(button2).on('click', function(clickEvent) {
+        populate_over_tables_call(entity,check_function(page_data.previousPageLink.slice(1)));
+      });
+      foo.appendChild(button2);
+    }
+  } 
   var tableRef = document.getElementById('section-table').getElementsByTagName('tbody')[0];
-  for (var i in data) {
+  for (var i in data[0]) {
       var newRow = tableRef.insertRow(-1);
       var newCell = newRow.insertCell(-1);
       newCell.appendChild(document.createTextNode(Number(i)+1));
       var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(data[i].id));
+      newCell.appendChild(document.createTextNode(data[0][i].id));
       var newCell = newRow.insertCell(-1);
-      newCell.appendChild(document.createTextNode(data[i].name));
+      newCell.appendChild(document.createTextNode(data[0][i].name));
 
       var newCell = newRow.insertCell(-1);
       var updateButton = document.createElement('button');
       updateButton.setAttribute('id','update-section-pre-sbt-'+i);
-      updateButton.setAttribute('ids',data[i].id);
-      updateButton.setAttribute('name',data[i].name);
+      updateButton.setAttribute('ids',data[0][i].id);
+      updateButton.setAttribute('name',data[0][i].name);
       updateButton.appendChild(document.createTextNode('Update'));
       newCell.appendChild(updateButton);
 
       var newCell = newRow.insertCell(-1);
       var removeButton = document.createElement('button');
       removeButton.setAttribute('id','remove-section-pre-sbt-'+i);
-      removeButton.setAttribute('ids',data[i].id);
-      removeButton.setAttribute('name',data[i].name);
+      removeButton.setAttribute('ids',data[0][i].id);
+      removeButton.setAttribute('name',data[0][i].name);
       removeButton.appendChild(document.createTextNode('Delete'));
       newCell.appendChild(removeButton);
   }
@@ -1621,38 +1659,64 @@ specific id's based on its =id= in the database.
 #+BEGIN_SRC js
 var populate_asset_tables_call = function(entity, data) {
   $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
-
+  var buttons = document.querySelectorAll('[id^=Nav]');
+  [].forEach.call(buttons, function (button) {
+    $('#'+button.id).remove();
+  });
+  if (data.length-1) {
+    var foo = document.getElementById("show-"+entity+'-container');
+    page_data = JSON.parse(data[1]);
+    var button1 = document.createElement("button");
+    if (page_data.nextPageLink){
+    button1.innerHTML = "Next";  
+    button1.setAttribute('id','NavnextButtton'+entity)
+      $(button1).on('click', function(clickEvent) {
+        populate_over_tables_call(entity,check_function(page_data.nextPageLink.slice(1)));   
+      });
+      foo.appendChild(button1);
+    }
+    if (page_data.previousPageLink) {
+      var button2 = document.createElement("button");
+      button2.setAttribute('id','NavbackButton'+entity)
+      button2.innerHTML = "Back";
+      $(button2).on('click', function(clickEvent) {
+        populate_over_tables_call(entity,check_function(page_data.previousPageLink.slice(1)));
+      });
+      foo.appendChild(button2);
+    }
+  } 
   var tableRef = document.getElementById(entity.slice(0,-1) +'-table').getElementsByTagName('tbody')[0];
-  for (var i in data) {
+  for (var i in data[0]) {
       var newRow = tableRef.insertRow(-1);
       var newCell = newRow.insertCell(-1);
       newCell.appendChild(document.createTextNode(Number(i)+1));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].asset));
+      newCell.appendChild(document.createTextNode(data[0][i].asset));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,-1)+'_id']));
+      newCell.appendChild(document.createTextNode(data[0][i][entity.slice(0,-1)+'_id']));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,-1)+'_name']));
+      newCell.appendChild(document.createTextNode(data[0][i][entity.slice(0,-1)+'_name']));
       
       var newCell = newRow.insertCell(-1);
       var updateButton = document.createElement('button');
       updateButton.setAttribute('id','update-'+entity.slice(0,-1)+'-pre-sbt-'+i);
-      updateButton.setAttribute('ids',data[i][entity.slice(0,-1)+'_id']);
+      updateButton.setAttribute('ids',data[0][i][entity.slice(0,-1)+'_id']);
       updateButton.appendChild(document.createTextNode('Update'));
       newCell.appendChild(updateButton);
 
       var newCell = newRow.insertCell(-1);
       var removeButton = document.createElement('button');
       removeButton.setAttribute('id','remove-'+entity.slice(0,-1)+'-pre-sbt-'+i);
-      removeButton.setAttribute('ids',data[i][entity.slice(0,-1)+'_id']);
+      removeButton.setAttribute('ids',data[0][i][entity.slice(0,-1)+'_id']);
       removeButton.appendChild(document.createTextNode('Delete'));
       newCell.appendChild(removeButton);
   }
    updateLdsHelperFunction(entity.slice(0,-1));
 };
+ 
 
 #+END_SRC
 
@@ -1670,52 +1734,79 @@ operation on the respective entity.
 
 #+NAME: populate_over_tables_call
 #+BEGIN_SRC js
-var populate_over_tables_call = function(entity, data) {
-  $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
-  var tableRef = document.getElementById(entity.slice(0,-1) +'-table').getElementsByTagName('tbody')[0];
-  for (var i in data) {
+ var populate_over_tables_call = function(entity, data) {
+    $('#'+entity.slice(0,-1) +'-table').find('tr:not(:first)').remove();
+    var buttons = document.querySelectorAll('[id^=Nav]');
+    [].forEach.call(buttons, function (button) {
+      $('#'+button.id).remove();
+    });
+    if (data.length-1) {
+      var foo = document.getElementById("show-"+entity+'-container');
+      page_data = JSON.parse(data[1]);
+      var button1 = document.createElement("button");
+      if (page_data.nextPageLink){
+      button1.innerHTML = "Next";  
+      button1.setAttribute('id','NavnextButtton'+entity)
+        $(button1).on('click', function(clickEvent) {
+          populate_over_tables_call(entity,check_function(page_data.nextPageLink.slice(1)));   
+        });
+        foo.appendChild(button1);
+      }
+      if (page_data.previousPageLink) {
+        var button2 = document.createElement("button");
+        button2.setAttribute('id','NavbackButton'+entity)
+        button2.innerHTML = "Back";
+        $(button2).on('click', function(clickEvent) {
+          populate_over_tables_call(entity,check_function(page_data.previousPageLink.slice(1)));
+        });
+        foo.appendChild(button2);
+      }
+    } 
+    var tableRef = document.getElementById(entity.slice(0,-1) +'-table').getElementsByTagName('tbody')[0];
+  for (var i in data[0]) {
+      console.log(data[0][i])
       var newRow = tableRef.insertRow(-1);
       var newCell = newRow.insertCell(-1);
       newCell.appendChild(document.createTextNode(Number(i)+1));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,3)+'_id']));
+      newCell.appendChild(document.createTextNode(data[0][i][entity.slice(0,3)+'_id']));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i][entity.slice(0,3)+'_name']));
+      newCell.appendChild(document.createTextNode(data[0][i][entity.slice(0,3)+'_name']));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].overview));
+      newCell.appendChild(document.createTextNode(data[0][i].overview));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].institute));
+      newCell.appendChild(document.createTextNode(data[0][i].institute.institute_id));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].developers));
+      newCell.appendChild(document.createTextNode(data[0][i].developers));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].sections));
+      newCell.appendChild(document.createTextNode(data[0][i].sections));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].assets));
+      newCell.appendChild(document.createTextNode(data[0][i].assets.path));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].discipline));
+      newCell.appendChild(document.createTextNode(data[0][i].discipline.discipline_name));
       var newCell = newRow.insertCell(-1);
       newCell.setAttribute('contenteditable',false);
-      newCell.appendChild(document.createTextNode(data[i].hosting_info));
+      newCell.appendChild(document.createTextNode(data[0][i].hosting_info));
       
       var newCell = newRow.insertCell(-1);
       var updateButton = document.createElement('button');
       updateButton.setAttribute('id','update-'+entity.slice(0,-1)+'-pre-sbt-'+i);      
-      updateButton.setAttribute('ids',data[i][entity.slice(0,3)+'_id']);
+      updateButton.setAttribute('ids',data[0][i][entity.slice(0,3)+'_id']);
       updateButton.appendChild(document.createTextNode('Update'));
       newCell.appendChild(updateButton);
 
       var newCell = newRow.insertCell(-1);
       var removeButton = document.createElement('button');
       removeButton.setAttribute('id','remove-'+entity.slice(0,-1)+'-pre-sbt-'+i);
-      removeButton.setAttribute('ids', data[i][entity.slice(0,3)+'_id']);
+      removeButton.setAttribute('ids', data[0][i][entity.slice(0,3)+'_id']);
       removeButton.appendChild(document.createTextNode('Delete'));
       newCell.appendChild(removeButton);
   }
@@ -2119,6 +2210,33 @@ window.onload = function () {
 
 #+END_SRC  
 
+** Contact Form
+#+NAME: contact
+#+BEGIN_SRC js :tangle app/static/js/contact.js
+var AuthAPI = {
+    login: function() {
+      window.location.href = '/login';
+    },
+    logout: function() {
+      window.location.href = '/logout';
+    }
+  };
+  
+  var index_handler = function() {
+    var auth_btn = $('#login-logout-btn')[0];
+    var span_btn = $('#login-logout-spn')[0];
+
+      auth_btn.onclick = AuthAPI.login;
+      auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGIN';
+      span_btn = $('#login-logout-spn')[0];
+      span_btn.className = 'glyphicon glyphicon-log-in';
+  };
+
+  window.onload = function () {
+    index_handler();
+};
+
+#+END_SRC
 * HTML
 ** Index
 The App is now a SPA. Here's the basic skeleton.  
@@ -2134,9 +2252,9 @@ The App is now a SPA. Here's the basic skeleton.
     <title>LDS Dashboard</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="./static/css/style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- jQuery library -->	
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="./static/js/main.js"></script>
   </head>
   <body id="body">
@@ -2157,13 +2275,69 @@ The App is now a SPA. Here's the basic skeleton.
 </html>
 
 #+END_SRC
+** Contact
+#+NAME: contact
+#+BEGIN_SRC html :tangle app/templates/contact.html
 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes"/>
+    <title>LDS Dashboard</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->	
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="./static/js/contact.js"></script>
+  </head>
+  <body id="body">
+    <nav class="navbar navbar-inverse"> 
+      <div class="container-fluid">
+    	<div class="navbar-header">
+      	  <a class="navbar-brand">LDS Dashboard</a>
+    	</div>
+    	<ul class="nav navbar-nav">
+      	  <li><button id="home-btn-home" class="btn-link navbar-btn" style="padding-top: 5px" onclick=""><span id="home-spn" class="glyphicon glyphicon-home"></span>  HOME</button></li>
+    	</ul>
+    	<ul class="nav navbar-nav navbar-right">
+      	  <li><button id="login-logout-btn" class="btn-link navbar-btn" style="padding-top: 5px;" onclick=""><span id="login-logout-spn" class=""></span></button>
+    	</ul>
+      </div>
+    </nav>
+    <div class = 'jumbotron' id ="contact_form">
+    <form action="/signup" method="POST">
+        <fieldset>
+          <legend>LDS Request Form:</legend>
+          Name:<br>
+          <input id='input_name' type="text" name="input_name" value="">
+          <br>
+          Email:<br>
+          <input id='input_email' type="text" name="input_email" value="">
+          <br/>
+          Body:<br>
+          <input id='input_body' type="textarea" name="input_body" value="">
+          <br/>
+          <br/>
+          <button type="submit" value="Submit">Submit</button>
+          <button type="reset" value="Reset">Reset</button>
+        </fieldset>
+      </form>
+    </div>
+  </body>
+</html>
+
+
+#+END_SRC
 * CSS
 ** CSS
    This is styling code for our side nav bar.
    ~Will be removed from here in future releases~
 #+NAME: style
 #+BEGIN_SRC css :tangle app/static/css/style.css 
+
 .sidenav {
 height: 100%;
 width: 250px;
@@ -2189,6 +2363,60 @@ transition: 0.3s;
 #main {
 	margin-left: 280px;
 }
+
+form input {
+	width: 400px;
+	background-color: #fafafa;
+	-webkit-border-radius: 3px;
+	   -moz-border-radius: 3px;
+			border-radius: 3px;
+	border: 1px solid #cccccc;
+	padding: 5px;
+	font-size: 1.1em;
+  }
+
+  form input#submit {
+	display: block;
+	-webkit-border-radius: 3px; 
+	   -moz-border-radius: 3px;
+			border-radius: 3px;
+	border:1px solid #d8d8d8;
+	padding: 10px; 
+	font-weight:bold; 
+	text-align: center; 
+	color: #000000; 
+	background-color: #f4f4f4;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f4f4f4), color-stop(100%, #e5e5e5));
+	background-image: -webkit-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: -moz-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: -ms-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: -o-linear-gradient(top, #f4f4f4, #e5e5e5);
+	background-image: linear-gradient(top, #f4f4f4, #e5e5e5);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#f4f4f4, endColorstr=#e5e5e5);
+  }
+   
+  form input#submit:hover{
+	cursor: pointer;
+	border:1px solid #c1c1c1; 
+	background-color: #dbdbdb;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdbdb), color-stop(100%, #cccccc));
+	background-image: -webkit-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: -moz-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: -ms-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: -o-linear-gradient(top, #dbdbdb, #cccccc);
+	background-image: linear-gradient(top, #dbdbdb, #cccccc);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#dbdbdb, endColorstr=#cccccc);
+  }
+
+  form
+  {
+	  display: inline-block;
+	  margin-left: auto;
+	  margin-right: auto;
+	  text-align: left;
+  }
+  #contact_form {
+	display: flex;
+	justify-content: center;
+  }
 #+END_SRC
 
 * JSON
@@ -5953,8 +6181,7 @@ generate HTML to do the CRUD operations on LDS database.
 <<auth_api>>
 <<index_handler>>
 <<logged_in>>
-<<get_json_dash>>
-<<get_json_nav>>
+<<get_json>>
 <<create_Division>>
 <<decoding_Json>>
 <<attach_Division>>

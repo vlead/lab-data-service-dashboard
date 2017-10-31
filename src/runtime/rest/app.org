@@ -34,9 +34,11 @@ login_manager = LoginManager(app)
 login_manager.login_view = "users.login"
 login_manager.session_protection = "strong"
 oauth = OAuth()
+# Until running with secured SSL verified certificates
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 configure_logging(app)
 #+END_SRC
-
+  
 
 * Error Handling
   This is error handler function. It returns 404.html file when an error is
@@ -91,6 +93,23 @@ def configure_logging(app):
     app.logger.setLevel(log_level)
 
 #+END_SRC
+
+
+* SMTP Flask Mail
+#+NAME: smptp
+#+BEGIN_SRC python 
+app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'example@gmail.com'
+app.config['MAIL_PASSWORD'] = 'emailspassword'
+ADMINS = ['example@gmail.com']
+mail = Mail(app)
+
+#+END_SRC
+
 
 
 * Roles
@@ -242,6 +261,7 @@ from flask_oauth import OAuth
 from flask_login import LoginManager, login_required, login_user, \
     logout_user, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 import os
 import time
 from functools import wraps
@@ -257,6 +277,7 @@ from runtime.config.flask_app_config import LOG_LEVEL
 <<imports>>
 <<configure_logging>>
 <<configure>>
+<<smtp>>
 <<admin_auth>>
 <<guest_auth>>
 <<only_ajax>>
