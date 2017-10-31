@@ -212,45 +212,6 @@ def loggedin():
         return jsonify(success=False), 300
 
 #+END_SRC
-** Signup
-*** API Design
-   - URL :: /signup
-   - Method :: GET
-   - Success Response ::
-    + Code: 200
-   - Error Response ::
-    + Code: 400 
-
-   - URL :: /signup
-   - Method :: POST
-   - Success Response ::
-    + Code: 200
-   - Error Response ::
-    + Code: 400 
-*** Implemenation
-#+NAME: sign_up
-#+BEGIN_SRC python
-@api.route("/signup", methods=['GET','POST'])
-def signup():
-    if request.method == 'POST':
-        name = request.form['input_name']
-        email = request.form['input_email']
-        body = request.form['input_body']
-        print name,email,body
-        if email and body and name:
-            msg = Message('Access Request', sender=ADMINS[0], recipients=[email])
-            msg.body = """
-            From: %s 
-            Googe Email: %s;
-            Reason: %s
-            """ % (name, email, body)
-            mail.send(msg)
-            return redirect('/')
-        else:
-            return jsonify(success=False, message="Fill all fields"), 400
-    else:
-        return render_template('contact.html')
-#+END_SRC 
 ** Add User
    API to add a User
 *** API Design
@@ -369,7 +330,7 @@ import client
 #+NAME: test_add_user
 #+BEGIN_SRC python :tangle app/tests/test_add_user.py
 class TestAddUser(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -620,7 +581,7 @@ import client
 #+NAME: test_add_role
 #+BEGIN_SRC python :tangle app/tests/test_add_role.py
 class TestAddRole(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -740,7 +701,7 @@ import client
 #+NAME: test_show_users
 #+BEGIN_SRC python :tangle app/tests/test_show_users.py
 class TestShowUsers(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -878,7 +839,7 @@ import client
 #+NAME: test_show_roles
 #+BEGIN_SRC python :tangle app/tests/test_show_roles.py
 class TestShowRole(TestCase):
-	
+	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1026,7 +987,7 @@ import client
 #+NAME: test_delete_user
 #+BEGIN_SRC python :tangle app/tests/test_delete_user.py
 class TestDeleteUser(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -1209,7 +1170,7 @@ import client
 #+NAME: test_delete_role
 #+BEGIN_SRC python :tangle app/tests/test_delete_role.py
 class TestDeleteRole(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -1392,7 +1353,7 @@ import client
 #+NAME: test_update_user
 #+BEGIN_SRC python :tangle app/tests/test_update_user.py
 class TestUpdateUsers(TestCase):
-	
+	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1635,7 +1596,7 @@ config = {
 #+NAME: test_update_profile
 #+BEGIN_SRC python :tangle app/tests/test_update_profile.py
 class TestUpdateUsers(TestCase):
-	
+	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1797,14 +1758,9 @@ def lds_connect1():
 
     os.environ['http_proxy'] = os.environ['https_proxy'] = ''
     r = requests.get('https://localhost:1307/'+payload, verify = False)
-    print r.headers['X-Pagination']
-    try:
-        page = r.headers['X-Pagination']
-    except:
-        page = None
     os.environ['http_proxy'] = http_proxy
     os.environ['https_proxy'] = https_proxy
-    return jsonify(success=True, data=r.json(), page=page), 200
+    return jsonify(success=True, data=r.json()), 200
 
 #+END_SRC
 **** Test Cases
@@ -1830,7 +1786,7 @@ from runtime.rest.app import app, db
 import client
 
 class TestLdsGet(TestCase):
-	
+	TESTING = True
 	def create_app(self):
 		app = Flask(__name__)
 		app.register_blueprint(api, url_prefix=None)
@@ -1960,7 +1916,7 @@ from runtime.rest.app import app, db
 import client
 
 class TestLdsPost(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -2070,13 +2026,9 @@ def lds_connect3():
         except:
             return jsonify(success=False, message="Arguments were broken"), 400
     
-    payment = json.loads(payload)['data']
-    print payment
-    try:
-        payment['key'] = 'defaultkey'
-        call = json.loads(payload)['call']+'s'
-    except:
-        call = json.loads(payload)['call']+'s?key=defaulykey'
+    payment = json.loads(payload)['data'] 
+    payment['key'] = 'defaultkey'
+    call = json.loads(payload)['call']+'s'
     data = json.dumps(payment)    
 
     try:
@@ -2179,7 +2131,7 @@ from runtime.rest.app import app, db
 import client
 
 class TestLdsPost(TestCase):
-    
+    TESTING = True
     def create_app(self):
         app = Flask(__name__)
         app.register_blueprint(api, url_prefix=None)
@@ -2306,15 +2258,13 @@ from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 from runtime.config.goauth_config import Auth
 from runtime.rest.app import app, db, requires_guest_auth, \
-     requires_admin_auth, disable_access_on_hash, ADMINS, mail
+     requires_admin_auth, disable_access_on_hash
 from runtime.rest.app.users.db import User, Roles
 import os
 import json
 import re
 import time
 from sqlalchemy.exc import IntegrityError
-import requests
-from flask_mail import Message
 
 api = Blueprint('users', __name__)
 
@@ -2336,7 +2286,6 @@ api = Blueprint('users', __name__)
 <<callback_google_api>>
 <<logout_route>>
 <<logged_in>>
-<<sign_up>>
 <<add_user>>
 <<add_role>>
 <<show_users>>
@@ -2353,5 +2302,4 @@ api = Blueprint('users', __name__)
    
 
 
-   
    
