@@ -238,7 +238,7 @@ def signup():
         body = request.form['input_body']
         print name,email,body
         if email and body and name:
-            msg = Message('Access Request', sender=ADMINS[0], recipients=[email])
+            msg = Message('Access Request', sender=ADMINS[0], recipients=ADMINS)
             msg.body = """
             From: %s 
             Googe Email: %s;
@@ -1796,7 +1796,7 @@ def lds_connect1():
         os.environ['http_proxy'] = os.environ['https_proxy'] = ''
 
     os.environ['http_proxy'] = os.environ['https_proxy'] = ''
-    r = requests.get('https://localhost:1307/'+payload, verify = False)
+    r = requests.get(LDS+payload, verify = False)
     print r.headers['X-Pagination']
     try:
         page = r.headers['X-Pagination']
@@ -1928,7 +1928,7 @@ def lds_connect2():
 
     os.environ['http_proxy'] = os.environ['https_proxy'] = ''
     headers = {'content-type': 'application/json'}
-    r = requests.post('https://localhost:1307/'+call,data=data,
+    r = requests.post(LDS+call,data=data,
                           verify = False,
                           headers=headers)
     os.environ['http_proxy'] = http_proxy
@@ -2088,7 +2088,7 @@ def lds_connect3():
 
     os.environ['http_proxy'] = os.environ['https_proxy'] = ''
     headers = {'content-type': 'application/json'}
-    r = requests.put('https://localhost:1307/'+call, data=data,
+    r = requests.put(LDS+call, data=data,
                          headers=headers, verify = False)
     os.environ['http_proxy'] = http_proxy
     os.environ['https_proxy'] = https_proxy
@@ -2149,7 +2149,7 @@ def lds_connect4():
 
     os.environ['http_proxy'] = ''
     os.environ['https_proxy'] = ''
-    r = requests.delete('https://localhost:1307/'+call+'?'+payment+'&'+key,
+    r = requests.delete(LDS+call+'?'+payment+'&'+key,
                             verify = False)
     os.environ['http_proxy'] = http_proxy
     os.environ['https_proxy'] = https_proxy
@@ -2306,7 +2306,8 @@ from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 from runtime.config.goauth_config import Auth
 from runtime.rest.app import app, db, requires_guest_auth, \
-     requires_admin_auth, disable_access_on_hash, ADMINS, mail
+     requires_admin_auth, disable_access_on_hash, ADMINS, mail, \
+     LDS
 from runtime.rest.app.users.db import User, Roles
 import os
 import json

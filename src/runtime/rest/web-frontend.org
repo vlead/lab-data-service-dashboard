@@ -97,13 +97,13 @@ var index_handler = function() {
   }
   else {
     hide_all_containers();
+    $('#masthead-cont').removeClass('hidden');
     auth_btn.onclick = AuthAPI.login;
     auth_btn.innerHTML = span_btn.outerHTML + '  ' + ' LOGIN';
     span_btn = $('#login-logout-spn')[0];
     span_btn.className = 'glyphicon glyphicon-log-in';
   }
 };
-
 #+END_SRC   
    
 ** Logged In
@@ -123,11 +123,13 @@ var is_logged_in = function() {
     async: false,
     success: function (response) {
       logged = true;
+      document.getElementById('masthead-cont').classList.add('hidden');
       session_detail = response.session;
       Object.freeze(session_detail);
     },
     error: function (response) { 
       logged = false;
+      $('#masthead-cont').removeClass('hidden');
     }
   });
   return logged;
@@ -2193,18 +2195,18 @@ window.onload = function () {
   index_handler();
   if (logged){
   navigate('home');
-  createDivisions();
   hide_all_containers();
-  index_handler();  
+  createDivisions();
+  index_handler();
   get_window_hash_path();
   adding_data_test();
   remove_data_test();
-  //get_all_data();
-  dropdown_fillup();
-  checkbox();
   onClickFunctions();
   handlers_map();
   register_onhashchange_handlers(hash_to_handlers_map); 
+  dropdown_fillup();
+  checkbox();
+
   }
 };  
 
@@ -2271,6 +2273,22 @@ The App is now a SPA. Here's the basic skeleton.
     	</ul>
       </div>
     </nav>
+    <!-- Header -->
+    <header class="masthead hidden" id="masthead-cont">
+      <div class="overlay">
+        <div class="container">
+          <h1 class="display-1 text-white">Virtual Labs</h1>
+          <h2 class="display-4 text-white">Data Service Dashboard</h2>
+        </div>
+      </div>
+      <br/><br/><br/>
+      <div style="justify-content: center; display: flex;  align-items: center;">
+        <button class= 'btn-primary' onclick="window.location = '/signup'" value="Request Sign In" style="margin-right:15px"/>Request Sign In</button>
+        <button class= 'btn-primary' onclick="window.location = '/login'" value="Log In" style="margin-left:15px"/>Log In</button>
+      </div>
+      <br/><br/><br/><br/>
+    </header>
+
   </body>
 </html>
 
@@ -2363,7 +2381,7 @@ transition: 0.3s;
 #main {
 	margin-left: 280px;
 }
-
+/*
 form input {
 	width: 400px;
 	background-color: #fafafa;
@@ -2393,7 +2411,7 @@ form input {
 	background-image: -o-linear-gradient(top, #f4f4f4, #e5e5e5);
 	background-image: linear-gradient(top, #f4f4f4, #e5e5e5);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#f4f4f4, endColorstr=#e5e5e5);
   }
-   
+  */ 
   form input#submit:hover{
 	cursor: pointer;
 	border:1px solid #c1c1c1; 
