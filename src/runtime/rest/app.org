@@ -37,6 +37,8 @@ oauth = OAuth()
 # Until running with secured SSL verified certificates
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 configure_logging(app)
+
+LDS = 'https://lds.com/'
 #+END_SRC
   
 
@@ -105,7 +107,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'example@gmail.com'
 app.config['MAIL_PASSWORD'] = 'emailspassword'
-ADMINS = ['example@gmail.com']
+ADMINS = 'example@gmail.com'
 mail = Mail(app)
 
 #+END_SRC
@@ -277,7 +279,7 @@ from runtime.config.flask_app_config import LOG_LEVEL
 <<imports>>
 <<configure_logging>>
 <<configure>>
-<<smtp>>
+<<smptp>>
 <<admin_auth>>
 <<guest_auth>>
 <<only_ajax>>
