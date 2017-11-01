@@ -1,0 +1,46 @@
+#+TITLE: Plan for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-19 Mon]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
+
+* Introduction
+  This document contains the realization plan for
+  implementing the Lab Data Service.  This application is
+  realized as series of [[https://github.com/vlead/lab-data-service-dashboard/milestones?state=closed][milestones]]. 
+
+* Milestones Snapshot
+  |------+-------------+--------------------------------------------------------------------------------------------------------------+------+--------+--------|
+  | S.no | Requirement | Milestone                                                                                                    | Plan | Status | Issues |
+  |      | Mapping     |                                                                                                              |      |        |        |
+  |------+-------------+--------------------------------------------------------------------------------------------------------------+------+--------+--------|
+  |    1 |             | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1][Backend API's for Dashboad to login and logout pages with default admin and guest roles]]                      |      | Closed | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1][ref]]    |
+  |------+-------------+--------------------------------------------------------------------------------------------------------------+------+--------+--------|
+  |    2 |             | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2][Implementation of Front End with Login, Logout, Admin and Guest Dashboards as Single Page Applications (SPA)]] |      | Closed | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2][ref]]    |
+  |------+-------------+--------------------------------------------------------------------------------------------------------------+------+--------+--------|
+  |    3 |             | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3][Implementation of Front End Dashboard for LDS as Single Page Application (SPA)]]                               |      | Closed | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3][ref]]    |
+  |------+-------------+--------------------------------------------------------------------------------------------------------------+------+--------+--------|
+  #+TBLFM: $1=@#-1
+
+
+* Detailed Plans
+  Implementing the above plan will result into the following -
+   + Admin will be able to do all =CRUD= operations on labs data through Admin
+     portal in LDS dashboard.
+   + Admin Role should be able to perform all the =CRUD= operations through LDS
+     dashboard. 
+   + Admin Role should be able to add other users and assign roles to them in
+     Admin portal in LDS dashboard.
+   + Guest Role should be able to =Read/View= the labs data through guest
+     portal in LDS dashboard.
+   + Authentication and Authorization should be provided for all the LDS
+     Dashboard users. 
+   + LDS Dashboard will be able to Generate HTML code from the given JSON
+     specification. 
+
+
+ 
+  
