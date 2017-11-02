@@ -9,7 +9,7 @@
 
 * Introduction
   This document contains the realization plan for
-  implementing the Lab Data Service.  This application is
+  implementing the Lab Data Service Dashboard.  This application is
   realized as series of [[https://github.com/vlead/lab-data-service-dashboard/milestones?state=closed][milestones]]. 
 
 * Milestones Snapshot
@@ -21,7 +21,7 @@
   |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
   |   |    2 | [[https://github.com/vlead/lab-data-service/milestone/2][2]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2][Implementation of Front end as SPA]]                | [[Implementaion of Front end as Single Page Application(SPA)][ref]]  | Closed | 164 | 131 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2?closed=1][ref]]    |
   |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
-  |   |    3 | [[https://github.com/vlead/lab-data-service/milestone/3][3]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3][Implementation of Front end Dashboard for LDS]]     | [[Implementation of Front end Dashboard for LDS][ref]]  | Closed | 189 | 142 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3?closed=1][ref]]    |
+  |   |    3 | [[https://github.com/vlead/lab-data-service/milestone/3][3]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3][Implementation of Front end Dashboard for LDS]]     | [[Implementation of Front End Dashboard for LDS as Single Page Application (SPA)][ref]]  | Closed | 189 | 142 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3?closed=1][ref]]    |
   |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
   |   |      |    |     | Total                                             |      |        | 586 | 464 |        |
   | ^ |      |    |     |                                                   |      |        |  et |  at |        |
@@ -116,6 +116,9 @@ for login and logout pages with implementation and deployment.
 |---+------+------------------------+--------+-----------+--------+--------+----------|
 |   | S.NO | Tasks                  | Github |  Expected | Actual | Status | Assignee |
 |   |      |                        | Issues |    Effort | Effort |        |          |
+|   |      |                        |        |       (In |    (In |        |          |
+|   |      |                        |        |    person | person |        |          |
+|   |      |                        |        |    hours) | hours) |        |          |
 |---+------+------------------------+--------+-----------+--------+--------+----------|
 |   |   1. | Implementation         | [[https://github.com/vlead/lab-data-service-dashboard/issues/9][#9]]     |        40 |     45 | Done   | Yahnit,  |
 |   |      | of Admin Dashboard     |        |           |        |        | Utkarsh  |
@@ -173,6 +176,9 @@ for login and logout pages with implementation and deployment.
 |---+------+--------------------+--------+-----------+--------+--------+----------|
 |   | S.NO | Tasks              | Github |  Expected | Actual | Status | Assignee |
 |   |      |                    | Issues |    Effort | Effort |        |          |
+|   |      |                    |        |       (In |    (In |        |          |
+|   |      |                    |        |    person | person |        |          |
+|   |      |                    |        |    hours) | hours) |        |          |
 |---+------+--------------------+--------+-----------+--------+--------+----------|
 |   |    1 | Implement Logging  | [[https://github.com/vlead/lab-data-service-dashboard/issues/27][#27]]    |        24 |     12 | Done   | Madhavi  |
 |   |      | for LDS Dashboard  |        |           |        |        | Puliraju |
