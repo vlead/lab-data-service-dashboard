@@ -13,19 +13,21 @@
   realized as series of [[https://github.com/vlead/lab-data-service-dashboard/milestones?state=closed][milestones]]. 
 
 * Milestones Snapshot
-  |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
-  |   | S.no | Mi | Req | Milestone                                         | Plan | Status | Est | Act | Issues |
-  |   |      | no | Map |                                                   |      |        | hrs | hrs |        |
-  |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
-  |   |    1 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1][1]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1][login/logout pages with default admin/guest roles]] | [[Loin and Logout pages with default admin and guest roles][ref]]  | Closed | 233 | 191 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1?closed=1][ref]]    |
-  |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
-  |   |    2 | [[https://github.com/vlead/lab-data-service/milestone/2][2]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2][Implementation of Front end as SPA]]                | [[Implementaion of Front end as Single Page Application(SPA)][ref]]  | Closed | 164 | 131 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2?closed=1][ref]]    |
-  |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
-  |   |    3 | [[https://github.com/vlead/lab-data-service/milestone/3][3]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3][Implementation of Front end Dashboard for LDS]]     | [[Implementation of Front End Dashboard for LDS as Single Page Application (SPA)][ref]]  | Closed | 189 | 142 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3?closed=1][ref]]    |
-  |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
-  |   |      |    |     | Total                                             |      |        | 586 | 464 |        |
-  | ^ |      |    |     |                                                   |      |        |  et |  at |        |
-  |---+------+----+-----+---------------------------------------------------+------+--------+-----+-----+--------|
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
+  |   | S.no | Mi | Req | Milestone                                         | Plan | Status      | Est | Act | Issues |
+  |   |      | no | Map |                                                   |      |             | hrs | hrs |        |
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
+  |   |    1 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1][1]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1][login/logout pages with default admin/guest roles]] | [[Loin and Logout pages with default admin and guest roles][ref]]  | Closed      | 233 | 191 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/1?closed=1][ref]]    |
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
+  |   |    2 | [[https://github.com/vlead/lab-data-service/milestone/2][2]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2][Implementation of Front end as SPA]]                | [[Implementaion of Front end as Single Page Application(SPA)][ref]]  | Closed      | 164 | 131 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/2?closed=1][ref]]    |
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
+  |   |    3 | [[https://github.com/vlead/lab-data-service/milestone/3][3]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3][Implementation of Front end Dashboard for LDS]]     | [[Implementation of Front End Dashboard for LDS as Single Page Application (SPA)][ref]]  | Closed      | 189 | 142 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/3?closed=1][ref]]    |
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
+  |   |    4 | [[https://github.com/vlead/lab-data-service-dashboard/milestone/4][4]]  |     | [[https://github.com/vlead/lab-data-service-dashboard/milestone/4][Deployment of LDS Dashboard]]                       |      | In Progress |  36 |   4 | [[Deploy LDS Dashboard on Testing, Staging and production][ref]]    |
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
+  |   |      |    |     | Total                                             |      |             | 586 | 464 |        |
+  | ^ |      |    |     |                                                   |      |             |  et |  at |        |
+  |---+------+----+-----+---------------------------------------------------+------+-------------+-----+-----+--------|
   #+TBLFM: $2=@#-2
   #+TBLFM: @3$8=remote(tbl-rlz-pln-ml-1, $estimated)
   #+TBLFM: @3$9=remote(tbl-rlz-pln-ml-1, $actual)
@@ -33,6 +35,8 @@
   #+TBLFM: @4$9=remote(tbl-rlz-pln-ml-2, $actual)
   #+TBLFM: @5$8=remote(tbl-rlz-pln-ml-3, $estimated)
   #+TBLFM: @5$9=remote(tbl-rlz-pln-ml-3, $actual)
+  #+TBLFM: @6$8=remote(tbl-rlz-pln-ml-4, $estimated)
+  #+TBLFM: @6$9=remote(tbl-rlz-pln-ml-4, $actual)
   #+TBLFM: $et=vsum(@II+1..@-1)
   #+TBLFM: $at=vsum(@II+1..@-1)
 
@@ -220,7 +224,31 @@ for login and logout pages with implementation and deployment.
 
   *Note*: Expected and Actual Efforts are calculated in person hours. 
 
-  
+
+** Deploy LDS Dashboard on Testing, Staging and production
+   This [[https://github.com/vlead/lab-data-service-dashboard/milestone/4][milestone]] captures the deployment details of LDS Dashboard on
+   various environments.
+#+caption:  realization-plan-ml-4
+#+name: tbl-rlz-pln-ml-4
+|---+------+----------------------+--------+-----------+--------+-------------+----------|
+|   | S.NO | Tasks                | Github | Expected  | Actual | Status      | Assignee |
+|   |      |                      | Issues | Effort    | Effort |             |          |
+|   |      |                      |        | (In       | (In    |             |          |
+|   |      |                      |        | person    | person |             |          |
+|   |      |                      |        | hours)    | hours) |             |          |
+|---+------+----------------------+--------+-----------+--------+-------------+----------|
+|   |    1 | Deploy LDS Dashborad | [[https://github.com/vlead/lab-data-service-dashboard/issues/34][#34]]    | 36        | 4      | In Progress | Madhavi  |
+|   |      | on Testing, Staging  |        |           |        |             | Puliraju |
+|   |      | and Production       |        |           |        |             |          |
+|---+------+----------------------+--------+-----------+--------+-------------+----------|
+|   |      |                      |        | 36        | 4      |             |          |
+| ^ |      | Total                |        | estimated | actual |             |          |
+|---+------+----------------------+--------+-----------+--------+-------------+----------|
+ #+TBLFM: $estimated=vsum(@II+1..@-1)
+ #+TBLFM: $actual=vsum(@II+1..@-1)
+
+  *Note*: Expected and Actual Efforts are calculated in person hours. 
+
 ** Realization
   Implementing the above plan will result into the following -
    + Admin will be able to do all =CRUD= operations on labs data through Admin
