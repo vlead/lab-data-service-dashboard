@@ -1,0 +1,89 @@
+#+TITLE: Design of lab-data-service-dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-09 Friday]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+* Introduction 
+  The =design= of the =lab-data-service-dashboard= is
+  captured here.
+
+* Design
+  The dashboard should fulfill two objectives: 
+  1. To display the statistics of different labs like number
+     of labs in phase 3, etc.
+  2. To allow CRUD operations on lab data held by the Lab
+     Data Service (LDS).
+
+** Display of Statistics
+
+** CRUD Operations
+   The system contains different types of users with
+   different privileges to view and manipulate the data on
+   LDS.
+
+** List of Operations
+   The operations that are supported by the dashboard are to
+   1. List all the entities
+   2. List all the instances of each entity
+   3. View in detail of an instance of an entity
+   4. Edit an instance of an entity and
+   5. Delete an instance of an entity
+
+   If steps 2 to 5 are implemented for a particular entity,
+   they should be repeatable for other entities.
+
+** Data, Controls and Actions
+   A page listing all the instances of an entity will have a
+   control attached to each item to view that
+   instance in detail. 
+
+   A page listing the details of an instance of a entity
+   will have controls to either edit or delete the instance.
+
+   Essentially, every view is attached to data and a set of
+   controls which when activated perform certain actions.
+
+** Specifying each view
+   Each view is encoded as a json specifying the data,
+   controls and actions attached to these controls.  The
+   front end application is realized as a single page
+   application or state machine modelled as a DFA.  In such
+   a scenario, every route moves to different view that is
+   specified by the spec.  A spec consists of both the state
+   and routes from that state.  If all the states and routes
+   can be mapped to the different specifications, automatic
+   realization of the state machine is achieved.
+
+** Rendering each view
+   A generic renderer takes the spec and the data to create
+   the view.  The renderer or the driver is responsible to
+   map the the specification and the associated data to the
+   html components that comprise the view. 
+   
+
+* COMMENT Design diagram
+  :PROPERTIES:
+  :CUSTOM_ID: design_diagram
+  :END:    
+
+  Following diagram represents the lab-data-service-dashboard design.
+  This diagram has the following 3 sections:
+  1) *Lab Data Service* : A Micro Service which provides the labs
+     information via =REST= API's
+  2) *User Authentication/Authorization Service* : A Micro Service which
+     manages all the users and their roles in the system. Also provides the
+     google authentication for user to login and logout.
+  3) *Web Interface/Front End* : A Web Interface to view all the labs data
+     based on a given role.
+
+#+BEGIN_HTML
+<img src="https://docs.google.com/drawings/d/1hgRPbFjn-Gqtd-Ypqi8F8888uJpm_S6r_vnwld45ioA/pub?w=960&h=720">
+<p align="center"> lab data service dashboard design diagram </p>
+#+END_HTML
+
+ [[https://docs.google.com/drawings/d/1hgRPbFjn-Gqtd-Ypqi8F8888uJpm_S6r_vnwld45ioA/edit?usp=sharing][click here]] to edit the diagram
+

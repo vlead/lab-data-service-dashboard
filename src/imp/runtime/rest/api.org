@@ -1,0 +1,82 @@
+#+TITLE: The REST API for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  This document illustrates building of the REST API.
+
+* REST
+** Serve index.html
+#+NAME: serve_index_html
+#+BEGIN_SRC python 
+@api.route("/", methods=['GET'])
+def index():
+    return render_template('index.html')
+#+END_SRC
+
+
+* Infra                                                         :boilerplate:
+
+  
+** sources
+*** Imports 
+#+name: imports_for_sources
+#+BEGIN_SRC python
+
+# -*- coding: utf-8 -*-
+from flask import Blueprint, Flask, url_for, redirect, \
+    render_template, session, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import login_required, login_user, \
+    logout_user, current_user
+from requests_oauthlib import OAuth2Session
+from requests.exceptions import HTTPError
+from runtime.config.goauth_config import Auth
+from runtime.rest.app import app, db, requires_guest_auth, requires_admin_auth, disable_access_on_hash
+from runtime.rest.app.users.db import User, Roles
+import os
+import json
+import re
+import time
+from sqlalchemy.exc import IntegrityError
+
+api = Blueprint('users', __name__)
+
+#+end_src
+    
+    
+
+
+*** Init File
+#+NAME: init_file
+#+BEGIN_SRC python :tangle app/users/__init__.py
+
+#+END_SRC
+* Tangle                                                        :boilerplate:
+  
+** sources
+#+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
+<<imports_for_sources>>
+<<oauth_session_creation>>
+<<serve_index_html>>
+<<login_route>>	
+<<callback_google_api>>
+<<logout_route>>
+<<logged_in>>
+<<add_user>>
+<<add_role>>
+<<show_users>>
+<<show_roles>>
+<<delete_user>>
+<<delete_role>>
+<<update_user>>
+<<update_profile>>
+#+END_SRC
+   
+
+
+   
