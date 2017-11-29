@@ -1,82 +1,147 @@
-#+TITLE: The REST API for Lab Data Service Dashboard
+#+TITLE: The REST API
 #+AUTHOR: VLEAD
-#+DATE: [2017-06-05 Mon]
-#+SETUPFILE: ../../org-templates/level-2.org
+#+DATE: [2017-11-29 Wed]
+#+SETUPFILE: ../../../org-templates/level-3.org
 #+TAGS: boilerplate(b)
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
 * Introduction 
   This document illustrates building of the REST API.
-
+  
 * REST
-** Serve index.html
-#+NAME: serve_index_html
-#+BEGIN_SRC python 
-@api.route("/", methods=['GET'])
+** Index Page
+#+NAME: index-api
+#+BEGIN_SRC python
+@api.route('/')
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
+ #+END_SRC
+
+** =Login= API
+   When user clicks on =login= button from f/e it will
+   invoke =/login= api and thereby it will forward request
+   to =google=
+#+NAME: login-api
+#+BEGIN_SRC python
+@api.route('/login')
+def login():
+    return google_oauth.authorize(callback=url_for('APIs.authorized', _external=True))
+ #+END_SRC
+
+** =Logout= API
+   When user clicks on =logout= button from f/e it will
+   invoke =/logout= api and thereby it will destroy all
+   session variables.
+#+NAME: logout-api
+#+BEGIN_SRC python
+@api.route('/logout')
+def logout():
+    if 'google_token' in session:
+        session.pop('google_token', None)
+        session.pop('email', None)
+        session.pop('name', None)
+    if 'error' in session:
+        session.pop('error', None)
+
+    return redirect("/")
+
+
 #+END_SRC
 
+** Google Callback response =API=
+   Once the Google verfies the user credentials it will send
+   callback response to =/authorized= api which should be
+   registered at google's dashboard as one of Authorized
+   redirect URIs
 
+#+NAME: callback-api
+#+BEGIN_SRC python
+@api.route('/authorized')
+def authorized():
+    try:
+        resp = google_oauth.authorized_response()
+        if resp is None:
+            session['email'] = None
+            session['error-code'] = -1
+            session['error'] = "Response is None, no authentication done"
+            return render_template("bad.html")
+        else:
+            session['google_token'] = (resp['access_token'], '')
+            user_info = google_oauth.get('userinfo')
+            email = str(user_info.data['email'])
+            session['email'] = email
+            session['error-code'] = 0
+            return render_template("good.html")
+    except Exception as e:
+        session['email'] = None
+        session['error-code'] = -1
+        session['error'] = "Error in Google Authentication : " + str(e)            
+        return render_template("bad.html")
+
+#+END_SRC
+** Google token getter
+   Once the google verfies the credentials token will be
+   shared.
+#+NAME: token-getter
+#+BEGIN_SRC python
+@google_oauth.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
+
+#+END_SRC
+   
+** Google oauth infra
+#+NAME: google-oauth-infra
+#+BEGIN_SRC python
+oauth = OAuth()
+google_oauth = oauth.remote_app(
+    'google',
+    consumer_key=config.CONSUMER_KEY,
+    consumer_secret=config.CONSUMER_SECRET,
+    request_token_params={
+        'scope': 'email', 'prompt' : 'select_account'
+        },
+        base_url='https://www.googleapis.com/oauth2/v1/',
+        request_token_url=None,
+        access_token_method='POST',
+        access_token_url='https://accounts.google.com/o/oauth2/token',
+        authorize_url='https://accounts.google.com/o/oauth2/auth',
+    )
+
+#+END_SRC
 * Infra                                                         :boilerplate:
 
-  
 ** sources
 *** Imports 
 #+name: imports_for_sources
 #+BEGIN_SRC python
-
 # -*- coding: utf-8 -*-
-from flask import Blueprint, Flask, url_for, redirect, \
-    render_template, session, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_required, login_user, \
-    logout_user, current_user
-from requests_oauthlib import OAuth2Session
-from requests.exceptions import HTTPError
-from runtime.config.goauth_config import Auth
-from runtime.rest.app import app, db, requires_guest_auth, requires_admin_auth, disable_access_on_hash
-from runtime.rest.app.users.db import User, Roles
 import os
+import requests
 import json
-import re
-import time
-from sqlalchemy.exc import IntegrityError
+from flask import session, render_template, Blueprint, request, \
+     jsonify, abort, current_app, redirect, url_for
+from flask import Flask
+import yaml
+from flask_oauthlib.client import OAuth
+from runtime.config import config
 
-api = Blueprint('users', __name__)
+api = Blueprint('APIs', __name__)
 
 #+end_src
-    
-    
 
 
-*** Init File
-#+NAME: init_file
-#+BEGIN_SRC python :tangle app/users/__init__.py
-
-#+END_SRC
 * Tangle                                                        :boilerplate:
-  
+
 ** sources
-#+BEGIN_SRC python :tangle app/users/api.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle api.py :eval no :noweb yes
 <<imports_for_sources>>
-<<oauth_session_creation>>
-<<serve_index_html>>
-<<login_route>>	
-<<callback_google_api>>
-<<logout_route>>
-<<logged_in>>
-<<add_user>>
-<<add_role>>
-<<show_users>>
-<<show_roles>>
-<<delete_user>>
-<<delete_role>>
-<<update_user>>
-<<update_profile>>
+<<google-oauth-infra>>
+<<index-api>>
+<<login-api>>
+<<logout-api>>
+<<callback-api>>
+<<token-getter>>
 #+END_SRC
-   
 
-
-   

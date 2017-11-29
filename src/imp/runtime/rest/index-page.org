@@ -1,0 +1,53 @@
+#+TITLE: Index page to Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-11-29 Wed]
+#+SETUPFILE: ../../../org-templates/level-3.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+* Introduction
+  The index page to the application
+
+* Index HTML
+#+BEGIN_SRC html :tangle ./templates/index.html :eval no :noweb yes
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>LDS Dashboard</title>
+    </head>
+    <body>
+      <a href="/login">Click to Login</a>
+    </body>
+  </html>
+#+END_SRC
+
+#+BEGIN_SRC html :tangle ./templates/good.html :eval no :noweb yes
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>LDS Dashboard</title>
+    </head>
+    <body>
+      <p>Successful Login</p>
+      <a href="/logout">Click to Logout</a>
+    </body>
+  </html>
+#+END_SRC
+
+#+BEGIN_SRC html :tangle ./templates/bad.html :eval no :noweb yes
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>LDS Dashboard</title>
+    </head>
+    <body>
+      <p>Un Successful Login</p>
+      {{ session.error }}
+    </body>
+  </html>
+#+END_SRC

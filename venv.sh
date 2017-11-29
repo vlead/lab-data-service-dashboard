@@ -4,5 +4,5 @@
 dir=`pwd`
 source ./venv/bin/activate
 echo "source ./venv/bin/activate"
-export PYTHONPATH=".:$dir/build/code"
+export PYTHONPATH=".:$dir/build/code/imp"
 echo "export PYTHONPATH=$PYTHONPATH"

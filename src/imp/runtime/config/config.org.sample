@@ -1,0 +1,55 @@
+#+TITLE: Configuration
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-06 Tue]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+
+This holds the application's configuration parameters.
+
+
+* Flask Application Configuration
+  Configuration for the flask application. 
+#+NAME: flask_app_config
+#+BEGIN_SRC python
+
+# Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page  to be requested from another domain.
+# Which is outside the domain from which the first resource was served.
+# List of allowed origins for CORS for this app
+ALLOWED_ORIGINS = "['*']"
+
+# List of allowed IPs
+WHITELIST_IPS = ["127.0.0.1"]
+
+# Configure your log paths
+LOG_FILE_DIRECTORY = 'logs'
+LOG_FILE = 'ldsdashboard.log'
+
+# Log level for the application
+# 10=DEBUG, 20=INFO, 30=WARNING, 40=ERROR, 50=CRITICAL",
+LOG_LEVEL = 10
+
+# Application threads. A common general assumption is
+# using 2 per available processor cores - to handle
+# incoming requests using one and performing background
+# operations using the other.
+THREADS_PER_PAGE = 2
+
+# Enable protection agains *Cross-site Request Forgery (CSRF)*
+CSRF_ENABLED = True
+
+TESTING = False
+## These are for google authentication.
+CONSUMER_KEY = ""
+CONSUMER_SECRET = ""
+#+END_SRC
+
+
+* Tangling                                                      :boilerplate:
+** flask_app_config
+#+BEGIN_SRC python :tangle sample_config.py :eval no :noweb yes
+<<flask_app_config>>
+#+end_src

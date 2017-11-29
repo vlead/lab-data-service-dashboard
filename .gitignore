@@ -8,14 +8,12 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-*.pyc
+*.py*
 *~
 *.sw[p|o]
 \#*\#
 .\#*\#
 venv/
-config.py
-outreach-portal.egg-info/
 dist/
 logs/
 build/
@@ -28,4 +26,4 @@ sitemap*
 lint_output
 literate-tools
 elisp
-tangle-make
+config.org
