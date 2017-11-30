@@ -50,6 +50,6 @@ CONSUMER_SECRET = ""
 
 * Tangling                                                      :boilerplate:
 ** flask_app_config
-#+BEGIN_SRC python :tangle sample_config.py :eval no :noweb yes
+#+BEGIN_SRC python :tangle config.py :eval no :noweb yes
 <<flask_app_config>>
 #+end_src
