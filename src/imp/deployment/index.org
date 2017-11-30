@@ -15,16 +15,16 @@
   =setup.py= file, which will install all the python library dependencies.
 
 #+BEGIN_SRC python :tangle setup.py :eval no
+
 from setuptools import setup
 
 requires = [
-    'flask=0.12.2',
+    'flask==0.12.2',
     'oauthlib==2.0.6',
     'flask-oauthlib==0.9.4',
     'requests==2.18.4',
     'markupsafe==1.0',
     'flask-cors==3.0.3'
- 
 ]
 
 setup(
@@ -32,7 +32,6 @@ setup(
     version='2.0',
     install_requires=requires
 )
-
 #+END_SRC
 
 * Install all dependencies and setup the software
