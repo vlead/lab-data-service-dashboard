@@ -72,9 +72,9 @@
           ],
           "post_build": [
             "cp -R ../build/code/* /var/www/",
-            "chmod -R 755 /var/www",
-            "mkdir /var/www/logs",
-            "chmod -R 777 /var/www/logs"
+            "chmod -R 755 /var/www/imp",
+            "mkdir /var/www/imp/logs",
+            "chmod -R 777 /var/www/imp/logs"
           ],
           "status": []
         }
