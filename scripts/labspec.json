@@ -95,10 +95,10 @@
           "min_required": "10gb"
         },
         "installer": [
-          "bash /var/www/deployment/setup.sh",
-          "python /var/www/deployment/setup.py install",
-          "bash /var/www/deployment/configure.sh",
-          "PYTHONPATH=/var/www"
+          "bash /var/www/imp/deployment/setup.sh",
+          "python /var/www/imp/deployment/setup.py install",
+          "bash /var/www/imp/deployment/configure.sh",
+          "PYTHONPATH=/var/www/imp"
         ],
         "lab_actions": {
           "init"    : [],
