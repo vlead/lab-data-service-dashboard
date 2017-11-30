@@ -123,7 +123,6 @@ import json
 from flask import session, render_template, Blueprint, request, \
      jsonify, abort, current_app, redirect, url_for
 from flask import Flask
-import yaml
 from flask_oauthlib.client import OAuth
 from runtime.config import config
 
